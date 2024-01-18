@@ -3,7 +3,7 @@ import { BsDot } from "react-icons/bs";
 import {
 	MdChat,
 	MdCode,
-	MdPlayArrow,
+	// MdPlayArrow,
 	MdUpload,
 	MdVerifiedUser,
 } from "react-icons/md";

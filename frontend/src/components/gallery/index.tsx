@@ -12,9 +12,9 @@ interface GalleryProps {
 const Gallery: React.FC<GalleryProps> = ({
 	title,
 	isFirst,
-	data,
+	// data,
 	length,
-	category,
+	// category,
 }) => {
 	const nav = useNavigate();
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Gallery, Layout, Player } from "../components";
+import {   Layout, Player } from "../components";
 import { FaEye } from "react-icons/fa";
 import { categories as CAT } from "../App";
 
