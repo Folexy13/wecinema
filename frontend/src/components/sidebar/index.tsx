@@ -9,7 +9,7 @@ import { categories } from "../../App";
 interface SidebarProps {
 	expand: boolean;
 	darkMode: boolean;
-	toggleUploadModal:any;
+	toggleUploadModal: any;
 	setDarkMode: any;
 	setLightMode: any;
 }
@@ -124,22 +124,26 @@ const Sidebar: React.FC<SidebarProps> = ({
 					<li
 						className={`flex gap-4  mx-4 my-2 items-center ${
 							darkMode ? "text-active" : ""
+						} ${
+							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						}`}
 						onClick={setDarkMode}
 					>
 						<FaMoon size="20" color={darkMode && "green"} />
-						<a href="#" className="text-sm w-full">
+						<a href="#" className={`text-sm ${expand ?? "w-full"}`}>
 							Dark mode
 						</a>
 					</li>
 					<li
 						className={`flex gap-4  mx-4 my-2 items-center ${
 							!darkMode ? "text-active" : ""
+						} ${
+							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						}`}
 						onClick={setLightMode}
 					>
 						<IoSunnyOutline size="20" color={!darkMode && "green"} />
-						<a href="#" className="text-sm w-full">
+						<a href="#" className={`text-sm ${expand ?? "w-full"}`}>
 							Light mode
 						</a>
 					</li>

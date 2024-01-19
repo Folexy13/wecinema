@@ -1,5 +1,6 @@
 
 import { jwtDecode } from "jwt-decode";
+import moment from "moment";
 export interface DecodedToken {
 	userId: string;
 	// Add other payload properties as needed
@@ -31,4 +32,31 @@ export const decodeToken = (token: any) => {
 		}
 		return decodeToken;
 	} catch (error) {}
+};
+
+
+
+
+export const formatDateAgo = (dateTime: string): string => {
+	const now = moment();
+	const then = moment(dateTime);
+
+	const secondsDiff = now.diff(then, "seconds");
+	const minutesDiff = now.diff(then, "minutes");
+	const hoursDiff = now.diff(then, "hours");
+	const daysDiff = now.diff(then, "days");
+
+	if (secondsDiff < 60) {
+		return "just now";
+	} else if (minutesDiff < 60) {
+		return `${minutesDiff} minute${minutesDiff !== 1 ? "s" : ""} ago`;
+	} else if (hoursDiff < 24) {
+		return `${hoursDiff} hour${hoursDiff !== 1 ? "s" : ""} ago`;
+	} else if (daysDiff === 1) {
+		return "yesterday";
+	} else if (daysDiff < 365) {
+		return `${daysDiff} day${daysDiff !== 1 ? "s" : ""} ago`;
+	} else {
+		return moment(dateTime).format("MMM D, YYYY [at] h:mm A");
+	}
 };

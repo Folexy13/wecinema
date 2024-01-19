@@ -151,7 +151,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 		}
 	};
 	const LoginModal: React.FC = () => (
-		<Modal show={show}>
+		<Modal show={show} background="linear-gradient(to right, #ffd700, #ffff00)">
 			<header className="flex  gap-4 justify-between items-center">
 				<h2>Sign in to Wecinema</h2>
 				<FaTimes onClick={() => setShow(false)} />
