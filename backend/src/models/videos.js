@@ -14,7 +14,6 @@ const videoSchema = new Schema(
 		},
 		slug: {
 			type: String,
-			required: true,
 		},
 		genre: {
 			type: Schema.Types.Mixed,

@@ -116,7 +116,7 @@ const Gallery: React.FC<GalleryProps> = ({
 											</div>
 											<div className="ml-2 w-full">
 												<span>
-													{formatDateAgo(video.created)}
+													{formatDateAgo(video.createdAt??video.updatedAt)}
 													<BsDot className="inline-flex items-center" /> 155k
 													Views
 												</span>
