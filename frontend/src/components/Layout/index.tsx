@@ -47,8 +47,8 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 		localStorage.getItem("token") || null
 	);
 	const [decodedToken, setDecodedToken] = useState<DecodedToken | null>(null);
-
-	const [darkMode, setDarkMode] = useState<boolean>(false);
+	const isDarkMode = localStorage.getItem("isDarkMode") ?? false;
+	const [darkMode, setDarkMode] = useState<boolean>(!!isDarkMode);
 	const [expanded, setExpanded] = useState<boolean>(false);
 	const [show, setShow] = useState<boolean>(false);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -86,9 +86,12 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const setLightMode = () => {
+		localStorage.removeItem("isDarkMode", );
 		setDarkMode(false);
 	};
 	const setDarkiMode = () => {
+		localStorage.setItem("isDarkMode", "dark");
+
 		setDarkMode(true);
 	};
 	const handleLoginSubmit = async (e: any) => {
@@ -529,7 +532,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					<LoginModal />
 					<RegisterModal />
 					<UploadVideoModal />
-					<LogoutModal/>
+					<LogoutModal />
 					{children}
 
 					{/* //header */}
