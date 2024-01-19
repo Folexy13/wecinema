@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosError } from "axios";
 // import { useState } from "react";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = "http://localhost:3000/";
+const API_BASE_URL = "https://wecinema.onrender.com" //"http://localhost:3000/";
 
 const api = axios.create({
 	baseURL: API_BASE_URL,
