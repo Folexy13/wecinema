@@ -235,7 +235,7 @@ const Gallery: React.FC<GalleryProps> = ({
 			<div
 				// style={{ minHeight: 280 }}
 				className={` ${
-					isFirst ? "mt-20" : ""
+					isFirst ? "mt-5" : ""
 				} z-1 relative p-2 flex flex-wrap border-b overflow-hidden border-blue-200 sm:mx-4 pb-4`}
 			>
 				<div className="flex flex-wrap w-full ">
