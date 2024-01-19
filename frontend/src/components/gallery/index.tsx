@@ -40,21 +40,23 @@ const Gallery: React.FC<GalleryProps> = ({
 	// }, [images]);
 	useEffect(() => {
 		(async () => {
-			const result = await getRequest("video/all",setLoading);
+			const result = await getRequest("video/all", setLoading);
 
 			if (result) {
 				// Update state or props to trigger rendering with result
 				setVideos(result); // Assuming a `videos` state variable
-				console.log('====================================');
+				console.log("====================================");
 				console.log(loading);
-				console.log('====================================');
+				console.log("====================================");
 			}
 		})();
 	}, []);
 	const filteredVideo = (category?: string) => {
 		return videos.filter((v: any) => v.genre.includes(category));
 	};
-
+console.log('====================================');
+console.log(filteredVideo("Action"));
+console.log('====================================');
 	if (length === 5) {
 		return (
 			<div
@@ -65,14 +67,16 @@ const Gallery: React.FC<GalleryProps> = ({
 			>
 				<div className="mt-1 w-full sm:px-4 py-2 flex justify-between items-center">
 					<h2 className="text-l font-extrabold text-lg sm:text-xl">{title}</h2>
-					<a
-						href="#"
-						className={` ${
-							!title && "float-right"
-						} hover:bg-green-700 whitespace-nowrap hover:text-white hover:border-green-700 border border-green-700 py-1  rounded-xl px-4  cursor-pointer	`}
-					>
-						View all
-					</a>
+					{filteredVideo(category).length > 6 && (
+						<a
+							href="#"
+							className={` ${
+								!title && "float-right"
+							} hover:bg-green-700 whitespace-nowrap hover:text-white hover:border-green-700 border border-green-700 py-1  rounded-xl px-4  cursor-pointer	`}
+						>
+							View all
+						</a>
+					)}
 				</div>
 				<div className="flex flex-wrap w-full">
 					{filteredVideo(category).map((video: any, index: any) => (

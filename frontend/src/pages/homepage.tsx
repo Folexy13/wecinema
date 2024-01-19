@@ -4,15 +4,14 @@ import { Gallery, Layout } from "../components";
 const Homepage: React.FC = () => {
 	return (
 		<Layout>
-			<Gallery title="Gaming" length={5} isFirst />
-			<Gallery title="Sport" length={5} />
-			<Gallery title="Horror" length={5} />
-			<Gallery title="Action" length={5} />
-			<Gallery title="Drama" length={5} />
-			<Gallery title="Romance" length={5} />
-			<Gallery title="Mystery" length={5} />
-			<Gallery title="Comedy" length={5} />
-			<Gallery title="Thriller " length={5} />
+			<Gallery title="Action" category="Action" length={5} isFirst />
+			<Gallery title="Comedy" length={5} category="Comedy" />
+			<Gallery title="Horror" length={5} category="Horror" />
+			<Gallery title="Drama" length={5} category="Drama" />
+			<Gallery title="Romance" length={5} category="Romance" />
+			<Gallery title="Mystery" length={5} category="Mystery" />
+			<Gallery title="Adventure" length={5} category="Adventure" />
+			<Gallery title="Thriller " length={5} category="Thriller" />
 		</Layout>
 	);
 };
