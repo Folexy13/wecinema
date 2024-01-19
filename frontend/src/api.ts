@@ -1,5 +1,4 @@
-import axios, { AxiosResponse, AxiosError } from "axios";
-// import { useState } from "react";
+import axios, { AxiosResponse, AxiosError, Method } from "axios";
 import { toast } from "react-toastify";
 
 const API_BASE_URL = "http://localhost:3000/";
@@ -8,7 +7,6 @@ const api = axios.create({
 	baseURL: API_BASE_URL,
 	headers: {
 		"Content-Type": "application/json",
-		// Add any additional headers as needed
 	},
 });
 
@@ -18,40 +16,41 @@ interface ApiResponse {
 
 const handleSuccess = <T extends ApiResponse>(
 	response: AxiosResponse<T>,
+	method: Method,
 	setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): T => {
-	setLoading(false); // Set loading to false on success
-	toast.success(response.data.message || "successful ");
+	setLoading(false);
+	if (method === "post" || method === "put") {
+		toast.success(response.data.message || "Successful");
+	}
 	return response.data;
 };
 
 const handleError = (
 	error: AxiosError<ApiResponse>,
+	method: Method,
 	setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): Promise<string> => {
-	setLoading(false); // Set loading to false on error
+	setLoading(false);
 
 	if (error.response) {
-		// The request was made, and the server responded with a status code that falls out of the range of 2xx
 		const errorMessage =
 			(error.response?.data && error.response.data.message) ||
 			"Something went wrong on the server.";
 
-		toast.error(errorMessage);
+		if (method === "post" || method === "put") {
+			toast.error(errorMessage);
+		}
 		return Promise.reject(errorMessage);
 	} else if (error.request) {
-		// The request was made but no response was received
 		toast.error("No response received from the server.");
 		return Promise.reject("No response received from the server.");
 	} else {
-		// Something happened in setting up the request that triggered an Error
 		toast.error(error.message || "An unexpected error occurred.");
-
 		return Promise.reject(error.message || "An unexpected error occurred.");
 	}
 };
 
-// POST request
 export const postRequest = <T>(
 	url: string,
 	data: any,
@@ -59,20 +58,18 @@ export const postRequest = <T>(
 ): Promise<T> =>
 	api
 		.post(url, data)
-		.then((response) => handleSuccess(response, setLoading))
-		.catch((error) => handleError(error, setLoading));
+		.then((response) => handleSuccess(response, "post", setLoading))
+		.catch((error) => handleError(error, "post", setLoading));
 
-// GET request
 export const getRequest = <T>(
 	url: string,
 	setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): Promise<T> =>
 	api
 		.get(url)
-		.then((response) => handleSuccess(response, setLoading))
-		.catch((error) => handleError(error, setLoading));
+		.then((response) => handleSuccess(response, "get", setLoading))
+		.catch((error) => handleError(error, "get", setLoading));
 
-// PUT request
 export const putRequest = <T>(
 	url: string,
 	data: any,
@@ -80,5 +77,5 @@ export const putRequest = <T>(
 ): Promise<T> =>
 	api
 		.put(url, data)
-		.then((response) => handleSuccess(response, setLoading))
-		.catch((error) => handleError(error, setLoading));
+		.then((response) => handleSuccess(response, "put", setLoading))
+		.catch((error) => handleError(error, "put", setLoading));

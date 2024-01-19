@@ -38,7 +38,7 @@ router.post("/create", async (req, res) => {
 // Route for getting all videos
 router.get("/all", async (req, res) => {
 	try {
-		const videos = await Videos.find();
+		const videos = await Videos.find().populate("author","username avatar followers");
 		res.json(videos);
 	} catch (error) {
 		console.error("Error getting all videos:", error);
