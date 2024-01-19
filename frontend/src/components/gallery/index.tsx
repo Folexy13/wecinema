@@ -3,7 +3,8 @@ import { MdVerifiedUser } from "react-icons/md";
 import { BsDot } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { getRequest } from "../../api";
-import { truncateText } from "../../utilities/helperfFunction";
+import { generateSlug, truncateText } from "../../utilities/helperfFunction";
+import { Skeleton } from "..";
 interface GalleryProps {
 	title: string;
 	data?: any;
@@ -54,10 +55,8 @@ const Gallery: React.FC<GalleryProps> = ({
 	const filteredVideo = (category?: string) => {
 		return videos.filter((v: any) => v.genre.includes(category));
 	};
-console.log('====================================');
-console.log(filteredVideo("Action"));
-console.log('====================================');
-	if (length === 5) {
+
+	if (length === 5 && filteredVideo(category).length > 0) {
 		return (
 			<div
 				// style={{ minHeight: 280 }}
@@ -82,7 +81,7 @@ console.log('====================================');
 					{filteredVideo(category).map((video: any, index: any) => (
 						// VideoStream
 						<div
-							onClick={() => nav("/sk")}
+							onClick={() => nav(video.slug??generateSlug(video.title))}
 							key={index}
 							style={{ maxWidth: "20%" }}
 							className="cursor-pointer gallery relative flex-wrap  border-gray-200  w-full   p-2 "
@@ -91,7 +90,7 @@ console.log('====================================');
 								<img
 									className="border-gray-200 rounded-xl"
 									width="480"
-									height="270"
+									height="200"
 									loading="lazy"
 									src={video?.author?.avatar}
 								/>
@@ -146,7 +145,7 @@ console.log('====================================');
 			</div>
 		);
 	}
-	return (
+	if (length === 4 && filteredVideo(category).length > 0) {return (
 		<div
 			// style={{ minHeight: 280 }}
 			className={` ${
@@ -230,7 +229,32 @@ console.log('====================================');
 				))}
 			</div>
 		</div>
-	);
+	);}
+	if (videos.length === 0) {
+		return (
+			<div
+				// style={{ minHeight: 280 }}
+				className={` ${
+					isFirst ? "mt-20" : ""
+				} z-1 relative p-2 flex flex-wrap border-b overflow-hidden border-blue-200 sm:mx-4 pb-4`}
+			>
+				<div className="flex flex-wrap w-full ">
+					{Array(7)
+						.fill("")
+						.map((_, index: any) => (
+							// VildeoStream
+							<Skeleton
+								key={index}
+								width={400}
+								style={{ maxWidth: "20%" }}
+								className="cursor-pointer gallery relative flex-wrap  border-gray-200  w-full   p-2 "
+							/>
+						))}
+				</div>
+			</div>
+		);
+	}
+	
 };
 
 export default Gallery;

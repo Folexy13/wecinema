@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
     "@react-oauth/google": "^0.12.1",
     "@types/jsonwebtoken": "^9.0.5",
     "axios": "^1.6.5",
@@ -21,7 +23,9 @@
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.21.1",
     "react-toastify": "^10.0.3",
-    "scss": "^0.2.4"
+    "scss": "^0.2.4",
+    "styled-components": "^6.1.8",
+    "twin.macro": "^3.4.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

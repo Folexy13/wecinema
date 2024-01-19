@@ -11,7 +11,7 @@ const { authenticateMiddleware } = require("../utils");
 // Route for creating a video
 router.post("/create", async (req, res) => {
 	try {
-		const { title, description, genre, file, thumbnail, author,  } =
+		const { title, description, genre, file, thumbnail, author,slug  } =
 			req.body;
 		// Check if the user exists
 		const user = await User.findById( author );
@@ -26,6 +26,7 @@ router.post("/create", async (req, res) => {
 		genre,
 		file,
 		thumbnail,
+			slug,
 		author, //req.user._id,
 	});
 		res.status(201).json({ message: "Video created successfully" });
@@ -45,7 +46,6 @@ router.get("/all", async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
-
 // Route for getting a specific video by ID
 router.get("/:id", async (req, res) => {
 	try {

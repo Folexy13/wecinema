@@ -76,6 +76,10 @@ button:disabled {
 	.auth {
 		display: none;
 	}
+.llle{
+	margin: 2px 5px;																																										;
+	width: 100% !important;
+	}
 	.hh {
 		margin-top: 32px !important;
 	}
