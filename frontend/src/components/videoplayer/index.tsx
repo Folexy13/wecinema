@@ -24,11 +24,12 @@ const VideoPlayer: React.FC<any> = (video: any) => {
 					style="width:100% !important;height:100% !important;display:block"
 					preload="metadata"
 				></video> */}
-				<video width={"100%"} height="400" controls>
+				<video width="100%" height="400" controls>
 					<source src={video.video.file} type="video/mp4" />
 					<source src={video.video.file} type="video/quicktime" />
 					Your browser does not support the video tag.
 				</video>
+
 				{/* <iframe
 					width={"100%"}
 					className="none"
