@@ -7,7 +7,7 @@ import {
 	MdUpload,
 	MdVerifiedUser,
 } from "react-icons/md";
-import { truncateText } from "../../utilities/helperfFunction";
+
 
 const VideoPlayer: React.FC<any> = (video: any) => {
 	return (
