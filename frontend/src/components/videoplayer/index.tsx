@@ -24,13 +24,12 @@ const VideoPlayer: React.FC<any> = (video: any) => {
 					style="width:100% !important;height:100% !important;display:block"
 					preload="metadata"
 				></video> */}
-				{/* <MdPlayArrow
-					size="80"
-					color="white"
-					className="absolute cursor-pointer "
-					style={{ top: "45%", left: "45%" }}
-				/> */}
-				<iframe
+				<video width={"100%"} height="400" controls>
+					<source src={video.video.file} type="video/mp4" />
+					<source src={video.video.file} type="video/quicktime" />
+					Your browser does not support the video tag.
+				</video>
+				{/* <iframe
 					width={"100%"}
 					className="none"
 					height="703"
@@ -38,7 +37,7 @@ const VideoPlayer: React.FC<any> = (video: any) => {
 					title={truncateText(video.video.title, 40)}
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 					allowFullScreen
-				></iframe>
+				></iframe> */}
 			</div>
 
 			{/* Video Metadata and Actions */}
