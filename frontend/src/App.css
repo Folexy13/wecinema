@@ -113,9 +113,9 @@ button:disabled {
 	.btn {
 		font-size: 12px;
 	}
-	.thumbnail {
+	/* .thumbnail {
 		height: 200px !important;
-	}
+	} */
 }
 @media (max-width: 900px) {
 	.bar {
