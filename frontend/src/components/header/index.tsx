@@ -1,7 +1,7 @@
 // import React from "react";
 
 import { MdMenu } from "react-icons/md";
-import logo from "../../assets/full_logo.png";
+import logo from "../../assets/wecinema.png";
 import { useNavigate } from "react-router-dom";
 interface HeaderProps {
 	darkMode: boolean;
@@ -31,14 +31,24 @@ const Header: React.FC<HeaderProps> = ({
 			}  ${darkMode ? "text-dark" : "text-light"} `}
 		>
 			<nav
-				className={`mx-auto flex gap-4 items-center justify-between p-4 ${
+				className={`mx-auto flex gap-4 items-center justify-between p-4 sm:pr-12 ${
 					expand && !isMobile ? " px-4" : "sm:px-12 "
 				} `}
 			>
 				<ul className="flex gap-4 items-center">
 					<MdMenu size={30} className="cursor-pointer" onClick={toggler} />
-					<li className="cursor-pointer" onClick={() => nav("/")}>
-						<img src={logo} alt="logo" width={70} />{" "}
+					<li
+						className="cursor-pointer flex-col sm:flex-row flex gap-2 items-center"
+						onClick={() => nav("/")}
+					>
+						<img src={logo} alt="logo" width={70} title="wecinema"/>
+						{
+							!isMobile &&(
+								<p className=" text-xl sm:text-2xl mt-3 font-mono">
+									<b>We </b>Cinema
+								</p>
+							)
+						}
 					</li>
 				</ul>
 				<form className="w-full md:w-2/3">
