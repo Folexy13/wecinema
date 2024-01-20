@@ -46,6 +46,8 @@ button:disabled {
 	color: #1a202c !important;
 }
 
+
+
 @media (max-width: 1120px) {
 	.desktop-sidebar {
 		display: none;
@@ -95,6 +97,11 @@ button:disabled {
 .w-1\/12 {
 	width: 6.333333% !important;
 }
+@media (min-width: 1120px){
+	.w-1\/12{
+		width:150px !important;
+	}
+}
 
 @media (max-width: 680px) {
 	iframe {
@@ -102,6 +109,9 @@ button:disabled {
 	}
 	.btn {
 		font-size: 12px;
+	}
+	.thumbnail {
+		height: 200px !important;
 	}
 }
 @media (max-width: 900px) {

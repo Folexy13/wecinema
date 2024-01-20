@@ -31,8 +31,8 @@ const Header: React.FC<HeaderProps> = ({
 			}  ${darkMode ? "text-dark" : "text-light"} `}
 		>
 			<nav
-				className={`mx-auto flex gap-4 items-center justify-between p-4 px-8 ${
-					expand && !isMobile ? "md:px-12 px-4" : "pr-12"
+				className={`mx-auto flex gap-4 items-center justify-between p-4 ${
+					expand && !isMobile ? " px-4" : "sm:px-12 "
 				} `}
 			>
 				<ul className="flex gap-4 items-center">

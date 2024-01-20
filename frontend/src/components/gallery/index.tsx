@@ -76,7 +76,6 @@ const Gallery: React.FC<GalleryProps> = ({
 								<img
 									className="border-gray-200 rounded-xl"
 									width="480"
-									height="200"
 									loading="lazy"
 									src={video?.author?.avatar}
 								/>

@@ -25,16 +25,12 @@ const Sidebar: React.FC<SidebarProps> = ({
 		<section
 			// style={{ marginTop: 67 }}
 			className={`text-blue inset-0 desktop-sidebar overflow-auto mt-16  fixed border-r border-gray-200 ${
-				expand ? "w-1/6" : "w-1/12"
+				expand ? "w-1/6" : "w-1/12 attach"
 			} ${darkMode ? "bg-dark" : "bg-light"}  ${
 				darkMode ? "text-dark" : "text-light"
 			} `}
 		>
-			<nav
-				className={` flex items-center justify-between p-2 my-3 pb-6 ${
-					expand ? "px-8" : ""
-				}`}
-			>
+			<nav className={` flex items-center justify-between p-2 my-3 pb-6 `}>
 				<ul className={`border-b  w-full border-gray-200 pb-4 `}>
 					<li
 						className={` duration-75 flex gap-4  mx-4 my-2 items-center ${
@@ -89,8 +85,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 					</li>
 				</ul>
 			</nav>
-			<nav className="container mx-auto  items-center justify-between  p-2 my-3 px-8">
-				<h2 className={`font-bold ${expand ? "" : "text-sm"}`}>Generes</h2>
+			<nav className="container mx-auto  items-center justify-between  p-2 my-3">
+				<h2 className={`font-bold ${expand ? "" : "text-sm text-center"} `}>
+					Generes
+				</h2>
 				<ul className="border-b   border-gray-200 pb-4">
 					{categories.map((val: string, index: number) => (
 						<li
@@ -118,8 +116,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 					))}
 				</ul>
 			</nav>
-			<nav className="container mx-auto  items-center justify-between p-2 my-3 px-8">
-				<h2 className={`font-bold ${expand ? "" : "text-sm"}`}>Theme</h2>
+			<nav className="container mx-auto  items-center justify-between p-2 my-3">
+				<h2 className={`font-bold ${expand ? "" : "text-sm text-center"} `}>
+					Theme
+				</h2>
 				<ul className="border-b  w-full border-gray-200 pb-4">
 					<li
 						className={`flex gap-4  mx-4 my-2 items-center ${

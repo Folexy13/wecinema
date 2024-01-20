@@ -374,7 +374,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 						} `}
 					>
 						<nav
-							className={` flex items-center justify-between p-2 my-3 pb-6 px-8`}
+							className={` flex items-center justify-between p-2 my-3 pb-6 `}
 						>
 							<ul className={`border-b  w-full border-gray-200 pb-4 `}>
 								<li
@@ -418,7 +418,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 								</li>
 							</ul>
 						</nav>
-						<nav className="container mx-auto  items-center justify-between  p-2 my-3 px-8">
+						<nav className="container mx-auto  items-center justify-between  p-2 my-3 ">
 							<h2 className={`font-bold `}>Generes</h2>
 							<ul className="border-b   border-gray-200 pb-4">
 								{categories.map((val: string, index: number) => (
@@ -445,7 +445,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 								))}
 							</ul>
 						</nav>
-						<nav className="container mx-auto  items-center justify-between p-2 my-3 px-8">
+						<nav className="container mx-auto  items-center justify-between p-2 my-3 ">
 							<h2 className={`font-bold`}>Theme</h2>
 							<ul className="border-b  w-full border-gray-200 pb-4">
 								<li
@@ -472,7 +472,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 								</li>
 							</ul>
 						</nav>
-						<nav className="container mx-auto  items-center justify-between p-2 my-3 px-8">
+						<nav className="container mx-auto  items-center justify-between p-2 my-3 ">
 							<ul className="border-b  w-full border-gray-200 pb-4 ">
 								<li
 									onClick={() => setShow(!show)}
@@ -505,7 +505,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					className={`block main min-h-screen mt-12 ${
 						darkMode ? "body-dark text-dark" : "body-light text-light"
 					}  bg-gray-200 w-full `}
-					style={{ marginLeft: `${expanded ? "16.8%" : "6.3%"}` }}
+					style={{ marginLeft: `${expanded ? "16.8%" : "150px"}` }}
 				>
 					{hasHeader && (
 						<header
