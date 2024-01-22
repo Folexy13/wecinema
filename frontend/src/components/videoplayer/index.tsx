@@ -8,7 +8,7 @@ import {
 	MdVerifiedUser,
 } from "react-icons/md";
 import { formatDateAgo } from "../../utilities/helperfFunction";
-import { GrLike } from "react-icons/gr";
+// import { GrLike } from "react-icons/gr";
 import { SlDislike, SlLike } from "react-icons/sl";
 
 
