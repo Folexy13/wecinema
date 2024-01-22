@@ -7,6 +7,9 @@ import {
 	MdUpload,
 	MdVerifiedUser,
 } from "react-icons/md";
+import { formatDateAgo } from "../../utilities/helperfFunction";
+import { GrLike } from "react-icons/gr";
+import { SlDislike, SlLike } from "react-icons/sl";
 
 
 const VideoPlayer: React.FC<any> = (video: any) => {
@@ -44,11 +47,13 @@ const VideoPlayer: React.FC<any> = (video: any) => {
 			{/* Video Metadata and Actions */}
 			<div className="mt-4 sm:flex justify-between items-center border-b pb-3  border-blue-200">
 				{/* Video Information and Comments */}
-				<div className="sm:w-2/3 ml-4 ">
+				<div className="sm:w-3/6 ml-4 ">
 					{/* Video Title */}
-					<h1 className="text-2xl font-bold mb-2 ">{video.video.title}</h1>
+					<h1 className="md:text-2xl font-bold mb-2 text-xl">
+						{video.video.title}
+					</h1>
 
-					<div className="flex gap-10 items-center ">
+					<div className="flex sm:gap-10 gap-6 items-center ">
 						<address className="flex items-center justify-between mt-8px">
 							<a
 								href="#"
@@ -66,42 +71,55 @@ const VideoPlayer: React.FC<any> = (video: any) => {
 									></div>
 								</div>
 								<div style={{ fontSize: 13 }} className="w-full">
-									<div className="flex items-center ml-2 flex-grow">
+									<div className="flex items-center sm:ml-2 flex-grow">
 										<span className="overflow-hidden -webkit-box">
 											{video?.video?.author?.username}
 										</span>
 										<MdVerifiedUser
 											size="18"
 											color="green"
-											className="flex-shrink-0 ml-2"
+											className="flex-shrink-0 sm:ml-2"
 										/>
 									</div>
-									<div className="ml-2 w-full">
+									<div className="sm:ml-2 w-full">
 										<span>
-											9 hours ago <BsDot className="inline-flex items-center" />{" "}
-											155k Views
+											{formatDateAgo(
+												video.video?.createdAt ?? video.video?.updatedAt
+											)}{" "}
+											<BsDot className="inline-flex items-center" /> 155k Views
 										</span>
 									</div>
 								</div>
 							</a>
 						</address>
-						<button className="bg-green-400 btn text-white cursor-pointer px-6 py-2 rounded-full">
+						<button className="bg-green-400 btn text-white cursor-pointer px-6 md:py-2 py-1 rounded-full">
 							Follow
 						</button>
 					</div>
 				</div>
 
 				{/* Like and Subscribe Buttons */}
-				<div className="sm:w-1/3 mr-2 text-right flex gap-1 items-center">
-					<button className="bg-gray-400 hover:bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 py-2 rounded-full">
+				<div className="sm:w-3/6 sm:mr-2 my-3 sm:my-0 text-right mt-2 sm:mt-0 overflow-auto flex gap-1 items-center">
+					<div className="flex rounded-full bg-gray-400">
+						<button className=" w-full sm:w-fit bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 rounded-full">
+							<SlLike size="24" color="white" />
+							{video?.likes?.length??0}
+						</button>
+						<button className="w-full border-l-2 border-white sm:w-fit hover:bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 ">
+							<SlDislike size="24" color="white" />
+							{video?.dislikes?.length??0}
+						</button>
+					</div>
+
+					<button className="bg-gray-400 w-full  sm:w-fit hover:bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 rounded-full">
 						<MdChat size="24" color="white" />
 						Comments
 					</button>
-					<button className="bg-gray-400 hover:bg-gray-500 btn flex gap-2 text-white px-4 py-2 rounded-full mr-2">
+					<button className="bg-gray-400 w-full cursor-pointer sm:w-fit  hover:bg-gray-500 btn flex gap-2 text-white px-4 md:py-2 py-1 rounded-full sm:mr-2">
 						<MdUpload size="24" color="white" />
 						Share
 					</button>
-					<button className="bg-gray-400 hover:bg-gray-500 btn flex gap-2 text-white px-4 py-2 rounded-full mr-2">
+					<button className="bg-gray-400 w-full cursor-pointer sm:w-fit  hover:bg-gray-500 btn flex gap-2 text-white px-4 md:py-2 py-1 rounded-full sm:mr-2">
 						<MdCode size="24" color="white" />
 						Embed
 					</button>

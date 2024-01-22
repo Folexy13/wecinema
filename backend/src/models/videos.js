@@ -43,17 +43,17 @@ const videoSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: "User",
 		},
-		likes: {
+		likes: [{
 			type: Schema.Types.ObjectId,
 			ref: "User",
-		},
-		dislikes: {
+		}],
+		dislikes: [{
 			type: Schema.Types.ObjectId,
 			ref: "User",
-		},
-		comments: {
+		}],
+		comments: [{
 			type: Schema.Types.Mixed,
-		},
+		}],
 	},
 	{
 		timestamps: true, // Add createdAt and updatedAt fields
