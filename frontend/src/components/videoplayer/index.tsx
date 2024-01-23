@@ -12,17 +12,17 @@ import { formatDateAgo } from "../../utilities/helperfFunction";
 import { SlDislike } from "react-icons/sl";
 import { BiLike } from "react-icons/bi";
 import { getRequest } from "../../api";
-import { useLocation } from "react-router-dom";
 
+import { useParams } from "react-router-dom";
 const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
-	const location = useLocation();
+	const { slug } = useParams();
 	const [loading, setLoading] = useState(false);
 	console.log("====================================");
 	console.log(video);
 	console.log("====================================");
 	useEffect(() => {
 		if (!video) {
-			getRequest("/video/", setLoading);
+			getRequest("/video/" + slug, setLoading);
 		}
 	}, [video]);
 
@@ -33,9 +33,7 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 				className="relative w-full min-w-screen-xl  bg-black"
 				style={{ marginTop: 17 }}
 			>
-				{loading && (
-					<MdPlayArrow/>
-				)}
+				{loading && <MdPlayArrow />}
 				<video width="100%" height="400" controls>
 					<source src={video?.file} type="video/mp4" />
 					<source src={video?.file} type="video/quicktime" />
