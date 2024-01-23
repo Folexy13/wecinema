@@ -2,21 +2,27 @@ import React, { useEffect, useState } from "react";
 import { BsDot } from "react-icons/bs";
 import {
 	MdChat,
-	MdCode,
 	MdPlayArrow,
 	MdUpload,
 	MdVerifiedUser,
 } from "react-icons/md";
-import { formatDateAgo, isUserIdInArray } from "../../utilities/helperfFunction";
+import {
+	formatDateAgo,
+	isUserIdInArray,
+} from "../../utilities/helperfFunction";
 // import { GrLike } from "react-icons/gr";
 import { SlDislike } from "react-icons/sl";
 import { BiLike } from "react-icons/bi";
-import { getRequest } from "../../api";
+import { getRequest, putRequest } from "../../api";
 
 import { useParams } from "react-router-dom";
 const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 	const { slug } = useParams();
 	const [loading, setLoading] = useState(false);
+	let [videoLikesLength, setvideoLikesLength] = useState(video?.likes?.length??0);
+	let [videoDisLikesLength, setvideoDisLikesLength] = useState(
+		video?.dislikes?.length ?? 0
+	);
 	console.log("====================================");
 	console.log(isLoggedIn);
 	console.log("====================================");
@@ -25,6 +31,49 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 			getRequest("/video/" + slug, setLoading);
 		}
 	}, [video]);
+	const handleLikeSubmit = async (action: string) => {
+		try {
+			setLoading(true);
+			let payload = {
+				action,
+				userId: isLoggedIn.userId,
+			};
+			const result: any = await putRequest(
+				"video/" + video._id,
+				payload,
+				setLoading,
+				"Video Liked!"
+			);
+			action === "like"
+				? setvideoLikesLength(++videoLikesLength)
+				: setvideoDisLikesLength(++videoDisLikesLength);
+			console.log("Post success:", result);
+		} catch (error) {
+			setLoading(false);
+
+			console.error("Post error:", error);
+		}
+	};
+	const handleFollowSubmit = async(action: string) => {
+		try {
+			setLoading(true);
+			let payload = {
+				action,
+				userId: isLoggedIn.userId,
+			};
+			const result: any = await putRequest(
+				"user/" + video.author?._id+"/follow",
+				payload,
+				setLoading,
+				"Video Liked!"
+			);
+			console.log("Post success:", result);
+		} catch (error) {
+			setLoading(false);
+
+			console.error("Post error:", error);
+		}
+	};
 
 	return (
 		<div className="">
@@ -85,12 +134,20 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 								</div>
 							</a>
 						</address>
-						{isUserIdInArray(isLoggedIn?.userId,video?.author?.followers) ? (
-							<button className="bg-gray-400 btn cursor-not-allowed text-white  px-6 md:py-2 py-1 rounded-full">
-								<i>following</i>
+						{isUserIdInArray(isLoggedIn?.userId, video?.author?.followers) ? (
+							<button
+								disabled={loading}
+								onClick={() => handleFollowSubmit("unfollow")}
+								className="bg-red-600 btn cursor-pointer text-white  px-6 md:py-2 py-1 rounded-full"
+							>
+								Unfollow
 							</button>
 						) : (
-							<button className="bg-green-400 btn text-white cursor-pointer px-6 md:py-2 py-1 rounded-full">
+							<button
+								disabled={loading}
+								onClick={() => handleFollowSubmit("follow")}
+								className="bg-green-400 btn text-white cursor-pointer px-6 md:py-2 py-1 rounded-full"
+							>
 								Follow
 							</button>
 						)}
@@ -100,11 +157,19 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 				{/* Like and Subscribe Buttons */}
 				<div className="sm:w-3/6 sm:mr-2 my-3 sm:my-0 text-right mt-2 sm:mt-0 overflow-auto flex gap-1 items-center">
 					<div className="flex rounded-full bg-gray-400">
-						<button className=" w-full sm:w-fit bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 rounded-full">
+						<button
+							disabled={loading}
+							onClick={() => handleLikeSubmit("like")}
+							className=" w-full sm:w-fit bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 rounded-full"
+						>
 							<BiLike size="24" color="white" />
-							{video?.likes?.length ?? 0}
+							{videoLikesLength}
 						</button>
-						<button className="w-full border-l-2 border-white sm:w-fit hover:bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 ">
+						<button
+							disabled={loading}
+							onClick={() => handleLikeSubmit("dislike")}
+							className="w-full border-l-2 border-white sm:w-fit hover:bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 "
+						>
 							<SlDislike size="24" color="white" />
 							{video?.dislikes?.length ?? 0}
 						</button>
@@ -118,10 +183,10 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 						<MdUpload size="24" color="white" />
 						Share
 					</button>
-					<button className="bg-gray-400 w-full cursor-pointer sm:w-fit  hover:bg-gray-500 btn flex gap-2 text-white px-4 md:py-2 py-1 rounded-full sm:mr-2">
+					{/* <button className="bg-gray-400 w-full cursor-pointer sm:w-fit  hover:bg-gray-500 btn flex gap-2 text-white px-4 md:py-2 py-1 rounded-full sm:mr-2">
 						<MdCode size="24" color="white" />
 						Embed
-					</button>
+					</button> */}
 				</div>
 			</div>
 			<hr />

@@ -17,11 +17,12 @@ interface ApiResponse {
 const handleSuccess = <T extends ApiResponse>(
 	response: AxiosResponse<T>,
 	method: Method,
-	setLoading: React.Dispatch<React.SetStateAction<boolean>>
+	setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+	message?: string,
 ): T => {
 	setLoading(false);
 	if (method === "post" || method === "put") {
-		toast.success(response.data.message || "Successful");
+		toast.success(response.data.message || message || "Successful");
 	}
 	return response.data;
 };
@@ -54,11 +55,12 @@ const handleError = (
 export const postRequest = <T>(
 	url: string,
 	data: any,
-	setLoading: React.Dispatch<React.SetStateAction<boolean>>
+	setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+	message?: string
 ): Promise<T> =>
 	api
 		.post(url, data)
-		.then((response) => handleSuccess(response, "post", setLoading))
+		.then((response) => handleSuccess(response, "post", setLoading, message))
 		.catch((error) => handleError(error, "post", setLoading));
 
 export const getRequest = <T>(
@@ -73,9 +75,10 @@ export const getRequest = <T>(
 export const putRequest = <T>(
 	url: string,
 	data: any,
-	setLoading: React.Dispatch<React.SetStateAction<boolean>>
+	setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+	message?: string,
 ): Promise<T> =>
 	api
 		.put(url, data)
-		.then((response) => handleSuccess(response, "put", setLoading))
+		.then((response) => handleSuccess(response, "put", setLoading,message))
 		.catch((error) => handleError(error, "put", setLoading));

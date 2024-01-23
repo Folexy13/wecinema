@@ -7,6 +7,7 @@ const router = express.Router();
 
 // Import your User model (assuming you have a MongoDB User model)
 const User = require("../models/user");
+const { authenticateMiddleware } = require("../utils");
 
 // Route for creating a user account
 router.post("/register", async (req, res) => {

@@ -116,7 +116,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 					))}
 				</ul>
 			</nav>
-			<nav className="container mx-auto  items-center justify-between p-2 my-3">
+			<nav className="container mx-auto  items-center justify-between p		-2 my-3">
 				<h2 className={`font-bold ${expand ? "" : "text-sm text-center"} `}>
 					Theme
 				</h2>

@@ -114,13 +114,17 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 			setShow(false);
 			setToken(result.token);
 			localStorage.setItem("token", result.token);
+			localStorage.setItem("loggedIn", "true");
 		} catch (error) {
+			setLoading(false);
+
 			console.error("Post error:", error);
 		}
 	};
 	const handleLogoutSubmit = async (e: any) => {
 		e.preventDefault();
 		localStorage.removeItem("token");
+		localStorage.removeItem("loggedIn");
 		setTimeout(() => {
 			window.location.reload();
 		}, 500);
@@ -139,6 +143,8 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 			console.log("Post success:", result);
 			setShow2(false);
 		} catch (error) {
+			setLoading(false);
+
 			console.error("Post error:", error);
 		}
 	};
@@ -154,6 +160,8 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 			console.log("Post success:", result);
 			setShow3(false);
 		} catch (error) {
+			setLoading(false);
+
 			console.error("Post error:", error);
 		}
 	};
