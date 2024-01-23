@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { Mongoose } = require("mongoose");
 
 const authenticateMiddleware = (req, res, next) => {
 	// Get the token from the request headers
@@ -27,5 +28,18 @@ const authenticateMiddleware = (req, res, next) => {
 		next();
 	});
 };
+function isValidObjectId(id) {
+	if (!id) {
+		return false; // If id is null or undefined, it's not a valid ObjectId
+	}
 
-module.exports = { authenticateMiddleware };
+	// Attempt to create a new ObjectId with the provided string
+	try {
+		const objectId = new Mongoose.Types.ObjectId(id);
+		return String(objectId) === id; // Compare the string representation to check validity
+	} catch (error) {
+		return false; // If an error occurs during ObjectId creation, it's not a valid ObjectId
+	}
+}
+
+module.exports = { authenticateMiddleware, isValidObjectId };

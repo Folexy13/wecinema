@@ -130,9 +130,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 						onClick={setDarkMode}
 					>
 						<FaMoon size="20" color={darkMode && "green"} />
-						<a href="#" className={`text-sm ${expand ?? "w-full"}`}>
+						<span  className={`cursor-pointer text-sm ${expand ?? "w-full"}`}>
 							Dark mode
-						</a>
+						</span>
 					</li>
 					<li
 						className={`flex gap-4  mx-4 my-2 items-center ${
@@ -143,9 +143,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 						onClick={setLightMode}
 					>
 						<IoSunnyOutline size="20" color={!darkMode && "green"} />
-						<a href="#" className={`text-sm ${expand ?? "w-full"}`}>
+						<span  className={`cursor-pointer 		text-sm ${expand ?? "w-full"}`}>
 							Light mode
-						</a>
+						</span>
 					</li>
 				</ul>
 			</nav>

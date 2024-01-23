@@ -1,20 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import {   Layout, Player } from "../components";
 import { FaEye } from "react-icons/fa";
 import { categories as CAT } from "../App";
 
 import { useLocation } from "react-router-dom";
 import { MdComment } from "react-icons/md";
+import { decodeToken } from "../utilities/helperfFunction";
 
-const Viewpage: React.FC = () => {
+const Viewpage: React.FC<any> = () => {
   const location = useLocation();
 	const video  = location.state;
-
+	const [modal, setModal] = useState(0);
+const token = localStorage.getItem("token") || null;
 	return (
-		<Layout hasHeader={false}>
+		<Layout hasHeader={false} modalType={modal}>
 			<div className="sm:flex flex-col md:flex-row" style={{ marginTop: 12 }}>
 				<div className="sm:w-4/5 ">
-					<Player video={video}/>
+					<Player
+						video={video}
+						isLoggedIn={decodeToken(token)}
+						toggleModal={() => setModal(1)}
+					/>
 				</div>
 				<div className="min-h-86 sm:w-1/5  ml-2.5 py-10">
 					{CAT.map((_, index: number) => (

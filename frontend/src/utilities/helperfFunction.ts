@@ -1,8 +1,9 @@
 
 import { jwtDecode } from "jwt-decode";
 import moment from "moment";
-export interface DecodedToken {
+export interface Itoken {
 	userId: string;
+	avatar:string
 	// Add other payload properties as needed
 }
 
@@ -22,7 +23,7 @@ export const decodeToken = (token: any) => {
 	console.log(token)
 	if (!token) return null;
 	try {
-		const decodeToken:any =  jwtDecode(token) as DecodedToken;
+		const decodeToken:any =  jwtDecode(token) as Itoken;
 		// Check if the token has expired
 		const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
 		if (decodeToken.exp && decodeToken.exp < currentTime) {
@@ -34,7 +35,14 @@ export const decodeToken = (token: any) => {
 	} catch (error) {}
 };
 
-
+export function isObjectEmpty(obj: Record<string, any>): boolean {
+	for (let key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			return false;
+		}
+	}
+	return true;
+}
 
 
 export const formatDateAgo = (dateTime: string): string => {

@@ -2,8 +2,8 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Header, Modal, Sidebar } from "..";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { GoogleLogin } from "@react-oauth/google";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+// import { GoogleLogin } from "@react-oauth/google";
+// import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FaSignInAlt, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { categories as CAT } from "../../App";
 import { MdOutlineHome, MdOutlineWebStories } from "react-icons/md";
@@ -13,7 +13,7 @@ import { FaMoon } from "react-icons/fa6";
 import { IoSunnyOutline } from "react-icons/io5";
 import { postRequest } from "../../api";
 import moment from "moment";
-import { DecodedToken, decodeToken } from "../../utilities/helperfFunction";
+import { Itoken, decodeToken } from "../../utilities/helperfFunction";
 
 export const categories = [
 	"Picks",
@@ -35,8 +35,9 @@ export const categories = [
 interface LayoutProps {
 	hasHeader?: boolean;
 	children: ReactNode;
+	modalType?:number
 }
-const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
+const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 	const fileInputRef: any = useRef(null);
 
 	const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -46,7 +47,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const [token, setToken] = useState<string | null>(
 		localStorage.getItem("token") || null
 	);
-	const [decodedToken, setDecodedToken] = useState<DecodedToken | null>(null);
+	const [decodedToken, setDecodedToken] = useState<Itoken | null>(null);
 	const isDarkMode = localStorage.getItem("isDarkMode") ?? false;
 	const [darkMode, setDarkMode] = useState<boolean>(!!isDarkMode);
 	const [expanded, setExpanded] = useState<boolean>(false);
@@ -78,6 +79,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 		setDecodedToken(decoded);
 	}, [token]);
 	const [show2, setShow2] = useState<boolean>(false);
+	const [modal, setModal] = useState<number>(0);
 	const [show3, setShow3] = useState<boolean>(false);
 	const [show4, setShow4] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -86,9 +88,14 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const setLightMode = () => {
-		localStorage.removeItem("isDarkMode", );
+		localStorage.removeItem("isDarkMode");
 		setDarkMode(false);
+		console.log(modal);
 	};
+	useEffect(() => {
+	  setModal(modalType??0);
+	}, [modalType])
+	
 	const setDarkiMode = () => {
 		localStorage.setItem("isDarkMode", "dark");
 
@@ -151,10 +158,17 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 		}
 	};
 	const LoginModal: React.FC = () => (
-		<Modal show={show} background="linear-gradient(to right, #ffd700, #ffff00)">
+		<Modal
+			show={show || modal===1}
+			background="linear-gradient(to right, #ffd700, #ffff00)"
+		>
 			<header className="flex  gap-4 justify-between items-center">
 				<h2>Sign in to Wecinema</h2>
-				<FaTimes onClick={() => setShow(false)} />
+				<FaTimes
+					onClick={() => {
+						setShow(false), setModal(0);
+					}}
+				/>
 			</header>
 			<form onSubmit={handleLoginSubmit}>
 				<input
@@ -193,7 +207,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 				</div>
 				<hr className="my-4" />
 				<p className="text-center my-2 ">Alternatively Log in with:</p>
-				<GoogleOAuthProvider clientId="<your_client_id>">
+				{/* <GoogleOAuthProvider clientId="<your_client_id>">
 					<GoogleLogin
 						onSuccess={(credentialResponse) => {
 							console.log(credentialResponse);
@@ -202,7 +216,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 							console.log("Login Failed");
 						}}
 					/>
-				</GoogleOAuthProvider>
+				</GoogleOAuthProvider> */}
 			</form>
 		</Modal>
 	);

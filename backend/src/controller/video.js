@@ -6,7 +6,7 @@ const Videos = require("../models/videos");
 
 // Import your User model (assuming you have a MongoDB User model)
 const User = require("../models/user");
-const { authenticateMiddleware } = require("../utils");
+const { authenticateMiddleware, isValidObjectId } = require("../utils");
 
 // Route for creating a video
 router.post("/create", async (req, res) => {
@@ -50,7 +50,9 @@ router.get("/all", async (req, res) => {
 // Route for getting a specific video by ID
 router.get("/:id", async (req, res) => {
 	try {
-		const video = await Videos.findById(req.params.id);
+		const video = isValidObjectId(req.params.id)
+			? await Videos.findById(req.params.id)
+			: await Videos.findOne({slug:req.params.id});
 		if (!video) {
 			return res.status(404).json({ error: "Video not found" });
 		}
