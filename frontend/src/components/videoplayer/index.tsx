@@ -7,7 +7,7 @@ import {
 	MdUpload,
 	MdVerifiedUser,
 } from "react-icons/md";
-import { formatDateAgo } from "../../utilities/helperfFunction";
+import { formatDateAgo, isUserIdInArray } from "../../utilities/helperfFunction";
 // import { GrLike } from "react-icons/gr";
 import { SlDislike } from "react-icons/sl";
 import { BiLike } from "react-icons/bi";
@@ -18,7 +18,7 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 	const { slug } = useParams();
 	const [loading, setLoading] = useState(false);
 	console.log("====================================");
-	console.log(video);
+	console.log(isLoggedIn);
 	console.log("====================================");
 	useEffect(() => {
 		if (!video) {
@@ -60,7 +60,7 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 										style={{
 											width: 32,
 											height: 32,
-											backgroundImage: `url(${video?.video?.author?.avatar})`,
+											backgroundImage: `url(${video?.author?.avatar})`,
 										}}
 										title={video?.author?.username}
 									></div>
@@ -85,9 +85,15 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 								</div>
 							</a>
 						</address>
-						<button className="bg-green-400 btn text-white cursor-pointer px-6 md:py-2 py-1 rounded-full">
-							Follow
-						</button>
+						{isUserIdInArray(isLoggedIn?.userId,video?.author?.followers) ? (
+							<button className="bg-gray-400 btn cursor-not-allowed text-white  px-6 md:py-2 py-1 rounded-full">
+								<i>following</i>
+							</button>
+						) : (
+							<button className="bg-green-400 btn text-white cursor-pointer px-6 md:py-2 py-1 rounded-full">
+								Follow
+							</button>
+						)}
 					</div>
 				</div>
 

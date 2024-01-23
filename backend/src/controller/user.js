@@ -77,4 +77,39 @@ router.post("/login", async (req, res) => {
 	}
 });
 
+router.put("/:id/follow", authenticateMiddleware, async (req, res) => {
+	try {
+		const { action, userId } = req.body;
+		const user = await User.findById(req.params.id);
+
+		if (!user) {
+			return res.status(404).json({ error: "user not found" });
+		}
+
+		// Remove userId from dislikes if present and add to likes
+		if (action === "follow") {
+			await User.findByIdAndUpdate(req.params.id, {
+				$addToSet: { followers: userId },
+			});
+			await User.findByIdAndUpdate(userId, {
+				$addToSet: { followings: userId },
+			});
+		} else if (action === "unfollow") {
+			// Remove userId from likes if present and add to dislikes
+			await User.findByIdAndUpdate(req.params.id, {
+				$pull: { followers: userId },
+			});
+			await User.findByIdAndUpdate(userId, {
+				$pull: { followings: userId },
+			});
+		}
+
+		res.json(user);
+	} catch (error) {
+		console.error("Error updating user by ID:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+
 module.exports = router;

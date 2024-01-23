@@ -33,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 			<nav className={` flex items-center justify-between p-2 my-3 pb-6 `}>
 				<ul className={`border-b  w-full border-gray-200 pb-4 `}>
 					<li
-						className={` duration-75 flex gap-4  mx-4 my-2 items-center ${
+						className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						}`}
 					>
@@ -43,7 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						</a>
 					</li>
 					<li
-						className={` duration-75 flex gap-4  mx-4 my-2 items-center ${
+						className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						}`}
 					>
@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						</a>
 					</li>
 					<li
-						className={`duration-75 flex gap-4  mx-4 my-2 items-center ${
+						className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						} `}
 					>
@@ -63,7 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						</a>
 					</li>
 					<li
-						className={`duration-75 flex gap-4  mx-4 my-2 items-center ${
+						className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						} `}
 					>
@@ -73,15 +73,15 @@ const Sidebar: React.FC<SidebarProps> = ({
 						</a>
 					</li>
 					<li
-						className={`duration-75 flex gap-4  mx-4 my-2 items-center ${
+						className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						} `}
 						onClick={toggleUploadModal}
 					>
 						<GrUpload size="20" />
-						<a href="#" className="text-sm ">{`Upload ${
+						<span className="text-sm ">{`Upload ${
 							expand ? "Movie" : ""
-						}`}</a>
+						}`}</span>
 					</li>
 				</ul>
 			</nav>
@@ -93,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 					{categories.map((val: string, index: number) => (
 						<li
 							key={index}
-							className={`duration-75 flex gap-4  mx-4 my-2 items-center ${
+							className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 								expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 							} `}
 						>
@@ -122,7 +122,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 				</h2>
 				<ul className="border-b  w-full border-gray-200 pb-4">
 					<li
-						className={`flex gap-4  mx-4 my-2 items-center ${
+						className={`flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							darkMode ? "text-active" : ""
 						} ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
@@ -135,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						</span>
 					</li>
 					<li
-						className={`flex gap-4  mx-4 my-2 items-center ${
+						className={`flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							!darkMode ? "text-active" : ""
 						} ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
@@ -143,7 +143,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						onClick={setLightMode}
 					>
 						<IoSunnyOutline size="20" color={!darkMode && "green"} />
-						<span  className={`cursor-pointer 		text-sm ${expand ?? "w-full"}`}>
+						<span  className={` text-sm ${expand ?? "w-full"}`}>
 							Light mode
 						</span>
 					</li>

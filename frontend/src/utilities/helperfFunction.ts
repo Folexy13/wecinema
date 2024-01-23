@@ -6,7 +6,7 @@ export interface Itoken {
 	avatar:string
 	// Add other payload properties as needed
 }
-
+type MongooseId = string;
 export const generateSlug = (text: string): string => {
 	return text
 		.toLowerCase()
@@ -68,3 +68,11 @@ export const formatDateAgo = (dateTime: string): string => {
 		return moment(dateTime).format("MMM D, YYYY [at] h:mm A");
 	}
 };
+
+
+
+export function isUserIdInArray(userId: MongooseId, idArray: MongooseId[]): boolean {
+	return idArray.includes(userId);
+}
+
+
