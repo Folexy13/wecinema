@@ -4,10 +4,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import { GoogleLogin } from "@react-oauth/google";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
-import { FaSignInAlt, FaSignOutAlt, FaTimes } from "react-icons/fa";
+import { FaSignInAlt, FaSignOutAlt, FaTimes, FaUserCircle } from "react-icons/fa";
 import { categories as CAT } from "../../App";
-import { MdOutlineHome, MdOutlineWebStories } from "react-icons/md";
-import { SlBadge, SlGraph } from "react-icons/sl";
+import { MdOutlineHome } from "react-icons/md";
+import {SlGraph } from "react-icons/sl";
 import { GrUpload } from "react-icons/gr";
 import { FaMoon } from "react-icons/fa6";
 import { IoSunnyOutline } from "react-icons/io5";
@@ -367,7 +367,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 					</span>
 				</div>
 				<button className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white">
-					Sign up
+					Upload
 				</button>
 			</form>
 		</Modal>
@@ -400,7 +400,11 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 						>
 							<ul className={`border-b  w-full border-gray-200 pb-4 `}>
 								<li
-									className={` duration-75 flex gap-4  mx-4 my-2 items-center `}
+									className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+										expanded
+											? ""
+											: "flex-col justify-center text-xs gap-1 specific"
+									}`}
 								>
 									<MdOutlineHome size="20" />
 									<a href="#" className="text-sm ">
@@ -408,23 +412,11 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 									</a>
 								</li>
 								<li
-									className={` duration-75 flex gap-4  mx-4 my-2 items-center`}
-								>
-									<MdOutlineWebStories size="20" />
-									<a href="#" className="text-sm ">
-										Browse
-									</a>
-								</li>
-								<li
-									className={`duration-75 flex gap-4  mx-4 my-2 items-center  `}
-								>
-									<SlBadge size="20" />
-									<a href="#" className="text-sm ">
-										Editor Picks
-									</a>
-								</li>
-								<li
-									className={`duration-75 flex gap-4  mx-4 my-2 items-center`}
+									className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+										expanded
+											? ""
+											: "flex-col justify-center text-xs gap-1 specific"
+									} `}
 								>
 									<SlGraph size="20" />
 									<a href="#" className="text-sm ">
@@ -432,11 +424,29 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 									</a>
 								</li>
 								<li
-									className={`duration-75 flex gap-4  mx-4 my-2 items-center`}
-									onClick={() => setShow3(!show3)}
+									className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+										expanded
+											? ""
+											: "flex-col justify-center text-xs gap-1 specific"
+									} `}
+									onClick={()=>setShow3(!show3)}
 								>
 									<GrUpload size="20" />
-									<a href="#" className="text-sm ">{`Upload Movie `}</a>
+									<span className="text-sm ">{`Upload ${
+										expanded ? "Movie" : ""
+									}`}</span>
+								</li>
+								<li
+									className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+										expanded
+											? ""
+											: "flex-col justify-center text-xs gap-1 specific"
+									}`}
+								>
+									<FaUserCircle size="20" />
+									<a href="#" className="text-sm ">
+										Profile
+									</a>
 								</li>
 							</ul>
 						</nav>

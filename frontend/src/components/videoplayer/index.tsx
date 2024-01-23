@@ -16,15 +16,16 @@ import { BiLike } from "react-icons/bi";
 import { getRequest, putRequest } from "../../api";
 
 import { useParams } from "react-router-dom";
-const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
+const VideoPlayer: React.FC<any> = ({ video, tokenData, toggleModal }) => {
 	const { slug } = useParams();
 	const [loading, setLoading] = useState(false);
 	let [videoLikesLength, setvideoLikesLength] = useState(video?.likes?.length??0);
 	let [videoDisLikesLength, setvideoDisLikesLength] = useState(
 		video?.dislikes?.length ?? 0
 	);
+	const isLoggedIn = localStorage.getItem("loggedIn")??"";
 	console.log("====================================");
-	console.log(isLoggedIn);
+	console.log(tokenData);
 	console.log("====================================");
 	useEffect(() => {
 		if (!video) {
@@ -36,7 +37,7 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 			setLoading(true);
 			let payload = {
 				action,
-				userId: isLoggedIn.userId,
+				userId: tokenData.userId,
 			};
 			const result: any = await putRequest(
 				"video/" + video._id,
@@ -59,7 +60,7 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 			setLoading(true);
 			let payload = {
 				action,
-				userId: isLoggedIn.userId,
+				userId: tokenData.userId,
 			};
 			const result: any = await putRequest(
 				"user/" + video.author?._id+"/follow",
@@ -134,7 +135,7 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 								</div>
 							</a>
 						</address>
-						{isUserIdInArray(isLoggedIn?.userId, video?.author?.followers) ? (
+						{isUserIdInArray(tokenData?.userId, video?.author?.followers) ? (
 							<button
 								disabled={loading}
 								onClick={() => handleFollowSubmit("unfollow")}
@@ -191,7 +192,7 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 			</div>
 			<hr />
 			<div className="w-5/6 my-20 py-20 m-auto bg-white rounded-md flex items-center justify-center">
-				{isLoggedIn ? (
+				{tokenData ||isLoggedIn==="true" ? (
 					<div></div>
 				) : (
 					<p>
@@ -201,7 +202,7 @@ const VideoPlayer: React.FC<any> = ({ video, isLoggedIn, toggleModal }) => {
 						>
 							Sign in to{" "}
 						</span>{" "}
-						view Comments{" "}
+						view Csomments{" "}
 					</p>
 				)}
 			</div>

@@ -1,10 +1,11 @@
 import React from "react";
-import { MdOutlineHome, MdOutlineWebStories } from "react-icons/md";
-import { SlBadge, SlGraph } from "react-icons/sl";
+import { MdOutlineHome } from "react-icons/md";
+import {  SlGraph } from "react-icons/sl";
 import { FaMoon } from "react-icons/fa6";
 import { GrUpload } from "react-icons/gr";
 import { IoSunnyOutline } from "react-icons/io5";
 import { categories } from "../../App";
+import { FaUserCheck } from "react-icons/fa";
 
 interface SidebarProps {
 	expand: boolean;
@@ -43,26 +44,6 @@ const Sidebar: React.FC<SidebarProps> = ({
 						</a>
 					</li>
 					<li
-						className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
-							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
-						}`}
-					>
-						<MdOutlineWebStories size="20" />
-						<a href="#" className="text-sm ">
-							Browse
-						</a>
-					</li>
-					<li
-						className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
-							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
-						} `}
-					>
-						<SlBadge size="20" />
-						<a href="#" className="text-sm ">
-							Editor Picks
-						</a>
-					</li>
-					<li
 						className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						} `}
@@ -82,6 +63,16 @@ const Sidebar: React.FC<SidebarProps> = ({
 						<span className="text-sm ">{`Upload ${
 							expand ? "Movie" : ""
 						}`}</span>
+					</li>
+					<li
+						className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
+						}`}
+					>
+						<FaUserCheck  size="20" />
+						<a href="#" className="text-sm ">
+							Profile
+						</a>
 					</li>
 				</ul>
 			</nav>
@@ -130,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						onClick={setDarkMode}
 					>
 						<FaMoon size="20" color={darkMode && "green"} />
-						<span  className={`cursor-pointer text-sm ${expand ?? "w-full"}`}>
+						<span className={`cursor-pointer text-sm ${expand ?? "w-full"}`}>
 							Dark mode
 						</span>
 					</li>
@@ -143,9 +134,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						onClick={setLightMode}
 					>
 						<IoSunnyOutline size="20" color={!darkMode && "green"} />
-						<span  className={` text-sm ${expand ?? "w-full"}`}>
-							Light mode
-						</span>
+						<span className={` text-sm ${expand ?? "w-full"}`}>Light mode</span>
 					</li>
 				</ul>
 			</nav>
