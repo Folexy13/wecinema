@@ -1,43 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { BsDot } from "react-icons/bs";
+import { MdChat, MdPlayArrow, MdUpload, MdVerifiedUser } from "react-icons/md";
 import {
-	MdChat,
-	MdPlayArrow,
-	MdUpload,
-	MdVerifiedUser,
-} from "react-icons/md";
+	AiFillDislike,
+	AiFillLike,
+	AiOutlineDislike,
+	AiOutlineLike,
+} from "react-icons/ai";
 import {
 	formatDateAgo,
 	isUserIdInArray,
 } from "../../utilities/helperfFunction";
 // import { GrLike } from "react-icons/gr";
-import { SlDislike } from "react-icons/sl";
-import { BiLike } from "react-icons/bi";
-import { getRequest, putRequest } from "../../api";
-
-import { useParams } from "react-router-dom";
-const VideoPlayer: React.FC<any> = ({ video, tokenData, toggleModal }) => {
-	const { slug } = useParams();
+import { getRequest, postRequest, putRequest } from "../../api";
+import { toast } from "react-toastify";
+const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 	const [loading, setLoading] = useState(false);
-	let [videoLikesLength, setvideoLikesLength] = useState(video?.likes?.length??0);
+	const [isLiked, setIsLiked] = useState<boolean>(false);
+	const [comment, setComment] = useState<string>("");
+	const [commentData, setCommentData] = useState<any>(video?.comments ?? []);
+
+	const [isDisliked, setIsDisliked] = useState<boolean>(false);
+
+	let [videoLikesLength, setvideoLikesLength] = useState(
+		video?.likes?.length ?? 0
+	);
 	let [videoDisLikesLength, setvideoDisLikesLength] = useState(
 		video?.dislikes?.length ?? 0
 	);
-	const isLoggedIn = localStorage.getItem("loggedIn")??"";
-	console.log("====================================");
-	console.log(tokenData);
-	console.log("====================================");
 	useEffect(() => {
-		if (!video) {
-			getRequest("/video/" + slug, setLoading);
-		}
-	}, [video]);
-	const handleLikeSubmit = async (action: string) => {
+		const fetchData = async () => {
+			try {
+				const result: any = await getRequest("/video/" + video._id, setLoading);
+				setCommentData(result.comments);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
+		};
+
+		fetchData();
+	}, [loading]);
+	const handleLikeClick = async () => {
 		try {
 			setLoading(true);
+			setIsLiked(!isLiked);
+			setIsDisliked(false);
 			let payload = {
-				action,
-				userId: tokenData.userId,
+				action: "like",
+				userId: tokenData?.userId,
 			};
 			const result: any = await putRequest(
 				"video/" + video._id,
@@ -45,17 +55,39 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData, toggleModal }) => {
 				setLoading,
 				"Video Liked!"
 			);
-			action === "like"
-				? setvideoLikesLength(++videoLikesLength)
-				: setvideoDisLikesLength(++videoDisLikesLength);
-			console.log("Post success:", result);
-		} catch (error) {
-			setLoading(false);
+			console.log(result);
 
+			setvideoLikesLength(++videoLikesLength);
+		} catch (error: any) {
+			setLoading(false);
+			toast.error(error.message);
 			console.error("Post error:", error);
 		}
 	};
-	const handleFollowSubmit = async(action: string) => {
+	const handleDislikeClick = async () => {
+		try {
+			setLoading(true);
+			setIsDisliked(!isDisliked);
+			setIsLiked(false);
+			let payload = {
+				action: "dislike",
+				userId: tokenData?.userId,
+			};
+			const result: any = await putRequest(
+				"video/" + video._id,
+				payload,
+				setLoading,
+				"Video Liked!"
+			);
+			setvideoDisLikesLength(++videoDisLikesLength);
+			console.log("Post success:", result);
+		} catch (error: any) {
+			setLoading(false);
+			toast.error(error.message);
+			console.error("Post error:", error);
+		}
+	};
+	const handleFollowSubmit = async (action: string) => {
 		try {
 			setLoading(true);
 			let payload = {
@@ -63,19 +95,48 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData, toggleModal }) => {
 				userId: tokenData.userId,
 			};
 			const result: any = await putRequest(
-				"user/" + video.author?._id+"/follow",
+				"user/" + video.author?._id + "/follow",
 				payload,
 				setLoading,
 				"Video Liked!"
 			);
 			console.log("Post success:", result);
+			setComment("");
 		} catch (error) {
 			setLoading(false);
 
 			console.error("Post error:", error);
 		}
 	};
+	const handleCommentSubmit = async (e: any) => {
+		e.preventDefault();
 
+		if (comment.length > 1) {
+			if (!tokenData.userId) {
+				toast.error("Log in first !!!");
+				return;
+			}
+			try {
+				setLoading(true);
+				let payload = {
+					userId: tokenData.userId,
+					text: comment,
+				};
+				const result: any = await postRequest(
+					"video/" + video._id + "/comment",
+					payload,
+					setLoading,
+					"Commented successfully"
+				);
+
+				setCommentData(result?.comments);
+			} catch (error: any) {
+				setLoading(false);
+				toast.error(error.message);
+				console.error("Post error:", error);
+			}
+		}
+	};
 	return (
 		<div className="">
 			{/* Video Player */}
@@ -94,7 +155,7 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData, toggleModal }) => {
 			{/* Video Metadata and Actions */}
 			<div className="mt-4 sm:flex justify-between items-center border-b pb-3  border-blue-200">
 				{/* Video Information and Comments */}
-				<div className="sm:w-3/6 ml-4 ">
+				<div className="sm:w-3/5 ml-4 ">
 					{/* Video Title */}
 					<h1 className="md:text-2xl font-bold mb-2 text-xl">{video?.title}</h1>
 
@@ -156,22 +217,30 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData, toggleModal }) => {
 				</div>
 
 				{/* Like and Subscribe Buttons */}
-				<div className="sm:w-3/6 sm:mr-2 my-3 sm:my-0 text-right mt-2 sm:mt-0 overflow-auto flex gap-1 items-center">
+				<div className="sm:w-2/5 sm:mr-2 my-3 sm:my-0 text-right mt-2 sm:mt-0 overflow-auto flex gap-1 items-center">
 					<div className="flex rounded-full bg-gray-400">
 						<button
 							disabled={loading}
-							onClick={() => handleLikeSubmit("like")}
-							className=" w-full sm:w-fit bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 rounded-full"
+							onClick={handleLikeClick}
+							className=" w-full sm:w-fit btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 "
 						>
-							<BiLike size="24" color="white" />
+							{isLiked ? (
+								<AiFillLike size="24" color="green" />
+							) : (
+								<AiOutlineLike size="24" color="green" />
+							)}
 							{videoLikesLength}
 						</button>
 						<button
 							disabled={loading}
-							onClick={() => handleLikeSubmit("dislike")}
-							className="w-full border-l-2 border-white sm:w-fit hover:bg-gray-500 btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 "
+							onClick={handleDislikeClick}
+							className="w-full border-l-2 border-white sm:w-fit btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 "
 						>
-							<SlDislike size="24" color="white" />
+							{isDisliked ? (
+								<AiFillDislike size="24" color="green" />
+							) : (
+								<AiOutlineDislike size="24" color="green" />
+							)}
 							{video?.dislikes?.length ?? 0}
 						</button>
 					</div>
@@ -191,21 +260,64 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData, toggleModal }) => {
 				</div>
 			</div>
 			<hr />
-			<div className="w-5/6 my-20 py-20 m-auto bg-white rounded-md flex items-center justify-center">
-				{tokenData ||isLoggedIn==="true" ? (
-					<div></div>
-				) : (
-					<p>
-						<span
-							onClick={toggleModal}
-							className="cursor-pointer text-green-500"
-						>
-							Sign in to{" "}
-						</span>{" "}
-						view Csomments{" "}
-					</p>
-				)}
-			</div>
+			<form
+				onSubmit={handleCommentSubmit}
+				className="sm:w-5/6 w-11/12 my-20 relative m-auto bg-white rounded-md "
+			>
+				<textarea
+					name=""
+					placeholder="Add comment..."
+					id=""
+					cols={30}
+					value={comment}
+					onChange={(e: any) => setComment(e.target.value)}
+					rows={10}
+					className="w-full p-3 border-0 rounded-lg outline-none"
+				></textarea>
+				<button
+					disabled={loading}
+					className="bg-green-400 p-2 text-white absolute bottom-2 right-4 border-0 rounded-lg outline-none"
+				>
+					Comment
+				</button>
+			</form>
+			{commentData.length > 0 ? (
+				<div className="mt-1 sm:w-5/6 w-11/12 my-20 relative m-auto ">
+					<h3 className="break-words sm:text-base text-sm mb-2">
+						{commentData.length} Comments
+					</h3>
+
+					{commentData.map((comment: any, index: number) => {
+						return (
+							<section key={index} className="relative  mb-5 gap-2 flex  ">
+								<img 
+									src={comment.avatar}
+									className="bg-white rounded-full w-8 h-8 flex-shrink-0 text-lg mr-1.5 block border border-gray-100"
+								></img>
+								<div>
+									<div className="flex gap-1 mb-3">
+										<div className="cursor-pointer">
+											<h4 className="m-0 sm:text-base text-sm text-cyan-950 leading-4  max-h-3.5 ">
+												{comment.username}
+											</h4>
+										</div>
+										<h4 className="m-0 italic sm:text-base text-sm text-cyan-950 leading-4  max-h-3.5 ">
+											{formatDateAgo(comment.chatedAt ?? video.updatedAt)}
+										</h4>
+									</div>
+									<p className="break-words sm:text-base text-sm">
+										{comment.text}
+									</p>
+								</div>
+							</section>
+						);
+					})}
+				</div>
+			) : (
+				<p className="mt-1 sm:w-5/6 w-11/12 my-20 relative m-auto ">
+					No comment
+				</p>
+			)}
 		</div>
 	);
 };

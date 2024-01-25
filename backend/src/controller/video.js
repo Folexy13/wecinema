@@ -103,7 +103,6 @@ router.put("/:id", authenticateMiddleware, async (req, res) => {
 	}
 });
 
-
 // Route for commenting on a video by ID
 router.post("/:id/comment", authenticateMiddleware, async (req, res) => {
 	try {
@@ -113,11 +112,13 @@ router.post("/:id/comment", authenticateMiddleware, async (req, res) => {
 		if (!video) {
 			return res.status(404).json({ error: "Video not found" });
 		}
-
+		const user = await User.findById(userId);
 		const newComment = {
-			userId,
+			avatar: user.avatar,
+			username: user.username,
 			id: video.comments.length + 1,
 			text,
+			chatedAt: new Date(),
 			replies: [], // Array to store replies to this comment
 		};
 
@@ -156,9 +157,12 @@ router.post(
 				return res.status(404).json({ error: "Comment not found" });
 			}
 
+			const user = await User.findById(userId);
 			const newReply = {
-				userId,
+				avatar: user.avatar,
+				username: user.username,
 				text,
+				chatedAt: new Date(),
 			};
 
 			// Add the new reply to the comment's replies array
@@ -175,11 +179,22 @@ router.post(
 	}
 );
 // Route for getting videos by genre
-router.get("/:genre", async (req, res) => {
+router.get("/category/:genre", async (req, res) => {
 	try {
 		const genre = req.params.genre;
-		const videos = await Videos.find({ genre });
-		res.json(videos);
+
+		// Use the find method to get all videos
+		let videos = await Videos.find().populate(
+			"author",
+			"username avatar followers followings "
+		);
+
+		// Filter videos based on the specified genre
+		const filteredVideos = videos.filter((video) =>
+			video.genre.includes(genre)
+		);
+
+		res.json(filteredVideos);
 	} catch (error) {
 		console.error("Error getting videos by genre:", error);
 		res.status(500).json({ error: "Internal Server Error" });

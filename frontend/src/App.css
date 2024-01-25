@@ -11,7 +11,7 @@ body {
 	transition: 0.3ms ease-in;
 }
 button:disabled {
-    cursor: not-allowed;
+	cursor: not-allowed;
 	background-color: #1a202c7a;
 	color: #fff;
 }
@@ -19,7 +19,7 @@ button:disabled {
 	font-size: 13px;
 }
 
-.thumbnail img{
+.thumbnail img {
 	height: 150px !important;
 }
 .bg-dark {
@@ -48,8 +48,6 @@ button:disabled {
 .text-light {
 	color: #1a202c !important;
 }
-
-
 
 @media (max-width: 1120px) {
 	.desktop-sidebar {
@@ -81,9 +79,9 @@ button:disabled {
 	.auth {
 		display: none;
 	}
-.llle{
-	margin: 2px 5px;																																										;
-	width: 100% !important;
+	.llle {
+		margin: 2px 5px;
+		width: 100% !important;
 	}
 	.hh {
 		margin-top: 32px !important;
@@ -100,9 +98,9 @@ button:disabled {
 .w-1\/12 {
 	width: 6.333333% !important;
 }
-@media (min-width: 1120px){
-	.w-1\/12{
-		width:150px !important;
+@media (min-width: 1120px) {
+	.w-1\/12 {
+		width: 150px !important;
 	}
 }
 
@@ -129,4 +127,8 @@ button:disabled {
 		width: 160px !important;
 		height: 103px !important;
 	}
+}
+nav img {
+	max-width: unset !important;
+	height: revert-layer !important;
 }

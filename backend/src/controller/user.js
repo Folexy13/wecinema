@@ -64,7 +64,7 @@ router.post("/login", async (req, res) => {
 				{ userId: user._id, username: user.username, avatar: user.avatar },
 				process.env.SECRET_KEY,
 				{
-					expiresIn: "1h",
+					expiresIn: "8h",
 				}
 			);
 

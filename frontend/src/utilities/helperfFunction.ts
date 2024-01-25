@@ -72,7 +72,7 @@ export const formatDateAgo = (dateTime: string): string => {
 
 
 export function isUserIdInArray(userId: MongooseId, idArray: MongooseId[]): boolean {
-	return idArray.includes(userId);
+	return idArray?.includes(userId);
 }
 
 

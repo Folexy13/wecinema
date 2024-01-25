@@ -43,7 +43,12 @@ const Gallery: React.FC<GalleryProps> = ({
 	const filteredVideo = (category?: string) => {
 		return videos.filter((v: any) => v.genre.includes(category));
 	};
-
+	const handleVideolick = (video: any) => {
+		nav(video.slug ?? "/video/" + generateSlug(video._id), {
+			state: video,
+		});
+		localStorage.setItem("video", JSON.stringify(video));
+	};
 	if (length === 5 && filteredVideo(category).length > 0) {
 		return (
 			<div
@@ -69,11 +74,7 @@ const Gallery: React.FC<GalleryProps> = ({
 					{filteredVideo(category).map((video: any, index: any) => (
 						// VideoStream
 						<div
-							onClick={() =>
-								nav(video.slug ?? generateSlug(video.title) , {
-									state: video,
-								})
-							}
+							onClick={() => handleVideolick(video)}
 							key={index}
 							style={{ maxWidth: "20%" }}
 							className="cursor-pointer gallery relative flex-wrap  border-gray-200  w-full   p-2 "

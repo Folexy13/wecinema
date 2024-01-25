@@ -7,7 +7,7 @@ const Router: React.FC = () => {
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<Homepage />} />
-				<Route path="/:slug" element={<Viewpage />} />
+				<Route path="/video/:slug" element={<Viewpage />} />
 				<Route path="/category/:slug" element={<CategoryPage />} />
 			</Routes>
 		</BrowserRouter>

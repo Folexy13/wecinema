@@ -35,9 +35,8 @@ export const categories = [
 interface LayoutProps {
 	hasHeader?: boolean;
 	children: ReactNode;
-	modalType?:number
 }
-const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
+const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const fileInputRef: any = useRef(null);
 
 	const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -92,9 +91,6 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 		setDarkMode(false);
 		console.log(modal);
 	};
-	useEffect(() => {
-	  setModal(modalType??0);
-	}, [modalType])
 	
 	const setDarkiMode = () => {
 		localStorage.setItem("isDarkMode", "dark");
@@ -167,7 +163,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader, modalType }) => {
 	};
 	const LoginModal: React.FC = () => (
 		<Modal
-			show={show || modal===1}
+			show={show}
 			background="linear-gradient(to right, #ffd700, #ffff00)"
 		>
 			<header className="flex  gap-4 justify-between items-center">

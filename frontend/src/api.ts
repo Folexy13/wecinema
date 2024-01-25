@@ -1,13 +1,26 @@
 import axios, { AxiosResponse, AxiosError, Method } from "axios";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = "https://wecinema.onrender.com/";//;"http://localhost:3000/"
+const API_BASE_URL = "http://localhost:3000/";// "https://wecinema.onrender.com/";
+
+
 
 const api = axios.create({
-	baseURL: API_BASE_URL,
-	headers: {
-		"Content-Type": "application/json",
-	},
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Add a request interceptor to add the JWT token to the headers
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
 });
 
 interface ApiResponse {

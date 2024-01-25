@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
-const { Mongoose } = require("mongoose");
+const  Mongoose  = require("mongoose");
 
 const authenticateMiddleware = (req, res, next) => {
 	// Get the token from the request headers
-	const token = req.headers.authorization;
+	let token = req.headers.authorization;
+	token = token.split(" ")[1]
 
 	if (!token) {
 		return res.status(401).json({ error: "Unauthorized: No token provided" });
@@ -12,6 +13,7 @@ const authenticateMiddleware = (req, res, next) => {
 	// Verify the token
 	jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
 		if (err) {
+			console.log(err);
 			return res.status(401).json({ error: "Unauthorized: Invalid token" });
 		}
 
@@ -28,6 +30,7 @@ const authenticateMiddleware = (req, res, next) => {
 		next();
 	});
 };
+
 function isValidObjectId(id) {
 	if (!id) {
 		return false; // If id is null or undefined, it's not a valid ObjectId
@@ -38,6 +41,8 @@ function isValidObjectId(id) {
 		const objectId = new Mongoose.Types.ObjectId(id);
 		return String(objectId) === id; // Compare the string representation to check validity
 	} catch (error) {
+	console.log(error);
+
 		return false; // If an error occurs during ObjectId creation, it's not a valid ObjectId
 	}
 }
