@@ -15,7 +15,7 @@ const Viewpage: React.FC<any> = () => {
 	const videoDataFromState = location.state;
 	const videoDataFromLocalStorage = localStorage.getItem("video");
 
-	let video;
+	let video:any;
 
 	if (videoDataFromState) {
 		// If data is available in the state, use it
