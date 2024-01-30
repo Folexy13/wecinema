@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
 
 // Import your Video model (assuming you have a MongoDB Video model)
@@ -42,6 +43,26 @@ router.get("/all", async (req, res) => {
 		const videos = await Videos.find().populate(
 			"author",
 			"username avatar followers followings "
+		);
+
+		res.json(videos);
+	} catch (error) {
+		console.error("Error getting all videos:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+router.get("/all/:user", async (req, res) => {
+	const userId = req.params.user;
+
+	// Check if userId is a valid ObjectId
+	if (!mongoose.Types.ObjectId.isValid(userId)) {
+		return res.status(400).json({ error: "Invalid user ID" });
+	}
+
+	try {
+		const videos = await Videos.find({ author: userId }).populate(
+			"author",
+			"username avatar followers followings"
 		);
 
 		res.json(videos);

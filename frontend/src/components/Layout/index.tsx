@@ -4,16 +4,21 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import { GoogleLogin } from "@react-oauth/google";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
-import { FaSignInAlt, FaSignOutAlt, FaTimes, FaUserCircle } from "react-icons/fa";
+import {
+	FaSignInAlt,
+	FaSignOutAlt,
+	FaTimes,
+} from "react-icons/fa";
 import { categories as CAT } from "../../App";
 import { MdOutlineHome } from "react-icons/md";
-import {SlGraph } from "react-icons/sl";
+import { SlGraph } from "react-icons/sl";
 import { GrUpload } from "react-icons/gr";
-import { FaMoon } from "react-icons/fa6";
+import { FaMoon, FaRegFileVideo, FaUserCheck } from "react-icons/fa6";
 import { IoSunnyOutline } from "react-icons/io5";
 import { postRequest } from "../../api";
 import moment from "moment";
 import { Itoken, decodeToken } from "../../utilities/helperfFunction";
+import { Link } from "react-router-dom";
 
 export const categories = [
 	"Picks",
@@ -86,15 +91,15 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const [dob, setDob] = useState<string>("");
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
+	
 	const setLightMode = () => {
 		localStorage.removeItem("isDarkMode");
 		setDarkMode(false);
 		console.log(modal);
 	};
-	
+
 	const setDarkiMode = () => {
 		localStorage.setItem("isDarkMode", "dark");
-
 		setDarkMode(true);
 	};
 	const handleLoginSubmit = async (e: any) => {
@@ -111,9 +116,11 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 			setToken(result.token);
 			localStorage.setItem("token", result.token);
 			localStorage.setItem("loggedIn", "true");
+			setTimeout(() => {
+				window.location.reload();
+			}, 1000);
 		} catch (error) {
 			setLoading(false);
-
 			console.error("Post error:", error);
 		}
 	};
@@ -162,10 +169,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 		}
 	};
 	const LoginModal: React.FC = () => (
-		<Modal
-			show={show}
-			background="linear-gradient(to right, #ffd700, #ffff00)"
-		>
+		<Modal show={show} background="linear-gradient(to right, #ffd700, #ffff00)">
 			<header className="flex  gap-4 justify-between items-center">
 				<h2>Sign in to Wecinema</h2>
 				<FaTimes
@@ -395,7 +399,8 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 							className={` flex items-center justify-between p-2 my-3 pb-6 `}
 						>
 							<ul className={`border-b  w-full border-gray-200 pb-4 `}>
-								<li
+								<Link
+									to="/"
 									className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 										expanded
 											? ""
@@ -403,11 +408,12 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									}`}
 								>
 									<MdOutlineHome size="20" />
-									<a href="#" className="text-sm ">
+									<Link to="/" className="text-sm ">
 										Home
-									</a>
-								</li>
-								<li
+									</Link>
+								</Link>
+								<Link
+									to="/"
 									className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 										expanded
 											? ""
@@ -415,44 +421,72 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									} `}
 								>
 									<SlGraph size="20" />
-									<a href="#" className="text-sm ">
+									<Link to="#" className="text-sm ">
 										Hype mode
-									</a>
-								</li>
-								<li
+									</Link>
+								</Link>
+								<Link
+									to="/"
 									className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 										expanded
 											? ""
 											: "flex-col justify-center text-xs gap-1 specific"
 									} `}
-									onClick={()=>setShow3(!show3)}
+									onClick={() => setShow3(!show3)}
 								>
 									<GrUpload size="20" />
 									<span className="text-sm ">{`Upload ${
 										expanded ? "Movie" : ""
 									}`}</span>
-								</li>
-								<li
+								</Link>
+								<Link
+									to="/"
 									className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 										expanded
 											? ""
 											: "flex-col justify-center text-xs gap-1 specific"
 									}`}
 								>
-									<FaUserCircle size="20" />
-									<a href="#" className="text-sm ">
+									<FaRegFileVideo size="20" />
+									<span className="text-sm ">{`${
+										expanded ? "Upload scripts" : "Add Scripts"
+									}`}</span>
+								</Link>
+								<Link
+									to={"/user/" + decodedToken?.userId}
+									className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+										expanded
+											? ""
+											: "flex-col justify-center text-xs gap-1 specific"
+									}`}
+								>
+									<FaUserCheck size="20" />
+									<Link
+										to={"/user/" + decodedToken?.userId}
+										className="text-sm "
+									>
 										Profile
-									</a>
-								</li>
+									</Link>
+								</Link>
 							</ul>
 						</nav>
-						<nav className="container mx-auto  items-center justify-between  p-2 my-3 ">
-							<h2 className={`font-bold `}>Generes</h2>
+						<nav className="container mx-auto  items-center justify-between  p-2 my-3">
+							<h2
+								className={`font-bold ${
+									expanded ? "" : "text-sm text-center"
+								} `}
+							>
+								Generes
+							</h2>
 							<ul className="border-b   border-gray-200 pb-4">
 								{categories.map((val: string, index: number) => (
 									<li
 										key={index}
-										className={`duration-75 flex gap-4  mx-4 my-2 items-center  `}
+										className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+											expanded
+												? ""
+												: "flex-col justify-center text-xs gap-1 specific"
+										} `}
 									>
 										<div className="relative rounded-full w-32px h-32px box-border flex-shrink-0 block">
 											<div
@@ -466,38 +500,54 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 												title="Fresh and Fit"
 											></div>
 										</div>
-										<a href="#" className="text-sm">
+										<Link to="#" className="text-sm">
 											{val}
-										</a>
+										</Link>
 									</li>
 								))}
 							</ul>
 						</nav>
-						<nav className="container mx-auto  items-center justify-between p-2 my-3 ">
-							<h2 className={`font-bold`}>Theme</h2>
+						<nav className="container mx-auto  items-center justify-between p		-2 my-3">
+							<h2
+								className={`font-bold ${
+									expanded ? "" : "text-sm text-center"
+								} `}
+							>
+								Theme
+							</h2>
 							<ul className="border-b  w-full border-gray-200 pb-4">
-								<li
-									className={`flex gap-4  mx-4 my-2 items-center ${
-										darkMode ? "text-active" : ""
-									}`}
+								<div
 									onClick={setDarkiMode}
+									className={`flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+										darkMode ? "text-active" : ""
+									} ${
+										expanded
+											? ""
+											: "flex-col justify-center text-xs gap-1 specific"
+									}`}
 								>
 									<FaMoon size="20" color={darkMode && "green"} />
-									<a href="#" className="text-sm w-full">
+									<span
+										className={`cursor-pointer text-sm ${expanded ?? "w-full"}`}
+									>
 										Dark mode
-									</a>
-								</li>
-								<li
-									className={`flex gap-4  mx-4 my-2 items-center ${
+									</span>
+								</div>
+								<div
+									className={`flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 										!darkMode ? "text-active" : ""
+									} ${
+										expanded
+											? ""
+											: "flex-col justify-center text-xs gap-1 specific"
 									}`}
 									onClick={setLightMode}
 								>
 									<IoSunnyOutline size="20" color={!darkMode && "green"} />
-									<a href="#" className="text-sm w-full">
+									<span className={` text-sm ${expanded ?? "w-full"}`}>
 										Light mode
-									</a>
-								</li>
+									</span>
+								</div>
 							</ul>
 						</nav>
 						<nav className="container mx-auto  items-center justify-between p-2 my-3 ">

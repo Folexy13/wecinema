@@ -92,7 +92,7 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 			setLoading(true);
 			let payload = {
 				action,
-				userId: tokenData.userId,
+				userId: tokenData?.userId,
 			};
 			const result: any = await putRequest(
 				"user/" + video.author?._id + "/follow",
@@ -112,14 +112,14 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 		e.preventDefault();
 
 		if (comment.length > 1) {
-			if (!tokenData.userId) {
+			if (!tokenData?.userId) {
 				toast.error("Log in first !!!");
 				return;
 			}
 			try {
 				setLoading(true);
 				let payload = {
-					userId: tokenData.userId,
+					userId: tokenData?.userId,
 					text: comment,
 				};
 				const result: any = await postRequest(
@@ -128,7 +128,7 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 					setLoading,
 					"Commented successfully"
 				);
-
+				setComment("");
 				setCommentData(result?.comments);
 			} catch (error: any) {
 				setLoading(false);
@@ -290,7 +290,7 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 					{commentData.map((comment: any, index: number) => {
 						return (
 							<section key={index} className="relative  mb-5 gap-2 flex  ">
-								<img 
+								<img
 									src={comment.avatar}
 									className="bg-white rounded-full w-8 h-8 flex-shrink-0 text-lg mr-1.5 block border border-gray-100"
 								></img>

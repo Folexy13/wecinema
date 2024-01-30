@@ -1,11 +1,13 @@
 import React from "react";
 import { MdOutlineHome } from "react-icons/md";
-import {  SlGraph } from "react-icons/sl";
-import { FaMoon } from "react-icons/fa6";
+import { SlGraph } from "react-icons/sl";
+import { FaMoon, FaRegFileVideo } from "react-icons/fa6";
 import { GrUpload } from "react-icons/gr";
 import { IoSunnyOutline } from "react-icons/io5";
 import { categories } from "../../App";
 import { FaUserCheck } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { decodeToken } from "../../utilities/helperfFunction";
 
 interface SidebarProps {
 	expand: boolean;
@@ -22,6 +24,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 	darkMode,
 	toggleUploadModal,
 }) => {
+	const token = localStorage.getItem("token") || null;
+	const tokenData = decodeToken(token);
+	const nav =useNavigate()
 	return (
 		<section
 			// style={{ marginTop: 67 }}
@@ -33,27 +38,30 @@ const Sidebar: React.FC<SidebarProps> = ({
 		>
 			<nav className={` flex items-center justify-between p-2 my-3 pb-6 `}>
 				<ul className={`border-b  w-full border-gray-200 pb-4 `}>
-					<li
+					<Link
+						to="/"
 						className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						}`}
 					>
 						<MdOutlineHome size="20" />
-						<a href="#" className="text-sm ">
+						<Link to="/" className="text-sm ">
 							Home
-						</a>
-					</li>
-					<li
+						</Link>
+					</Link>
+					<Link
+						to="/"
 						className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						} `}
 					>
 						<SlGraph size="20" />
-						<a href="#" className="text-sm ">
+						<Link to="#" className="text-sm ">
 							Hype mode
-						</a>
-					</li>
-					<li
+						</Link>
+					</Link>
+					<Link
+						to="/"
 						className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						} `}
@@ -63,17 +71,29 @@ const Sidebar: React.FC<SidebarProps> = ({
 						<span className="text-sm ">{`Upload ${
 							expand ? "Movie" : ""
 						}`}</span>
-					</li>
-					<li
+					</Link>
+					<Link
+						to="/"
 						className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						}`}
 					>
-						<FaUserCheck  size="20" />
-						<a href="#" className="text-sm ">
+						<FaRegFileVideo size="20" />
+						<span className="text-sm ">{`${
+							expand ? "Upload scripts" : "Add Scripts"
+						}`}</span>
+					</Link>
+					<Link
+						to={"/user/" + tokenData?.userId}
+						className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
+						}`}
+					>
+						<FaUserCheck size="20" />
+						<Link to={"/user/" + tokenData?.userId} className="text-sm ">
 							Profile
-						</a>
-					</li>
+						</Link>
+					</Link>
 				</ul>
 			</nav>
 			<nav className="container mx-auto  items-center justify-between  p-2 my-3">
@@ -88,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 								expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 							} `}
 						>
-							<div className="relative rounded-full w-32px h-32px box-border flex-shrink-0 block">
+							<div onClick={()=>nav("/category/"+val)} className="relative rounded-full w-32px h-32px box-border flex-shrink-0 block">
 								<div
 									className="items-center rounded-full flex-shrink-0 justify-center bg-center bg-no-repeat bg-cover flex"
 									style={{
@@ -100,9 +120,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 									title="Fresh and Fit"
 								></div>
 							</div>
-							<a href="#" className="text-sm">
+							<Link to="#" className="text-sm">
 								{val}
-							</a>
+							</Link>
 						</li>
 					))}
 				</ul>
@@ -112,7 +132,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 					Theme
 				</h2>
 				<ul className="border-b  w-full border-gray-200 pb-4">
-					<li
+					<div
 						className={`flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							darkMode ? "text-active" : ""
 						} ${
@@ -124,8 +144,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 						<span className={`cursor-pointer text-sm ${expand ?? "w-full"}`}>
 							Dark mode
 						</span>
-					</li>
-					<li
+					</div>
+					<div
 						className={`flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							!darkMode ? "text-active" : ""
 						} ${
@@ -135,7 +155,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 					>
 						<IoSunnyOutline size="20" color={!darkMode && "green"} />
 						<span className={` text-sm ${expand ?? "w-full"}`}>Light mode</span>
-					</li>
+					</div>
 				</ul>
 			</nav>
 		</section>

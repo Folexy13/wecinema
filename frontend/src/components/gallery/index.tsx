@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MdVerifiedUser } from "react-icons/md";
 import { BsDot } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import VideoThumbnail from "react-video-thumbnail";
 import { getRequest } from "../../api";
 import {
 	formatDateAgo,
@@ -10,7 +11,8 @@ import {
 } from "../../utilities/helperfFunction";
 import { Skeleton } from "..";
 interface GalleryProps {
-	title: string;
+	title?: string;
+	type?: string;
 	data?: any;
 	category?: string;
 	length?: number;
@@ -19,9 +21,10 @@ interface GalleryProps {
 const Gallery: React.FC<GalleryProps> = ({
 	title,
 	isFirst,
-	// data,
+	data,
 	length,
 	category,
+	type,
 }) => {
 	const nav = useNavigate();
 
@@ -29,20 +32,24 @@ const Gallery: React.FC<GalleryProps> = ({
 	const [videos, setVideos] = useState<any>([]);
 	useEffect(() => {
 		(async () => {
-			const result = await getRequest("video/all", setLoading);
+			setLoading(true);
+			const result = !data
+				? await getRequest("video/all", setLoading)
+				: await getRequest("video/all/" + data, setLoading);
 
 			if (result) {
 				// Update state or props to trigger rendering with result
 				setVideos(result); // Assuming a `videos` state variable
-				console.log("====================================");
-				console.log(loading);
-				console.log("====================================");
+				setLoading(false);
 			}
 		})();
-	}, []);
+	}, [category]);
 	const filteredVideo = (category?: string) => {
-		return videos.filter((v: any) => v.genre.includes(category));
+		return videos.filter((v: any) =>
+			category ? v.genre.includes(category) : v
+		);
 	};
+
 	const handleVideolick = (video: any) => {
 		nav(video.slug ?? "/video/" + generateSlug(video._id), {
 			state: video,
@@ -59,7 +66,7 @@ const Gallery: React.FC<GalleryProps> = ({
 			>
 				<div className="mt-1 w-full sm:px-4 py-2 flex justify-between items-center">
 					<h2 className="text-l font-extrabold text-lg sm:text-xl">{title}</h2>
-					{filteredVideo(category).length > 6 && (
+					{filteredVideo(category).length > 6 && title && (
 						<a
 							href="#"
 							className={` ${
@@ -74,21 +81,33 @@ const Gallery: React.FC<GalleryProps> = ({
 					{filteredVideo(category).map((video: any, index: any) => (
 						// VideoStream
 						<div
-							onClick={() => handleVideolick(video)}
 							key={index}
 							style={{ maxWidth: "20%" }}
 							className="cursor-pointer gallery relative flex-wrap  border-gray-200  w-full   p-2 "
 						>
-							<div className="thumbnail relative overflow-hidden">
-								<img
+							<div
+								onClick={() => handleVideolick(video)}
+								className="thumbnail relative overflow-hidden"
+							>
+								<VideoThumbnail
+									videoUrl={video.file}
+									//thumbnailHandler={(thumbnail: any) => console.log(thumbnail)}
+									className="border-gray-200 rounded-xl w-full"
+								/>
+								{/* <img
 									className="border-gray-200 rounded-xl"
 									width="480"
 									height="121.41"
 									loading="lazy"
 									src={video?.author?.avatar}
-								/>
+								/> */}
 							</div>
-							<div className="footer flex-1 block">
+							<div
+								className="footer flex-1 block"
+								onClick={() => {
+									nav("/user/" + video?.author?._id);
+								}}
+							>
 								<a href="#" className="inline-flex max-w-max overflow-hidden">
 									<h3 className="text-base font-semibold leading-5 my-2">
 										{truncateText(video.title, 60)}
@@ -167,12 +186,17 @@ const Gallery: React.FC<GalleryProps> = ({
 							className="cursor-pointer gallery relative  border-gray-200 flex-wrap w-full   p-2 "
 						>
 							<div className="thumbnail relative overflow-hidden">
-								<img
+								{/* <img
 									className="border-gray-200 rounded-xl"
 									width="480"
 									height="270"
 									loading="lazy"
 									src={video?.author?.avatar}
+								/> */}
+								<VideoThumbnail
+									videoUrl={video.file}
+									//thumbnailHandler={(thumbnail: any) => console.log(thumbnail)}
+									className="border-gray-200 rounded-xl"
 								/>
 							</div>
 							<div className="footer flex-1 block">
@@ -225,7 +249,7 @@ const Gallery: React.FC<GalleryProps> = ({
 			</div>
 		);
 	}
-	if (videos.length === 0) {
+	if (videos.length === 0 && loading) {
 		return (
 			<div
 				// style={{ minHeight: 280 }}
@@ -246,6 +270,21 @@ const Gallery: React.FC<GalleryProps> = ({
 							/>
 						))}
 				</div>
+			</div>
+		);
+	} else if (
+		filteredVideo(category).length === 0 &&
+		type === "profile" &&
+		!loading
+	) {
+		return (
+			<div
+				// style={{ minHeight: 280 }}
+				className={` ${
+					isFirst ? "mt-5" : ""
+				} z-1 relative p-2 flex text-center flex-wrap border-b overflow-hidden border-blue-200 sm:mx-4 pb-4`}
+			>
+				<div className="flex flex-wrap w-full ">No Video Uploaded</div>
 			</div>
 		);
 	}
