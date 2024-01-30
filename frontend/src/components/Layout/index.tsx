@@ -88,8 +88,8 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const [show4, setShow4] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [username, setUsername] = useState<string>("");
-	const [dob, setDob] = useState<string>("");
-	const [email, setEmail] = useState<string>("");
+	const [dob, setDob] = useState("");
+	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState<string>("");
 	
 	const setLightMode = () => {
@@ -183,6 +183,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="email "
 					type="email"
+					autoFocus
 					value={email}
 					onChange={(e: any) => setEmail(e.target.value)}
 				/>
@@ -190,6 +191,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="**************** "
 					type="password"
+					autoFocus
 					value={password}
 					onChange={(e: any) => setPassword(e.target.value)}
 				/>
@@ -260,6 +262,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="Username"
 					type="text"
+					autoFocus
 					value={username}
 					onChange={(e: any) => setUsername(e.target.value)}
 				/>
@@ -267,6 +270,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="email "
 					type="email "
+					autoFocus
 					value={email}
 					onChange={(e: any) => setEmail(e.target.value)}
 				/>
@@ -274,6 +278,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="**************** "
 					type="password "
+					autoFocus
 					value={password}
 					onChange={(e: any) => setPassword(e.target.value)}
 				/>
@@ -281,6 +286,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="date of birth"
 					type="date"
+					autoFocus
 					value={dob}
 					onChange={(e: any) => setDob(e.target.value)}
 				/>

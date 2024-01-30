@@ -8,6 +8,7 @@ import { categories } from "../../App";
 import { FaUserCheck } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { decodeToken } from "../../utilities/helperfFunction";
+import { toast } from "react-toastify";
 
 interface SidebarProps {
 	expand: boolean;
@@ -26,6 +27,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
 	const token = localStorage.getItem("token") || null;
 	const tokenData = decodeToken(token);
+	
+	console.log(tokenData);
+	
 	const nav =useNavigate()
 	return (
 		<section
@@ -84,13 +88,28 @@ const Sidebar: React.FC<SidebarProps> = ({
 						}`}</span>
 					</Link>
 					<Link
-						to={"/user/" + tokenData?.userId}
+						to={tokenData ? `/user/${tokenData.userId}` : "#"}
+						onClick={(event) => {
+							if (!tokenData) {
+								toast.error("Please login!!");
+								event.preventDefault(); // Prevent the default link behavior if condition is not met
+							}
+						}}
 						className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						}`}
 					>
 						<FaUserCheck size="20" />
-						<Link to={"/user/" + tokenData?.userId} className="text-sm ">
+						<Link
+							to={tokenData ? `/user/${tokenData.userId}` : "#"}
+							onClick={(event) => {
+								if (!tokenData) {
+									toast.error("Please login!!");
+									event.preventDefault(); // Prevent the default link behavior if condition is not met
+								}
+							}}
+							className="text-sm"
+						>
 							Profile
 						</Link>
 					</Link>
@@ -108,7 +127,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 								expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 							} `}
 						>
-							<div onClick={()=>nav("/category/"+val)} className="relative rounded-full w-32px h-32px box-border flex-shrink-0 block">
+							<div
+								onClick={() => nav("/category/" + val)}
+								className="relative rounded-full w-32px h-32px box-border flex-shrink-0 block"
+							>
 								<div
 									className="items-center rounded-full flex-shrink-0 justify-center bg-center bg-no-repeat bg-cover flex"
 									style={{
