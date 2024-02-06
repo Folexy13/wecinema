@@ -1,15 +1,10 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Header, Modal, Sidebar } from "..";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import { GoogleLogin } from "@react-oauth/google";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
-import {
-	FaSignInAlt,
-	FaSignOutAlt,
-	FaTimes,
-} from "react-icons/fa";
-import { categories as CAT } from "../../App";
+import { FaSignInAlt, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { MdOutlineHome } from "react-icons/md";
 import { SlGraph } from "react-icons/sl";
 import { GrUpload } from "react-icons/gr";
@@ -19,7 +14,19 @@ import { postRequest } from "../../api";
 import moment from "moment";
 import { Itoken, decodeToken } from "../../utilities/helperfFunction";
 import { Link } from "react-router-dom";
-
+import axios from "axios";
+import Select from "react-dropdown-select";
+const CAT = [
+	{ value: "Action", label: "Action" },
+	{ value: "Adventure", label: "Adventure" },
+	{ value: "Comedy", label: "Comedy" },
+	{ value: "Documentary", label: "Documentary" },
+	{ value: "Drama", label: "Drama" },
+	{ value: "Horror", label: "Horror" },
+	{ value: "Mystery", label: "Mystery" },
+	{ value: "Romance", label: "Romance" },
+	{ value: "Thriller", label: "Thriller" },
+];
 export const categories = [
 	"Picks",
 	"My Feed",
@@ -56,7 +63,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const [darkMode, setDarkMode] = useState<boolean>(!!isDarkMode);
 	const [expanded, setExpanded] = useState<boolean>(false);
 	const [show, setShow] = useState<boolean>(false);
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [selectedFile, setSelectedFile] = useState<any>(null);
 	const handleFileChange = (e: any) => {
 		const file = e.target.files[0];
 
@@ -69,19 +76,21 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 		setScreenWidth(window.innerWidth);
 	};
 	// Attach event listener for window resize
-	useEffect(() => {
-		window.addEventListener("resize", handleResize);
+	// useEffect(() => {
+	// 	window.addEventListener("resize", handleResize);
 
-		// Clean up the event listener on component unmount
-		return () => {
-			window.removeEventListener("resize", handleResize);
-		};
-	}, []); // Empty dependency array ensures the effect runs only once on mount
-	useEffect(() => {
-		// Decode token when the component mounts or when the token changes
-		const decoded = decodeToken(token);
-		setDecodedToken(decoded);
-	}, [token]);
+	// 	// Clean up the event listener on component unmount
+	// 	return () => {
+	// 		window.removeEventListener("resize", handleResize);
+	// 	};
+	// }, []); // Empty dependency array ensures the effect runs only once on mount
+	// useEffect(() => {
+	// 	// Decode token when the component mounts or when the token changes
+	// 	if (token) {
+	// 		const decoded = decodeToken(token);
+	// 		setDecodedToken(decoded);
+	// 	}
+	// }, []);
 	const [show2, setShow2] = useState<boolean>(false);
 	const [modal, setModal] = useState<number>(0);
 	const [show3, setShow3] = useState<boolean>(false);
@@ -90,8 +99,11 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const [username, setUsername] = useState<string>("");
 	const [dob, setDob] = useState("");
 	const [email, setEmail] = useState("");
+	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
 	const [password, setPassword] = useState<string>("");
-	
+	const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
 	const setLightMode = () => {
 		localStorage.removeItem("isDarkMode");
 		setDarkMode(false);
@@ -153,19 +165,36 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	};
 	const handleVideoUploadSubmit = async (e: any) => {
 		e.preventDefault();
-		try {
-			setLoading(true);
-			let payload = {
-				email,
-				password,
-			};
-			const result = await postRequest("video/create", payload, setLoading);
-			console.log("Post success:", result);
-			setShow3(false);
-		} catch (error) {
-			setLoading(false);
+		if (decodedToken?.userId) {
+			try {
+				const formData = new FormData();
+				setLoading(true);
+				formData.append("file", selectedFile);
+				formData.append("upload_preset", "zoahguuq");
 
-			console.error("Post error:", error);
+				axios
+					.post(
+						"https://api.cloudinary.com/v1_1/folajimidev/image/upload",
+						formData
+					)
+					.then(async (res: any) => {
+						let payload = {
+							title,
+							description,
+							genre: selectedItems.map((category: any) => category.value),
+							file: res.data["secure_url"],
+							author: decodedToken?.userId ?? "33",
+						};
+						await postRequest("video/create", payload, setLoading);
+						setShow3(false);
+					});
+			} catch (error) {
+				setLoading(false);
+
+				console.error("Post error:", error);
+			}
+		} else {
+			toast.error("You must log in first before uploading!");
 		}
 	};
 	const LoginModal: React.FC = () => (
@@ -191,7 +220,6 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="**************** "
 					type="password"
-					autoFocus
 					value={password}
 					onChange={(e: any) => setPassword(e.target.value)}
 				/>
@@ -216,17 +244,6 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					</a>
 				</div>
 				<hr className="my-4" />
-				<p className="text-center my-2 ">Alternatively Log in with:</p>
-				{/* <GoogleOAuthProvider clientId="<your_client_id>">
-					<GoogleLogin
-						onSuccess={(credentialResponse) => {
-							console.log(credentialResponse);
-						}}
-						onError={() => {
-							console.log("Login Failed");
-						}}
-					/>
-				</GoogleOAuthProvider> */}
 			</form>
 		</Modal>
 	);
@@ -314,24 +331,33 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 				<input
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="Title"
+					autoFocus
 					type="text"
+					value={title}
+					onChange={(e: any) => setTitle(e.target.value)}
 				/>
 				<textarea
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="Description..."
+					autoFocus
 					rows={10}
+					value={description}
+					onChange={(e: any) => setDescription(e.target.value)}
 				/>
-				<select className="rounded-md px-4 py-2 w-full mt-3 border outline-none">
-					<option value="" selected disabled>
-						Select a category
-					</option>
-					{CAT.map((val: string, index: number) => (
-						<option key={index}>{val}</option>
-					))}
-				</select>
+				<Select
+					values={selectedItems}
+					options={CAT}
+					required
+					multi
+					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
+					onChange={(values: any) => {
+						setSelectedItems(values);
+					}}
+				/>
 				<div className="flex items-center space-x-2">
 					<div className="relative">
 						<input
+							autoFocus
 							type="file"
 							accept="image/*"
 							className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
@@ -532,7 +558,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 											: "flex-col justify-center text-xs gap-1 specific"
 									}`}
 								>
-									<FaMoon size="20" color={darkMode && "green"} />
+									<FaMoon size="20" color={darkMode ? "green" : ""} />
 									<span
 										className={`cursor-pointer text-sm ${expanded ?? "w-full"}`}
 									>
@@ -549,7 +575,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									}`}
 									onClick={setLightMode}
 								>
-									<IoSunnyOutline size="20" color={!darkMode && "green"} />
+									<IoSunnyOutline size="20" color={!darkMode ? "green" : ""} />
 									<span className={` text-sm ${expanded ?? "w-full"}`}>
 										Light mode
 									</span>

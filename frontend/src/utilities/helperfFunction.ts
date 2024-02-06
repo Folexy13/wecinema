@@ -83,3 +83,16 @@ export const capitalizeFirstLetter = (str: string): string => {
 export const getCapitalizedFirstLetter = (str: string): string => {
 	return str.charAt(0).toUpperCase();
 };
+
+export const toggleItemInArray = <T>(array: T[], item: T): T[] => {
+  const index = array.indexOf(item);
+  if (index === -1) {
+    // If item is not in array, add it
+    return [...array, item];
+  } else {
+    // If item is in array, remove it
+    return array.filter((_, i) => i !== index);
+  }
+};
+
+

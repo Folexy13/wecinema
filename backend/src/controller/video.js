@@ -26,7 +26,6 @@ router.post("/create", async (req, res) => {
 			description,
 			genre,
 			file,
-			thumbnail,
 			slug,
 			author, //req.user._id,
 		});

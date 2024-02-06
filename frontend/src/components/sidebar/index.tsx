@@ -27,10 +27,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
 	const token = localStorage.getItem("token") || null;
 	const tokenData = decodeToken(token);
-	
+
 	console.log(tokenData);
-	
-	const nav =useNavigate()
+
+	const nav = useNavigate();
 	return (
 		<section
 			// style={{ marginTop: 67 }}
@@ -162,7 +162,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						}`}
 						onClick={setDarkMode}
 					>
-						<FaMoon size="20" color={darkMode && "green"} />
+						<FaMoon size="20" color={darkMode ? "green" : ""} />
 						<span className={`cursor-pointer text-sm ${expand ?? "w-full"}`}>
 							Dark mode
 						</span>
@@ -175,7 +175,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						}`}
 						onClick={setLightMode}
 					>
-						<IoSunnyOutline size="20" color={!darkMode && "green"} />
+						<IoSunnyOutline size="20" color={!darkMode ? "green" : ""} />
 						<span className={` text-sm ${expand ?? "w-full"}`}>Light mode</span>
 					</div>
 				</ul>
