@@ -16,7 +16,7 @@ import { Itoken, decodeToken } from "../../utilities/helperfFunction";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Select from "react-dropdown-select";
-const CAT = [
+const CAT: any = [
 	{ value: "Action", label: "Action" },
 	{ value: "Adventure", label: "Adventure" },
 	{ value: "Comedy", label: "Comedy" },
@@ -64,6 +64,18 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const [expanded, setExpanded] = useState<boolean>(false);
 	const [show, setShow] = useState<boolean>(false);
 	const [selectedFile, setSelectedFile] = useState<any>(null);
+	const [show2, setShow2] = useState<boolean>(false);
+	const [modal, setModal] = useState<number>(0);
+	const [show3, setShow3] = useState<boolean>(false);
+	const [show4, setShow4] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [username, setUsername] = useState<string>("");
+	const [dob, setDob] = useState("");
+	const [email, setEmail] = useState("");
+	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
+	const [password, setPassword] = useState<string>("");
+	const [selectedItems, setSelectedItems] = useState<string[]>([]);
 	const handleFileChange = (e: any) => {
 		const file = e.target.files[0];
 
@@ -86,23 +98,10 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	}, []); // Empty dependency array ensures the effect runs only once on mount
 	useEffect(() => {
 		// Decode token when the component mounts or when the token changes
-		if (token) {
-			const decoded = decodeToken(token);
-			setDecodedToken(decoded);
-		}
-	}, []);
-	const [show2, setShow2] = useState<boolean>(false);
-	const [modal, setModal] = useState<number>(0);
-	const [show3, setShow3] = useState<boolean>(false);
-	const [show4, setShow4] = useState<boolean>(false);
-	const [loading, setLoading] = useState<boolean>(false);
-	const [username, setUsername] = useState<string>("");
-	const [dob, setDob] = useState("");
-	const [email, setEmail] = useState("");
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
-	const [password, setPassword] = useState<string>("");
-	const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+		const decoded = decodeToken(token);
+		setDecodedToken(decoded);
+	}, [token]);
 
 	const setLightMode = () => {
 		localStorage.removeItem("isDarkMode");
@@ -197,56 +196,60 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 			toast.error("You must log in first before uploading!");
 		}
 	};
-	const LoginModal: React.FC = () => (
-		<Modal show={show} background="linear-gradient(to right, #ffd700, #ffff00)">
-			<header className="flex  gap-4 justify-between items-center">
-				<h2>Sign in to Wecinema</h2>
-				<FaTimes
-					onClick={() => {
-						setShow(false), setModal(0);
-					}}
-				/>
-			</header>
-			<form onSubmit={handleLoginSubmit}>
-				<input
-					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-					placeholder="email "
-					type="email"
-					autoFocus
-					value={email}
-					onChange={(e: any) => setEmail(e.target.value)}
-				/>
-				<input
-					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-					placeholder="**************** "
-					type="password"
-					value={password}
-					onChange={(e: any) => setPassword(e.target.value)}
-				/>
-				<button
-					disabled={loading}
-					className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white"
-				>
-					Sign in
-				</button>
-				<div className="flex sm:flex-row flex-col gap-4 justify-between items-center">
-					<a
-						href="#"
-						className=" sm:my-3 text-center italic hover:text-blue-600"
+	const LoginModal = () => {
+		return (
+			<Modal
+				show={show}
+				background="linear-gradient(to right, #ffd700, #ffff00)"
+			>
+				<header className="flex  gap-4 justify-between items-center">
+					<h2>Sign in to Wecinema</h2>
+					<FaTimes
+						onClick={() => {
+							setShow(false), setModal(0);
+						}}
+					/>
+				</header>
+				<form onSubmit={handleLoginSubmit}>
+					<input
+						className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
+						placeholder="email"
+						type="email"
+						value={email}
+						onChange={(e: any) => setEmail(e.target.value)}
+					/>
+					<input
+						className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
+						placeholder="**************** "
+						type="password"
+						value={password}
+						onChange={(e: any) => setPassword(e.target.value)}
+					/>
+					<button
+						disabled={loading}
+						className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white"
 					>
-						Forgot password?
-					</a>
-					<a
-						href="#"
-						className=" sm:my-3 text-center italic hover:text-blue-600"
-					>
-						Don't have an account?
-					</a>
-				</div>
-				<hr className="my-4" />
-			</form>
-		</Modal>
-	);
+						Sign in
+					</button>
+					<div className="flex sm:flex-row flex-col gap-4 justify-between items-center">
+						<a
+							href="#"
+							className=" sm:my-3 text-center italic hover:text-blue-600"
+						>
+							Forgot password?
+						</a>
+						<a
+							href="#"
+							className=" sm:my-3 text-center italic hover:text-blue-600"
+						>
+							Don't have an account?
+						</a>
+					</div>
+					<hr className="my-4" />
+				</form>
+			</Modal>
+		);
+	};
 	const LogoutModal: React.FC = () => (
 		<Modal show={show4}>
 			<header className="flex  gap-4 justify-between items-center my-3">
