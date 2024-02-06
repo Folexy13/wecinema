@@ -76,21 +76,21 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 		setScreenWidth(window.innerWidth);
 	};
 	// Attach event listener for window resize
-	// useEffect(() => {
-	// 	window.addEventListener("resize", handleResize);
+	useEffect(() => {
+		window.addEventListener("resize", handleResize);
 
-	// 	// Clean up the event listener on component unmount
-	// 	return () => {
-	// 		window.removeEventListener("resize", handleResize);
-	// 	};
-	// }, []); // Empty dependency array ensures the effect runs only once on mount
-	// useEffect(() => {
-	// 	// Decode token when the component mounts or when the token changes
-	// 	if (token) {
-	// 		const decoded = decodeToken(token);
-	// 		setDecodedToken(decoded);
-	// 	}
-	// }, []);
+		// Clean up the event listener on component unmount
+		return () => {
+			window.removeEventListener("resize", handleResize);
+		};
+	}, []); // Empty dependency array ensures the effect runs only once on mount
+	useEffect(() => {
+		// Decode token when the component mounts or when the token changes
+		if (token) {
+			const decoded = decodeToken(token);
+			setDecodedToken(decoded);
+		}
+	}, []);
 	const [show2, setShow2] = useState<boolean>(false);
 	const [modal, setModal] = useState<number>(0);
 	const [show3, setShow3] = useState<boolean>(false);
