@@ -151,7 +151,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 			console.error("Post error:", error);
 		}
 	};
-	const handleUploadSubmit = async (e: any) => {
+	const handleVideoUploadSubmit = async (e: any) => {
 		e.preventDefault();
 		try {
 			setLoading(true);
@@ -159,7 +159,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 				email,
 				password,
 			};
-			const result = await postRequest("user/login", payload, setLoading);
+			const result = await postRequest("video/create", payload, setLoading);
 			console.log("Post success:", result);
 			setShow3(false);
 		} catch (error) {
@@ -310,7 +310,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 				<h2>Upload Video</h2>
 				<FaTimes onClick={() => setShow3(false)} />
 			</header>
-			<form onSubmit={handleUploadSubmit}>
+			<form onSubmit={handleVideoUploadSubmit}>
 				<input
 					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 					placeholder="Title"
