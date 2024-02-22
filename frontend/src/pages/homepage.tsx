@@ -36,7 +36,7 @@ const Homepage: React.FC = () => {
 				{!loading && (
 					<h2 className="text-l font-extrabold text-lg sm:text-xl">Scripts</h2>
 				)}
-				<div className="flex flex-wrap flex-column sm:flex-row sm:gap-4 gap-2 my-2">
+				<div className="flex flex-wrap flex-col sm:flex-row sm:gap-4 gap-2 my-2">
 					{/* <h2>Scripts</h2> */}
 
 					{!loading &&
