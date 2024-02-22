@@ -31,19 +31,27 @@ const Gallery: React.FC<GalleryProps> = ({
 	const [loading, setLoading] = useState<boolean>(false);
 	const [videos, setVideos] = useState<any>([]);
 	useEffect(() => {
+		let isMounted = true; // Flag to track if the component is mounted
+
 		(async () => {
 			setLoading(true);
 			const result = !data
 				? await getRequest("video/all", setLoading)
 				: await getRequest("video/all/" + data, setLoading);
 
-			if (result) {
-				// Update state or props to trigger rendering with result
+			if (isMounted && result) {
+				// Update state only if the component is still mounted
 				setVideos(result); // Assuming a `videos` state variable
 				setLoading(false);
 			}
 		})();
+
+		// Clean-up function
+		return () => {
+			isMounted = false; // Set the flag to false when the component unmounts
+		};
 	}, [category]);
+
 	const filteredVideo = (category?: string) => {
 		return videos.filter((v: any) =>
 			category ? v.genre.includes(category) : v

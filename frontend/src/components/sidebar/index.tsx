@@ -13,7 +13,8 @@ import { toast } from "react-toastify";
 interface SidebarProps {
 	expand: boolean;
 	darkMode: boolean;
-	toggleUploadModal: any;
+	toggleUploadScriptModal?: any;
+	toggleUploadModal?: any;
 	setDarkMode: any;
 	setLightMode: any;
 }
@@ -23,6 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 	setLightMode,
 	setDarkMode,
 	darkMode,
+	toggleUploadScriptModal,
 	toggleUploadModal,
 }) => {
 	const token = localStorage.getItem("token") || null;
@@ -81,6 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 						className={` duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						}`}
+						onClick={toggleUploadScriptModal}
 					>
 						<FaRegFileVideo size="20" />
 						<span className="text-sm ">{`${

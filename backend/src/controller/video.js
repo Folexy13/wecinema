@@ -4,6 +4,7 @@ const router = express.Router();
 
 // Import your Video model (assuming you have a MongoDB Video model)
 const Videos = require("../models/videos");
+const Script = require("../models/script");
 
 // Import your User model (assuming you have a MongoDB User model)
 const User = require("../models/user");
@@ -217,6 +218,41 @@ router.get("/category/:genre", async (req, res) => {
 		res.json(filteredVideos);
 	} catch (error) {
 		console.error("Error getting videos by genre:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+//create Script
+router.post("/scripts", async (req, res) => {
+	try {
+		const { title, genre, script, author } = req.body;
+		const newScript = await Script.create({ title, genre, script, author });
+		res.status(201).json(newScript);
+	} catch (error) {
+		console.error("Error creating script:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+// Route to get all scripts
+router.get("/author/scripts", async (req, res) => {
+	try {
+		const scripts = await Script.find();
+		res.status(200).json(scripts);
+	} catch (error) {
+		console.error("Error getting scripts:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+// Route to get all scripts of a specific author
+router.get("/authors/:authorId/scripts", async (req, res) => {
+	try {
+		const authorId = req.params.authorId;
+		const scripts = await Script.find({ author: authorId });
+		res.status(200).json(scripts);
+	} catch (error) {
+		console.error("Error getting scripts by author:", error);
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });

@@ -1,9 +1,9 @@
-
 import { jwtDecode } from "jwt-decode";
 import moment from "moment";
 export interface Itoken {
 	userId: string;
-	avatar:string
+	avatar: string;
+	username?: string;
 	// Add other payload properties as needed
 }
 type MongooseId = string;
@@ -20,10 +20,10 @@ export const truncateText = (text: string, maxLength: number): string => {
 };
 
 export const decodeToken = (token: any) => {
-	console.log(token)
+	console.log(token);
 	if (!token) return null;
 	try {
-		const decodeToken:any =  jwtDecode(token) as Itoken;
+		const decodeToken: any = jwtDecode(token) as Itoken;
 		// Check if the token has expired
 		const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
 		if (decodeToken.exp && decodeToken.exp < currentTime) {
@@ -43,7 +43,6 @@ export function isObjectEmpty(obj: Record<string, any>): boolean {
 	}
 	return true;
 }
-
 
 export const formatDateAgo = (dateTime: string): string => {
 	const now = moment();
@@ -69,12 +68,12 @@ export const formatDateAgo = (dateTime: string): string => {
 	}
 };
 
-
-
-export function isUserIdInArray(userId: MongooseId, idArray: MongooseId[]): boolean {
+export function isUserIdInArray(
+	userId: MongooseId,
+	idArray: MongooseId[]
+): boolean {
 	return idArray?.includes(userId);
 }
-
 
 export const capitalizeFirstLetter = (str: string): string => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
@@ -85,14 +84,12 @@ export const getCapitalizedFirstLetter = (str: string): string => {
 };
 
 export const toggleItemInArray = <T>(array: T[], item: T): T[] => {
-  const index = array.indexOf(item);
-  if (index === -1) {
-    // If item is not in array, add it
-    return [...array, item];
-  } else {
-    // If item is in array, remove it
-    return array.filter((_, i) => i !== index);
-  }
+	const index = array.indexOf(item);
+	if (index === -1) {
+		// If item is not in array, add it
+		return [...array, item];
+	} else {
+		// If item is in array, remove it
+		return array.filter((_, i) => i !== index);
+	}
 };
-
-

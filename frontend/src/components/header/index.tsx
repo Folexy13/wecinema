@@ -6,9 +6,9 @@ import { useNavigate } from "react-router-dom";
 interface HeaderProps {
 	darkMode: boolean;
 	toggler: any;
-	toggleSigninModal: any;
-	toggleSignoutModal: any;
-	toggleSignupModal: any;
+	toggleSigninModal?: any;
+	toggleSignoutModal?: any;
+	toggleSignupModal?: any;
 	expand: boolean;
 	isMobile: boolean;
 	isLoggedIn: any;
@@ -41,14 +41,12 @@ const Header: React.FC<HeaderProps> = ({
 						className="cursor-pointer flex-col sm:flex-row flex gap-2 items-center"
 						onClick={() => nav("/")}
 					>
-						<img src={logo} alt="logo" width={70} title="wecinema"/>
-						{
-							!isMobile &&(
-								<p className=" text-xl sm:text-2xl mt-3 font-mono">
-									<b>We </b>Cinema
-								</p>
-							)
-						}
+						<img src={logo} alt="logo" width={70} title="wecinema" />
+						{!isMobile && (
+							<p className=" text-xl sm:text-2xl mt-3 font-mono">
+								<b>We </b>Cinema
+							</p>
+						)}
 					</li>
 				</ul>
 				<form className="w-full md:w-2/3">

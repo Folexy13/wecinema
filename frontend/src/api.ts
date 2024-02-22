@@ -1,27 +1,28 @@
 import axios, { AxiosResponse, AxiosError, Method } from "axios";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = "https://wecinema.onrender.com/";//http://localhost:3000/
-
-
+const API_BASE_URL = "http://localhost:3000/"; //"https://wecinema.onrender.com/";//http://localhost:3000/
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+	baseURL: API_BASE_URL,
+	headers: {
+		"Content-Type": "application/json",
+	},
 });
 
 // Add a request interceptor to add the JWT token to the headers
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, error => {
-  return Promise.reject(error);
-});
+api.interceptors.request.use(
+	(config) => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			config.headers.Authorization = `Bearer ${token}`;
+		}
+		return config;
+	},
+	(error) => {
+		return Promise.reject(error);
+	}
+);
 
 interface ApiResponse {
 	message: string;
@@ -31,7 +32,7 @@ const handleSuccess = <T extends ApiResponse>(
 	response: AxiosResponse<T>,
 	method: Method,
 	setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-	message?: string,
+	message?: string
 ): T => {
 	setLoading(false);
 	if (method === "post" || method === "put") {
@@ -89,9 +90,9 @@ export const putRequest = <T>(
 	url: string,
 	data: any,
 	setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-	message?: string,
+	message?: string
 ): Promise<T> =>
 	api
 		.put(url, data)
-		.then((response) => handleSuccess(response, "put", setLoading,message))
+		.then((response) => handleSuccess(response, "put", setLoading, message))
 		.catch((error) => handleError(error, "put", setLoading));

@@ -1,32 +1,19 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { Header, Modal, Sidebar } from "..";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import { GoogleLogin } from "@react-oauth/google";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
-import { FaSignInAlt, FaSignOutAlt, FaTimes } from "react-icons/fa";
+import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { MdOutlineHome } from "react-icons/md";
 import { SlGraph } from "react-icons/sl";
 import { GrUpload } from "react-icons/gr";
 import { FaMoon, FaRegFileVideo, FaUserCheck } from "react-icons/fa6";
 import { IoSunnyOutline } from "react-icons/io5";
-import { postRequest } from "../../api";
-import moment from "moment";
+import "quill/dist/quill.snow.css";
 import { Itoken, decodeToken } from "../../utilities/helperfFunction";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import Select from "react-dropdown-select";
-const CAT: any = [
-	{ value: "Action", label: "Action" },
-	{ value: "Adventure", label: "Adventure" },
-	{ value: "Comedy", label: "Comedy" },
-	{ value: "Documentary", label: "Documentary" },
-	{ value: "Drama", label: "Drama" },
-	{ value: "Horror", label: "Horror" },
-	{ value: "Mystery", label: "Mystery" },
-	{ value: "Romance", label: "Romance" },
-	{ value: "Thriller", label: "Thriller" },
-];
+
 export const categories = [
 	"Picks",
 	"My Feed",
@@ -49,40 +36,19 @@ interface LayoutProps {
 	children: ReactNode;
 }
 const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
-	const fileInputRef: any = useRef(null);
-
 	const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-	const handleThumbnailClick = () => {
-		fileInputRef?.current.click();
-	};
-	const [token, setToken] = useState<string | null>(
+
+	const [token, _] = useState<string | null>(
 		localStorage.getItem("token") || null
 	);
 	const [decodedToken, setDecodedToken] = useState<Itoken | null>(null);
 	const isDarkMode = localStorage.getItem("isDarkMode") ?? false;
 	const [darkMode, setDarkMode] = useState<boolean>(!!isDarkMode);
 	const [expanded, setExpanded] = useState<boolean>(false);
+	const [modalShow, setModalShow] = useState(false);
+	const [type, setType] = useState("");
 	const [show, setShow] = useState<boolean>(false);
-	const [selectedFile, setSelectedFile] = useState<any>(null);
-	const [show2, setShow2] = useState<boolean>(false);
-	const [modal, setModal] = useState<number>(0);
-	const [show3, setShow3] = useState<boolean>(false);
-	const [show4, setShow4] = useState<boolean>(false);
-	const [loading, setLoading] = useState<boolean>(false);
-	const [username, setUsername] = useState<string>("");
-	const [dob, setDob] = useState("");
-	const [email, setEmail] = useState("");
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
-	const [password, setPassword] = useState<string>("");
-	const [selectedItems, setSelectedItems] = useState<string[]>([]);
-	const handleFileChange = (e: any) => {
-		const file = e.target.files[0];
 
-		setSelectedFile(file);
-
-		console.log("Selected File:", selectedFile);
-	};
 	// Update screenWidth when the window is resized
 	const handleResize = () => {
 		setScreenWidth(window.innerWidth);
@@ -96,317 +62,38 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 			window.removeEventListener("resize", handleResize);
 		};
 	}, []); // Empty dependency array ensures the effect runs only once on mount
+
 	useEffect(() => {
 		// Decode token when the component mounts or when the token changes
-
 		const decoded = decodeToken(token);
 		setDecodedToken(decoded);
+
+		// Clean-up function
+		return () => {
+			// Clear the decoded token when the component unmounts
+			setDecodedToken(null);
+		};
 	}, [token]);
 
 	const setLightMode = () => {
 		localStorage.removeItem("isDarkMode");
 		setDarkMode(false);
-		console.log(modal);
 	};
-
+	console.log(show, type);
 	const setDarkiMode = () => {
 		localStorage.setItem("isDarkMode", "dark");
 		setDarkMode(true);
 	};
-	const handleLoginSubmit = async (e: any) => {
-		e.preventDefault();
-		try {
-			setLoading(true);
-			let payload = {
-				email,
-				password,
-			};
-			const result: any = await postRequest("user/login", payload, setLoading);
-			console.log("Post success:", result);
-			setShow(false);
-			setToken(result.token);
-			localStorage.setItem("token", result.token);
-			localStorage.setItem("loggedIn", "true");
-			setTimeout(() => {
-				window.location.reload();
-			}, 1000);
-		} catch (error) {
-			setLoading(false);
-			console.error("Post error:", error);
-		}
+	const handleType = (str: string) => {
+		setType(str);
+		setModalShow(!modalShow);
 	};
-	const handleLogoutSubmit = async (e: any) => {
-		e.preventDefault();
-		localStorage.removeItem("token");
-		localStorage.removeItem("loggedIn");
-		setTimeout(() => {
-			window.location.reload();
-		}, 500);
-	};
-	const handleRegisterSubmit = async (e: any) => {
-		e.preventDefault();
-		try {
-			setLoading(true);
-			let payload = {
-				email,
-				password,
-				username,
-				dob: moment(dob, "DD-MM-YYYY").format("MMM DD, YYYY"),
-			};
-			const result = await postRequest("user/register", payload, setLoading);
-			console.log("Post success:", result);
-			setShow2(false);
-		} catch (error) {
-			setLoading(false);
 
-			console.error("Post error:", error);
-		}
-	};
-	const handleVideoUploadSubmit = async (e: any) => {
-		e.preventDefault();
-		if (decodedToken?.userId) {
-			try {
-				const formData = new FormData();
-				setLoading(true);
-				formData.append("file", selectedFile);
-				formData.append("upload_preset", "zoahguuq");
+	useEffect(() => {
+		setShow(!!type);
+		console.log("This is gbangbadun");
+	}, [type, modalShow]);
 
-				axios
-					.post(
-						"https://api.cloudinary.com/v1_1/folajimidev/image/upload",
-						formData
-					)
-					.then(async (res: any) => {
-						let payload = {
-							title,
-							description,
-							genre: selectedItems.map((category: any) => category.value),
-							file: res.data["secure_url"],
-							author: decodedToken?.userId ?? "33",
-						};
-						await postRequest("video/create", payload, setLoading);
-						setShow3(false);
-					});
-			} catch (error) {
-				setLoading(false);
-
-				console.error("Post error:", error);
-			}
-		} else {
-			toast.error("You must log in first before uploading!");
-		}
-	};
-	const LoginModal = () => {
-		return (
-			<Modal
-				show={show}
-				background="linear-gradient(to right, #ffd700, #ffff00)"
-			>
-				<header className="flex  gap-4 justify-between items-center">
-					<h2>Sign in to Wecinema</h2>
-					<FaTimes
-						onClick={() => {
-							setShow(false), setModal(0);
-						}}
-					/>
-				</header>
-				<form onSubmit={handleLoginSubmit}>
-					<input
-						className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-						placeholder="email"
-						type="email"
-						value={email}
-						onChange={(e: any) => setEmail(e.target.value)}
-					/>
-					<input
-						className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-						placeholder="**************** "
-						type="password"
-						value={password}
-						onChange={(e: any) => setPassword(e.target.value)}
-					/>
-					<button
-						disabled={loading}
-						className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white"
-					>
-						Sign in
-					</button>
-					<div className="flex sm:flex-row flex-col gap-4 justify-between items-center">
-						<a
-							href="#"
-							className=" sm:my-3 text-center italic hover:text-blue-600"
-						>
-							Forgot password?
-						</a>
-						<a
-							href="#"
-							className=" sm:my-3 text-center italic hover:text-blue-600"
-						>
-							Don't have an account?
-						</a>
-					</div>
-					<hr className="my-4" />
-				</form>
-			</Modal>
-		);
-	};
-	const LogoutModal: React.FC = () => (
-		<Modal show={show4}>
-			<header className="flex  gap-4 justify-between items-center my-3">
-				<h2>Are you sure you want to log Out?</h2>
-			</header>
-			<form onSubmit={handleLogoutSubmit} className="flex gap-2">
-				<button
-					type="button"
-					className="rounded-md px-4 py-2 w-full my-3 bg-white 500"
-					onClick={() => {
-						setShow4(false);
-					}}
-				>
-					No
-				</button>
-				<button className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white">
-					Yes
-				</button>
-			</form>
-		</Modal>
-	);
-	const RegisterModal: React.FC = () => (
-		<Modal show={show2}>
-			<header className="flex gap-4 justify-between items-center">
-				<h2>Sign up to Wecinema</h2>
-				<FaTimes onClick={() => setShow2(false)} />
-			</header>
-			<form onSubmit={handleRegisterSubmit}>
-				<input
-					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-					placeholder="Username"
-					type="text"
-					autoFocus
-					value={username}
-					onChange={(e: any) => setUsername(e.target.value)}
-				/>
-				<input
-					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-					placeholder="email "
-					type="email "
-					autoFocus
-					value={email}
-					onChange={(e: any) => setEmail(e.target.value)}
-				/>
-				<input
-					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-					placeholder="**************** "
-					type="password "
-					autoFocus
-					value={password}
-					onChange={(e: any) => setPassword(e.target.value)}
-				/>
-				<input
-					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-					placeholder="date of birth"
-					type="date"
-					autoFocus
-					value={dob}
-					onChange={(e: any) => setDob(e.target.value)}
-				/>
-				<button
-					disabled={loading}
-					className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white"
-				>
-					Sign up
-				</button>
-				<div className="flex gap-4 justify-between items-center">
-					<a href="#" className=" my-3 text-center italic hover:text-blue-600">
-						Already have an account?
-					</a>
-				</div>
-			</form>
-		</Modal>
-	);
-	const UploadVideoModal: React.FC = () => (
-		<Modal show={show3}>
-			<header className="flex gap-4 justify-between items-center">
-				<h2>Upload Video</h2>
-				<FaTimes onClick={() => setShow3(false)} />
-			</header>
-			<form onSubmit={handleVideoUploadSubmit}>
-				<input
-					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-					placeholder="Title"
-					autoFocus
-					type="text"
-					value={title}
-					onChange={(e: any) => setTitle(e.target.value)}
-				/>
-				<textarea
-					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-					placeholder="Description..."
-					autoFocus
-					rows={10}
-					value={description}
-					onChange={(e: any) => setDescription(e.target.value)}
-				/>
-				<Select
-					values={selectedItems}
-					options={CAT}
-					required
-					multi
-					className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
-					onChange={(values: any) => {
-						setSelectedItems(values);
-					}}
-				/>
-				<div className="flex items-center space-x-2">
-					<div className="relative">
-						<input
-							autoFocus
-							type="file"
-							accept="image/*"
-							className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-							onChange={handleFileChange}
-							ref={fileInputRef}
-						/>
-						<div
-							className="bg-gray-100 p-4 rounded-md cursor-pointer"
-							onClick={handleThumbnailClick}
-						>
-							{selectedFile ? (
-								<img
-									src={URL.createObjectURL(selectedFile)}
-									alt="Thumbnail Preview"
-									height={100}
-									width={100}
-									className=" object-cover rounded-full"
-								/>
-							) : (
-								<svg
-									className="w-6 h-6 text-gray-600"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-									/>
-								</svg>
-							)}
-						</div>
-					</div>
-					<span onClick={handleThumbnailClick} className="text-gray-600">
-						{selectedFile ? "Change Thumbnail" : "Add Thumbnail"}
-					</span>
-				</div>
-				<button className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white">
-					Upload
-				</button>
-			</form>
-		</Modal>
-	);
 	return (
 		<div className=" text-lg md:text-sm sm:text-xs">
 			<ToastContainer />
@@ -415,9 +102,9 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 				isMobile={screenWidth <= 1120}
 				toggler={() => setExpanded(!expanded)}
 				darkMode={darkMode}
-				toggleSigninModal={() => setShow(!show)}
-				toggleSignupModal={() => setShow2(!show2)}
-				toggleSignoutModal={() => setShow4(!show4)}
+				toggleSigninModal={() => handleType("login")}
+				toggleSignupModal={() => handleType("register")}
+				toggleSignoutModal={() => handleType("logout")}
 				isLoggedIn={decodedToken}
 			/>
 			{expanded && screenWidth <= 1120 && (
@@ -467,7 +154,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 											? ""
 											: "flex-col justify-center text-xs gap-1 specific"
 									} `}
-									onClick={() => setShow3(!show3)}
+									onClick={() => handleType("video")}
 								>
 									<GrUpload size="20" />
 									<span className="text-sm ">{`Upload ${
@@ -481,6 +168,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 											? ""
 											: "flex-col justify-center text-xs gap-1 specific"
 									}`}
+									onClick={() => handleType("script")}
 								>
 									<FaRegFileVideo size="20" />
 									<span className="text-sm ">{`${
@@ -588,14 +276,14 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 						<nav className="container mx-auto  items-center justify-between p-2 my-3 ">
 							<ul className="border-b  w-full border-gray-200 pb-4 ">
 								<li
-									onClick={() => setShow(!show)}
+									onClick={() => handleType("login")}
 									className={`flex gap-4  mx-4 my-2 items-center text-sm hover:text-green-500`}
 								>
 									<FaSignInAlt size="16" className="hover:text-green-500" />
 									Sign In
 								</li>
 								<li
-									onClick={() => setShow2(!show2)}
+									onClick={() => handleType("register")}
 									className={`flex gap-4  mx-4 my-2 items-center text-sm hover:text-green-500`}
 								>
 									<FaSignOutAlt size="16" className="hover:text-green-500" />
@@ -612,7 +300,8 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 					setLightMode={setLightMode}
 					setDarkMode={setDarkiMode}
 					darkMode={darkMode}
-					toggleUploadModal={() => setShow3(!show3)}
+					toggleUploadModal={() => handleType("video")}
+					toggleUploadScriptModal={() => handleType("script")}
 				/>
 				<main
 					className={`block main min-h-screen mt-12 ${
@@ -642,12 +331,8 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 							))}
 						</header>
 					)}
-					<LoginModal />
-					<RegisterModal />
-					<UploadVideoModal />
-					<LogoutModal />
+					<Modal type={type} authorized={!!token} show={modalShow} />
 					{children}
-
 					{/* //header */}
 				</main>
 			</div>
