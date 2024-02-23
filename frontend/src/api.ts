@@ -25,7 +25,8 @@ api.interceptors.request.use(
 );
 
 interface ApiResponse {
-	message: string;
+	message?: string;
+	error?: string;
 }
 
 const handleSuccess = <T extends ApiResponse>(
@@ -50,7 +51,8 @@ const handleError = (
 
 	if (error.response) {
 		const errorMessage =
-			(error.response?.data && error.response.data.message) ||
+			error.response.data.message ||
+			error.response.data?.error ||
 			"Something went wrong on the server.";
 
 		if (method === "post" || method === "put") {

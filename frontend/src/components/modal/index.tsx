@@ -264,7 +264,7 @@ const Popup: React.FC<IPopupProps> = React.memo(
 			return (
 				<div
 					style={{ background }}
-					className={`fixed sm:top-0 z-50 left-0 sm:h-screen w-full flex justify-center items-center ${
+					className={`fixed sm:top-0 z-50 left-0 h-screen w-full flex justify-center items-center ${
 						isShow && show ? "visible" : "invisible"
 					} ${className}`}
 				>
@@ -317,7 +317,10 @@ const Popup: React.FC<IPopupProps> = React.memo(
 										setSelectedItems(values);
 									}}
 								/>
-								<button className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white">
+								<button
+									disabled={loading}
+									className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white"
+								>
 									Upload
 								</button>
 							</form>
@@ -496,7 +499,10 @@ const Popup: React.FC<IPopupProps> = React.memo(
 										{selectedFile ? "Change Thumbnail" : "Add Thumbnail"}
 									</span>
 								</div>
-								<button className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white">
+								<button
+									disabled={loading}
+									className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white"
+								>
 									Upload
 								</button>
 							</form>{" "}

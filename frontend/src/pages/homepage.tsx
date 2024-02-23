@@ -5,6 +5,8 @@ import { getRequest } from "../api";
 const Homepage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [scripts, setScripts] = useState<any>([]);
+	const [data, setData] = useState<any>([]);
+	const [showMoreIndex, setShowMoreIndex] = useState<number | null>(null);
 
 	useEffect(() => {
 		let isMounted = true; // Flag to track if the component is mounted
@@ -15,13 +17,26 @@ const Homepage: React.FC = () => {
 			console.log(result);
 			if (isMounted && result) {
 				// Update state only if the component is still mounted
-				setScripts(result.map((res: any) => res.script)); // Assuming a `videos` state variable
+				setScripts(result.map((res: any) => res.script));
+				setData(result); // Assuming a `videos` state variable
 				setLoading(false);
 			}
 		})();
+
+		// Cleanup function to handle unmounting
+		return () => {
+			isMounted = false;
+		};
 	}, []);
 
-	console.log(scripts);
+	const handleScriptMouseEnter = (index: number) => {
+		setShowMoreIndex(index);
+	};
+
+	const handleScriptMouseLeave = () => {
+		setShowMoreIndex(null);
+	};
+
 	return (
 		<Layout>
 			<Gallery title="Action" category="Action" length={5} isFirst />
@@ -32,22 +47,34 @@ const Homepage: React.FC = () => {
 			<Gallery title="Mystery" length={5} category="Mystery" />
 			<Gallery title="Adventure" length={5} category="Adventure" />
 			<Gallery title="Thriller " length={5} category="Thriller" />
-			<div className="z-1 relative p-2 flex flex-wrap border-b  border-blue-200 sm:mx-4 pb-4">
+			<div className="z-1 relative p-2 flex flex-wrap border-b border-blue-200 sm:mx-4 pb-4">
 				{!loading && (
 					<h2 className="text-l font-extrabold text-lg sm:text-xl">Scripts</h2>
 				)}
-				<div className="flex flex-wrap flex-col sm:flex-row sm:gap-4 gap-2 my-2">
-					{/* <h2>Scripts</h2> */}
-
-					{!loading &&
-						scripts?.map((script: string, index: number) => (
-							<div
-								key={index}
-								className="bg-gray-800 w-5/12 max-h-64 overflow-y-auto text-white p-4 rounded-sm"
-							>
-								<Render htmlString={script} />
-							</div>
-						))}
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+					{scripts?.map((script: string, index: number) => (
+						<div
+							key={index}
+							className={`${
+								showMoreIndex === index
+									? "bg-black text-white bg-opacity-50 overflow-y-none"
+									: "bg-white text-black overflow-y-auto"
+							} hide-scrollbar border w-full max-h-64  text-slate-950 p-4 rounded-sm relative`}
+							onMouseEnter={() => handleScriptMouseEnter(index)}
+							onMouseLeave={handleScriptMouseLeave}
+						>
+							<h2>{data[index].title}</h2>
+							{showMoreIndex === index && (
+								<button
+									className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-500 text-white px-2 py-1 rounded-md"
+									onClick={() => console.log("Read more clicked")}
+								>
+									Read More
+								</button>
+							)}
+							<Render htmlString={script} />
+						</div>
+					))}
 				</div>
 			</div>
 		</Layout>
