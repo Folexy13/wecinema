@@ -59,7 +59,7 @@ const Homepage: React.FC = () => {
 								showMoreIndex === index
 									? "bg-black text-white bg-opacity-50 overflow-y-none"
 									: "bg-white text-black overflow-y-auto"
-							} hide-scrollbar border w-full max-h-64  text-slate-950 p-4 rounded-sm relative`}
+							} hide-scrollbar border w-full  text-slate-950 p-4 rounded-sm relative`}
 							onMouseEnter={() => handleScriptMouseEnter(index)}
 							onMouseLeave={handleScriptMouseLeave}
 						>
