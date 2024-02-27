@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Gallery, Layout, Render } from "../components";
 import { getRequest } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const Homepage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [scripts, setScripts] = useState<any>([]);
 	const [data, setData] = useState<any>([]);
 	const [showMoreIndex, setShowMoreIndex] = useState<number | null>(null);
-
+	const nav = useNavigate();
 	useEffect(() => {
 		let isMounted = true; // Flag to track if the component is mounted
 
@@ -57,11 +58,16 @@ const Homepage: React.FC = () => {
 							key={index}
 							className={`${
 								showMoreIndex === index
-									? "bg-black text-white bg-opacity-50 overflow-y-none"
-									: "bg-white text-black overflow-y-auto"
-							} hide-scrollbar border w-full max-h-64  text-slate-950 p-4 rounded-sm relative`}
+									? "bg-black text-white bg-opacity-50 overflow-y-auto"
+									: "bg-white text-black overflow-y-hidden"
+							} overflow-y-hidden hide-scrollbar border w-full max-h-64 text-slate-950 p-4 rounded-sm relative`}
 							onMouseEnter={() => handleScriptMouseEnter(index)}
 							onMouseLeave={handleScriptMouseLeave}
+							onClick={() =>
+								nav(`/script/${data[index]._id}`, {
+									state: JSON.stringify(data[index]),
+								})
+							}
 						>
 							<h2>{data[index].title}</h2>
 							{showMoreIndex === index && (

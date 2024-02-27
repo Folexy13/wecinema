@@ -127,4 +127,33 @@ router.get("/:id", async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+
+router.put("/change-password", async (req, res) => {
+	try {
+		const { email, password } = req.body;
+		// Check if the user already exists
+		const existingUser = await User.findOne({ email });
+		if (existingUser) {
+			return res
+				.status(400)
+				.json({ error: "User already exists with this email" });
+		}
+		const passwordMatch = await argon2.verify(
+			existingUser.password,
+			password.toLowerCase()
+		);
+		if (passwordMatch) {
+			return res
+				.status(401)
+				.json({ error: "Password is the same as former password" });
+		}
+		// Hash the password using bcrypt
+		const hashedPassword = await argon2.hash(password);
+		existingUser.password = hashedPassword;
+		return res.status(201).json({ message: "Password changed successfully" });
+	} catch (error) {
+		console.error("Error creating user:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
 module.exports = router;

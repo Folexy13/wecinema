@@ -1,145 +1,112 @@
-import React, { useEffect, useState } from "react";
-import { Layout, Player } from "../components";
-import { FaEye } from "react-icons/fa";
-import VideoThumbnail from "react-video-thumbnail";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { MdComment } from "react-icons/md";
-import {
-	decodeToken,
-	formatDateAgo,
-	truncateText,
-} from "../utilities/helperfFunction";
-import { getRequest } from "../api";
+// import React from 'react'
 
-const Viewpage: React.FC<any> = () => {
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Layout, Render } from "../components";
+import { getCapitalizedFirstLetter } from "../utilities/helperfFunction";
+import { FaArrowUp } from "react-icons/fa";
+const genrepage = () => {
+	const [script, setScript] = useState<any>({});
+	const [isVisible, setIsVisible] = useState(false);
 	const location = useLocation();
-	const { slug } = useParams();
-	const [loading, setLoading] = useState(false);
-	const [catVideos, setCatVideos] = useState<any>([]);
-	const videoDataFromState = location.state;
-	const videoDataFromLocalStorage = localStorage.getItem("video");
+	const scrollToTop = () => {
+		window.scrollTo({
+			top: 0,
+			behavior: "smooth",
+		});
+	};
 
-	let video: any;
-
-	if (videoDataFromState) {
-		// If data is available in the state, use it
-		video = videoDataFromState;
-	} else if (videoDataFromLocalStorage) {
-		// If data is not in the state but available in localStorage, parse it
-		try {
-			video = JSON.parse(videoDataFromLocalStorage);
-		} catch (error) {
-			console.error("Error parsing video data from localStorage:", error);
-			// Handle the error (e.g., provide a default value or set video to null)
-			video = null;
-		}
-	} else {
-		// If no data is available in both state and localStorage, set video to a default value or handle it accordingly
-		video = null;
-	}
-
-	const token = localStorage.getItem("token") || null;
-
-	const [loggedVideo, setLoggedVideo] = useState<any>(video);
-	useEffect(() => {
-		if (!video) {
-			const result = getRequest("/video/" + slug, setLoading);
-			setLoggedVideo(result);
+	// Function to handle scroll event and show/hide the button
+	const handleScroll = () => {
+		if (window.pageYOffset > 300) {
+			setIsVisible(true);
 		} else {
-			return;
+			setIsVisible(false);
 		}
-	}, [video]);
+	};
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const catVideosPromises = video?.genre?.map(async (genre: any) => {
-					const result = await getRequest(
-						"/video/category/" + genre,
-						setLoading
-					);
-					return result;
-				});
-
-				// Wait for all promises to resolve
-				const catVideos = await Promise.all(catVideosPromises);
-
-				// Once all promises are resolved, update the state
-				setCatVideos([].concat(...catVideos));
-			} catch (error) {
-				console.error("Error fetching data:", error);
-			}
+		window.addEventListener("scroll", handleScroll);
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
 		};
-		console.log(loading);
+	}, []);
+	useEffect(() => {
+		// Parse the state data from the location object
+		const stateData = location.state;
 
-		fetchData();
-	}, [video]);
+		// Check if state data exists and update the state
+		if (stateData) {
+			setScript(JSON.parse(stateData));
+		}
+	}, [location]);
+	// useEffect(() => {
+	// 	if (!script) {
+	// 	const fetchData = async () => {
+	// 		try {
+	// 			const result = await getRequest("/video/script" + id, setLoading);
+	// 			setScript(result);
+	// 		} catch (error) {
+	// 			console.error("Error fetching data:", error);
+	// 		}
+	// 	};
 
-	const nav = useNavigate();
+	// 	fetchData();
+	// 	}
+	// }, []);
+	console.log(script);
 	return (
 		<Layout hasHeader={false}>
-			<div className="sm:flex flex-col md:flex-row" style={{ marginTop: 12 }}>
-				<div className="sm:w-4/5 ">
-					<Player video={loggedVideo} tokenData={decodeToken(token)} />
+			<div style={{ marginTop: 12 }} className="">
+				<div className="flex bg-black justify-center w-full items-start my-0  mx-auto h-52 sm:h-80">
+					<p className="text-white mt-24 font-bold text-xl sm:text-2xl">
+						{script.title}
+					</p>
 				</div>
-				<div className="min-h-86 sm:w-1/5  ml-2.5 py-10">
-					{catVideos.map((video: any, index: number) => (
-						<div
-							key={index}
-							className={`flex overflow-hidden items-start ${
-								index === 0 ? "sm:mt-20 mt-10" : "mt-6"
-							}`}
-						>
-							<div className="bg-gray-500 size  flex-shrink-0 relative overflow-hidden  mr-2.5 rounded-md">
-								<VideoThumbnail
-									videoUrl={video.file}
-									//thumbnailHandler={(thumbnail: any) => console.log(thumbnail)}
-									// width={120}
-									// height={80}
-									className="bg-gray-500 size block w-full aspect-w-16 aspect-h-9 object-cover rounded-lg  flex-shrink-0 relative overflow-hidden px-2.5 mr-2.5 py-3"
-								/>
-							</div>
-							<div className="w-full block">
-								<section
-									className="relative flex items-center cursor-pointer"
-									onClick={() => {
-										nav("/user/" + video?.author?._id);
-									}}
-								>
-									<img
-										src={video?.author?.avatar}
-										className="bg-white rounded-full w-8 h-8 flex-shrink-0 text-lg mr-1.5 block border border-gray-100"
-									></img>
-									<div className="cursor-pointer">
-										<h4 className="m-0 sm:text-base text-sm text-cyan-950 leading-4  max-h-3.5 ">
-											{video?.author?.username}
-										</h4>
-										<small className="text-cyan-800">
-											{formatDateAgo(video.createdAt ?? video.updatedAt)}
-										</small>
-									</div>
-								</section>
-								<h3 className="leading-5 overflow-hidden text-sm sm:text-lg my-1 mx-2">
-									{truncateText(video.title, 40)}
-								</h3>
-								<div className="flex items-center justify-between mx-2">
-									<div className="flex items-center text-sm text-cyan-800">
-										<div className="flex mr-3 items-center">
-											<FaEye className="mr-2" size="20" />
-											<span>{Math.floor(Math.random() * (50 - 0)) + 0}</span>
-										</div>
-										<div className="flex items-center">
-											<MdComment className="mr-2" size="20" />
-											<span>{video?.comments?.length}</span>
-										</div>
-									</div>
+				<div
+					className={`${isVisible ? "block" : "hidden"} fixed bottom-5 right-5`}
+				>
+					<button
+						onClick={scrollToTop}
+						className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+					>
+						<FaArrowUp />
+					</button>
+				</div>
+				<div className="flex items-center ">
+					<div className="w-full h-full -mt-12">
+						<div className="items-center justify-center sm:justify-start flex-col sm:flex-row flex h-full sm:px-8 my-4 mx-auto w-full">
+							<div className="overflow-hidden  flex justify-center mt--8 items-center">
+								<div className="flex justify-center items-center rounded-full bg-white h-16 w-16 sm:h-36 sm:w-36  border-2 p-1 border-white">
+									<span className="z-10 text-4xl text-black sm:text-6xl relative">
+										{getCapitalizedFirstLetter(script?.author)}
+									</span>
 								</div>
 							</div>
+							<div className="overflow-hidden">
+								<div className="flex items-center justify-center mb-1 ml-4">
+									<h1 className="overflow-hidden text-ellipsis font-extrabold text-base sm:text-2xl mr-4">
+										{script.author}
+									</h1>
+									<svg className=" h-4 sm:h-6" width="23" viewBox="0 0 23 24">
+										<path
+											fill="#74CC1D"
+											fill-rule="evenodd"
+											d="M21.2 16a5.7 5.7 0 0 0 0-7.9A28.3 28.3 0 0 0 7.5.1 5.3 5.3 0 0 0 1.3 4 29 29 0 0 0 1 20.3a5.4 5.4 0 0 0 6.4 3.5A27 27 0 0 0 21.1 16Zm-6.5-6.3a1 1 0 0 0-1.4-1.4L8.5 13l-1.8-1.8a1 1 0 0 0-1.4 1.4l2.5 2.5c.4.4 1 .4 1.4 0l5.5-5.5Z"
+										></path>
+									</svg>
+								</div>
+								<span className="mb-1 ml-4 text-sm sm:text-xl">Author</span>
+							</div>
 						</div>
-					))}
+					</div>
 				</div>
+			</div>
+
+			<div className="w-full sm:w-1/2 mx-auto my-4 bg-white text-black rounded-sm p-4">
+				<Render htmlString={script?.script} />
 			</div>
 		</Layout>
 	);
 };
 
-export default Viewpage;
+export default genrepage;

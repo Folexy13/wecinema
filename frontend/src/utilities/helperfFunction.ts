@@ -80,7 +80,7 @@ export const capitalizeFirstLetter = (str: string): string => {
 };
 
 export const getCapitalizedFirstLetter = (str: string): string => {
-	return str.charAt(0).toUpperCase();
+	return str?.charAt(0).toUpperCase();
 };
 
 export const toggleItemInArray = <T>(array: T[], item: T): T[] => {

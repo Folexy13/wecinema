@@ -1,6 +1,12 @@
 import React from "react";
-import { BrowserRouter, Route, Routes,  } from "react-router-dom";
-import { CategoryPage, Homepage, ProfilePage, Viewpage } from "../pages";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+	CategoryPage,
+	Homepage,
+	ProfilePage,
+	ScriptViewPage,
+	Viewpage,
+} from "../pages";
 
 const Router: React.FC = () => {
 	return (
@@ -10,6 +16,7 @@ const Router: React.FC = () => {
 				<Route path="/video/:slug" element={<Viewpage />} />
 				<Route path="/category/:slug" element={<CategoryPage />} />
 				<Route path="/user/:id" element={<ProfilePage />} />
+				<Route path="/script/:id" element={<ScriptViewPage />} />
 			</Routes>
 		</BrowserRouter>
 	);
