@@ -222,6 +222,60 @@ router.get("/category/:genre", async (req, res) => {
 	}
 });
 
+//Edit video
+// Route for editing a video
+router.put("/edit/:id", async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { title, description, genre, file, thumbnail, author, slug } =
+			req.body;
+
+		// Find the video by ID
+		let video = await Videos.findById(id);
+
+		// Check if the video exists
+		if (!video) {
+			return res.status(404).json({ error: "Video not found" });
+		}
+
+		// Update the video fields if provided in the request body
+		if (title) video.title = title;
+		if (description) video.description = description;
+		if (genre) video.genre = genre;
+		if (file) video.file = file;
+		if (thumbnail) video.thumbnail = thumbnail;
+		if (author) video.author = author;
+		if (slug) video.slug = slug;
+
+		// Save the updated video
+		await video.save();
+
+		res.status(200).json({ message: "Video updated successfully" });
+	} catch (error) {
+		console.error("Error editing video:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+//Delete Video
+// Route for deleting a video
+router.delete("/delete/:id", async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		// Find the video by ID and delete
+		const deletedVideo = await Videos.findByIdAndDelete(id);
+		if (!deletedVideo) {
+			return res.status(404).json({ error: "Video not found" });
+		}
+
+		res.status(200).json({ message: "Video deleted successfully" });
+	} catch (error) {
+		console.error("Error deleting video:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
 //create Script
 router.post("/scripts", async (req, res) => {
 	try {
@@ -253,6 +307,53 @@ router.get("/authors/:authorId/scripts", async (req, res) => {
 		res.status(200).json(scripts);
 	} catch (error) {
 		console.error("Error getting scripts by author:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+// edit script
+router.put("/scripts/:id", authenticateMiddleware, async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { title, genre, script, author } = req.body;
+
+		// Construct an object with only the provided fields
+		const updateFields = {};
+		if (title) updateFields.title = title;
+		if (genre) updateFields.genre = genre;
+		if (script) updateFields.script = script;
+		if (author) updateFields.author = author;
+
+		// Find the script by ID and update only the provided fields
+		let updatedScript = await Script.findByIdAndUpdate(id, updateFields, {
+			new: true,
+		});
+
+		// Check if the script exists
+		if (!updatedScript) {
+			return res.status(404).json({ error: "Script not found" });
+		}
+
+		res.status(200).json(updatedScript);
+	} catch (error) {
+		console.error("Error updating script:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+// delete scripts
+router.delete("/scripts/:id", authenticateMiddleware, async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		// Find the script by ID and delete
+		const deletedScript = await Script.findByIdAndDelete(id);
+		if (!deletedScript) {
+			return res.status(404).json({ error: "Script not found" });
+		}
+
+		res.status(200).json({ message: "Script deleted successfully" });
+	} catch (error) {
+		console.error("Error deleting script:", error);
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });

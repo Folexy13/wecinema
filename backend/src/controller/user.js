@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Import your User model (assuming you have a MongoDB User model)
 const User = require("../models/user");
-const { authenticateMiddleware } = require("../utils");
+const { authenticateMiddleware, isAdmin } = require("../utils");
 
 // Route for creating a user account
 router.post("/register", async (req, res) => {
@@ -78,6 +78,7 @@ router.post("/login", async (req, res) => {
 	}
 });
 
+//Route for following an author
 router.put("/:id/follow", authenticateMiddleware, async (req, res) => {
 	try {
 		const { action, userId } = req.body;
@@ -112,6 +113,7 @@ router.put("/:id/follow", authenticateMiddleware, async (req, res) => {
 	}
 });
 
+//Route for getting a particular user
 router.get("/:id", async (req, res) => {
 	try {
 		const userId = req.params.id; // Extract user ID from request parameters
@@ -128,6 +130,7 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
+//Route for Changing password
 router.put("/change-password", async (req, res) => {
 	try {
 		const { email, password } = req.body;
@@ -156,4 +159,57 @@ router.put("/change-password", async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+
+//edit a particular user
+router.put("/edit/:id", authenticateMiddleware, async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { username, email, password, avatar, dob } = req.body;
+
+		// Find the user by ID
+		let user = await User.findById(id);
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		// Update user properties
+		user.username = username || user.username;
+		user.email = email || user.email;
+		user.avatar = avatar || user.avatar;
+		user.dob = dob || user.dob;
+
+		if (password) {
+			// Hash the new password using bcrypt
+			const hashedPassword = await argon2.hash(password);
+			user.password = hashedPassword;
+		}
+
+		// Save the updated user
+		user = await user.save();
+
+		res.status(200).json({ message: "User updated successfully", user });
+	} catch (error) {
+		console.error("Error updating user:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+//delete a particular user - only admin function
+router.delete("/delete/:id", isAdmin, async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		// Find the user by ID and delete
+		const deletedUser = await User.findByIdAndDelete(id);
+		if (!deletedUser) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		res.status(200).json({ message: "User deleted successfully" });
+	} catch (error) {
+		console.error("Error deleting user:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
 module.exports = router;
