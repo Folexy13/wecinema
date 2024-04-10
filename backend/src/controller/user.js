@@ -212,4 +212,17 @@ router.delete("/delete/:id", isAdmin, async (req, res) => {
 	}
 });
 
+//Route for getting a particular user
+router.get("/", async (req, res) => {
+	try {
+		// Extract user ID from request parameters
+		const users = await User.find(); // Find user by ID
+
+		res.json(users); // Return the user as JSON
+	} catch (error) {
+		console.error("Error fetching user by ID:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
 module.exports = router;
