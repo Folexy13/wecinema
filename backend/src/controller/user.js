@@ -228,7 +228,7 @@ router.get("/", async (req, res) => {
 router.put("/change-user-status", async (req, res) => {
 	try {
 		// Set all users' isActive status to true
-		await User.updateMany({}, { isActive: true });
+		await User.updateMany({}, { status: true });
 
 		return res
 			.status(200)
