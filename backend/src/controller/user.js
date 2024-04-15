@@ -239,4 +239,18 @@ router.put("/change-user-status", async (req, res) => {
 	}
 });
 
+router.post("/change-user-status", async (req, res) => {
+	try {
+		// Set all users' isActive status to true
+		await User.findById(req.userId, { status: req.status });
+
+		return res
+			.status(200)
+			.json({ message: "User status changed successfully" });
+	} catch (error) {
+		console.error("Error changing user status:", error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
 module.exports = router;
