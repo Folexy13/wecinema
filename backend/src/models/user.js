@@ -18,7 +18,7 @@ const userSchema = new Schema({
 	},
 	status: {
 		type: Boolean,
-		// required: true,
+		default: true,
 	},
 	bio: {
 		type: String,
