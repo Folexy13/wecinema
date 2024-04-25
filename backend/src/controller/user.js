@@ -241,8 +241,8 @@ router.put("/change-user-status", async (req, res) => {
 
 router.post("/change-user-status", async (req, res) => {
 	try {
-		// Set all users' isActive status to true
-		await User.findById(req.userId, { status: req.status });
+		// Update user's status
+		await User.findByIdAndUpdate(req.userId, { status: req.status });
 
 		return res
 			.status(200)
