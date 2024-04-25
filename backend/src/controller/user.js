@@ -242,11 +242,15 @@ router.put("/change-user-status", async (req, res) => {
 router.post("/change-user-status", async (req, res) => {
 	try {
 		// Update user's status
-		await User.findByIdAndUpdate(req.userId, { status: req.status });
+		const updatedUser = await User.findByIdAndUpdate(
+			req.body.userId,
+			{ status: req.body.status },
+			{ new: true }
+		);
 
 		return res
 			.status(200)
-			.json({ message: "User status changed successfully" });
+			.json({ message: "User status changed successfully", user: updatedUser });
 	} catch (error) {
 		console.error("Error changing user status:", error);
 		return res.status(500).json({ error: "Internal Server Error" });
