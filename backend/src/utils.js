@@ -4,7 +4,7 @@ const Mongoose = require("mongoose");
 const authenticateMiddleware = (req, res, next) => {
 	// Get the token from the request headers
 	let token = req.headers.authorization;
-	token = token.split(" ")[1];
+	token = token?.split(" ")[1];
 
 	if (!token) {
 		return res.status(401).json({ error: "Unauthorized: No token provided" });
