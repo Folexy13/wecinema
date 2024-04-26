@@ -358,7 +358,7 @@ router.delete("/scripts/:id", authenticateMiddleware, async (req, res) => {
 	}
 });
 
-router.put("/change-video-status", async (req, res) => {
+router.patch("/change-video-status", async (req, res) => {
 	try {
 		// Set all users' isActive status to true
 		await Videos.updateMany({}, { status: true });
