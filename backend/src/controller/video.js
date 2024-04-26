@@ -358,4 +358,37 @@ router.delete("/scripts/:id", authenticateMiddleware, async (req, res) => {
 	}
 });
 
+router.put("/change-video-status", async (req, res) => {
+	try {
+		// Set all users' isActive status to true
+		await Videos.updateMany({}, { status: true });
+
+		return res
+			.status(200)
+			.json({ message: "User status changed successfully" });
+	} catch (error) {
+		console.error("Error changing video status:", error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+router.post("/change-video-status", async (req, res) => {
+	try {
+		// Update user's status
+		const updatedVideo = await Videos.findByIdAndUpdate(
+			req.body.videoId,
+			{ status: req.body.status },
+			{ new: true }
+		);
+
+		return res.status(200).json({
+			message: "Video status changed successfully",
+			video: updatedVideo,
+		});
+	} catch (error) {
+		console.error("Error changing video status:", error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
 module.exports = router;
