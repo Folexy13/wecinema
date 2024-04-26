@@ -365,7 +365,7 @@ router.patch("/change-video-status", async (req, res) => {
 
 		return res
 			.status(200)
-			.json({ message: "User status changed successfully" });
+			.json({ message: "Video status changed successfully" });
 	} catch (error) {
 		console.error("Error changing video status:", error);
 		return res.status(500).json({ error: "Internal Server Error" });

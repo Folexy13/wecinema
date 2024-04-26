@@ -19,7 +19,7 @@ const videoSchema = new Schema(
 			type: Schema.Types.Mixed,
 			required: true,
 		},
-	
+
 		published: {
 			type: Boolean,
 			default: true,
@@ -58,6 +58,10 @@ const videoSchema = new Schema(
 				ref: "User",
 			},
 		],
+		status: {
+			type: Boolean,
+			default: true,
+		},
 		comments: [
 			{
 				type: Schema.Types.Mixed,
