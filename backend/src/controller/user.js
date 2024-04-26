@@ -31,7 +31,9 @@ router.post("/register", async (req, res) => {
 			username,
 			email,
 			password: hashedPassword,
-			avatar,
+			avatar: avatar
+				? avatar
+				: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
 			dob,
 		});
 		res
