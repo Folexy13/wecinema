@@ -19,7 +19,7 @@ router.post("/create", async (req, res) => {
 		if (!user && author !== "admin") {
 			return res.status(404).json({ error: "Video not found" });
 		}
-
+		consoel.log(req.user);
 		// Create a new video
 		await Videos.create({
 			title,
