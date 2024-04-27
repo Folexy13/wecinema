@@ -13,8 +13,7 @@ const { authenticateMiddleware, isValidObjectId } = require("../utils");
 // Route for creating a video
 router.post("/create", async (req, res) => {
 	try {
-		const { title, description, genre, file, thumbnail, author, slug } =
-			req.body;
+		const { title, description, genre, file, author, slug, status } = req.body;
 		// Check if the user exists
 		const user = await User.findById(author);
 		if (!user) {
@@ -28,6 +27,7 @@ router.post("/create", async (req, res) => {
 			genre,
 			file,
 			slug,
+			status: status ?? true,
 			author, //req.user._id,
 		});
 		res.status(201).json({ message: "Video created successfully" });
