@@ -37,8 +37,7 @@ const videoSchema = new Schema(
 			default: true,
 		},
 		author: {
-			type: Schema.Types.Mixed,
-			required: true,
+			type: Schema.Types.ObjectId,
 			ref: "User",
 		},
 		likes: [

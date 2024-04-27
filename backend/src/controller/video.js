@@ -13,9 +13,10 @@ const { authenticateMiddleware, isValidObjectId } = require("../utils");
 // Route for creating a video
 router.post("/create", async (req, res) => {
 	try {
-		const { title, description, genre, file, author, slug, status } = req.body;
+		const { title, description, genre, file, author, role, slug, status } =
+			req.body;
 		// Check if the user exists
-		const user = author !== "admin" ? await User.findById(author) : true;
+		const user = role !== "admin" ? await User.findById(author) : true;
 		if (!user) {
 			return res.status(404).json({ error: "Video not found" });
 		}
