@@ -16,7 +16,7 @@ router.post("/create", async (req, res) => {
 		const { title, description, genre, file, author, slug, status } = req.body;
 		// Check if the user exists
 		const user = await User.findById(author);
-		if (!user && role !== "admin") {
+		if (!user && author !== "admin") {
 			return res.status(404).json({ error: "Video not found" });
 		}
 
