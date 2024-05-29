@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 // import { GoogleLogin } from "@react-oauth/google";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
-import { FaMoon, FaRegFileVideo, FaUserCheck } from "react-icons/fa6";
+import { FaMoon } from "react-icons/fa6";
 import { IoSunnyOutline } from "react-icons/io5";
 import "quill/dist/quill.snow.css";
 import { Itoken, decodeToken } from "../../utilities/helperfFunction";
