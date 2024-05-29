@@ -5,26 +5,17 @@ import React, { useState } from 'react';
 import logo from "../../assets/wecinema.png";
 import {Link, useNavigate } from "react-router-dom";
 
-import '../header/drowpdown.css';
 import { categories } from "../../App";
 interface HeaderProps {
 	darkMode: boolean;
 	toggler: any;
-	toggleSigninModal?: any;
-	toggleSignoutModal?: any;
-	toggleSignupModal?: any;
 	expand: boolean;
 	isMobile: boolean;
-	isLoggedIn: any;
 }
 const Header: React.FC<HeaderProps> = ({
 	darkMode,
 	toggler,
-	toggleSignoutModal,
-	toggleSigninModal,
-	toggleSignupModal,
 	expand,
-	isLoggedIn,
 	isMobile,
 }) => {
 	const nav = useNavigate();
@@ -132,4 +123,3 @@ const Header: React.FC<HeaderProps> = ({
 };
 
 export default Header;
-
