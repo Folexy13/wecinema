@@ -304,15 +304,8 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 			<div className="flex">
 				<Sidebar
 					expand={expanded && screenWidth > 1120}
-					setLightMode={setLightMode}
-					setDarkMode={setDarkiMode}
-					toggleSigninModal={() => handleType("login")}
-					toggleSignupModal={() => handleType("register")}
-					toggleSignoutModal={() => handleType("logout")}
-					darkMode={darkMode}
 					toggleUploadModal={() => handleType("video")}
 					toggleUploadScriptModal={() => handleType("script")}
-					isLoggedIn={decodedToken}
 				/>
 				<main
 					className={`block main min-h-screen mt-12 ${
