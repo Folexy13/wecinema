@@ -302,11 +302,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 				</div>
 			)}
 			<div className="flex">
-				<Sidebar
-					expand={expanded && screenWidth > 1120}
-					toggleUploadModal={() => handleType("video")}
-					toggleUploadScriptModal={() => handleType("script")}
-				/>
+				
 				<main
 					className={`block main min-h-screen mt-12 ${
 						darkMode ? "body-dark text-dark" : "body-light text-light"
