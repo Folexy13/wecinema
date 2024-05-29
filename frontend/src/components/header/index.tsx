@@ -1,31 +1,30 @@
 // import React from "react";
 
-import { MdMenu } from "react-icons/md";
+import { MdMenu } from "react-icons/md"
+import React, { useState } from 'react';
 import logo from "../../assets/wecinema.png";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate } from "react-router-dom";
+
+import { categories } from "../../App";
 interface HeaderProps {
 	darkMode: boolean;
 	toggler: any;
-	toggleSigninModal?: any;
-	toggleSignoutModal?: any;
-	toggleSignupModal?: any;
 	expand: boolean;
 	isMobile: boolean;
-	isLoggedIn: any;
 }
 const Header: React.FC<HeaderProps> = ({
 	darkMode,
 	toggler,
-	toggleSignoutModal,
-	toggleSigninModal,
-	toggleSignupModal,
 	expand,
-	isLoggedIn,
 	isMobile,
 }) => {
 	const nav = useNavigate();
+	const [isOpen, setIsOpen] = useState(false);
+    const toggleDropdown = () => setIsOpen(!isOpen);
+
 	return (
 		<header
+		
 			className={`text-blue z-50 border-b fixed w-screen border-gray-200 ${
 				darkMode ? "bg-dark" : "bg-light"
 			}  ${darkMode ? "text-dark" : "text-light"} `}
@@ -36,19 +35,20 @@ const Header: React.FC<HeaderProps> = ({
 				} `}
 			>
 				<ul className="flex gap-4 items-center">
-					<MdMenu size={30} className="cursor-pointer" onClick={toggler} />
+					<MdMenu size={30} className="cursor-pointer mt-2 " onClick={toggler} />
 					<li
-						className="cursor-pointer flex-col sm:flex-row flex gap-2 items-center"
+						className="cursor-pointer flex-col sm:flex-row flex gap-2 mb-3 items-center"
 						onClick={() => nav("/")}
 					>
-						<img src={logo} alt="logo" width={70} title="wecinema" />
+						<img src={logo} alt="logo" width={50} title="wecinema" />
 						{!isMobile && (
-							<p className=" text-xl sm:text-2xl mt-3 font-mono">
-								<b>We </b>Cinema
+							<p className=" text-md sm:text-2xl mt-3 font-mono">
+								WeCinema
 							</p>
 						)}
 					</li>
 				</ul>
+				{!isMobile && (
 				<form className="w-full md:w-2/3">
 					<input
 						type="search"
@@ -56,43 +56,69 @@ const Header: React.FC<HeaderProps> = ({
 						className="w-full md:w-2/3 flex mx-auto border rounded-xl cursor-pointer p-2 outline-none"
 					/>
 				</form>
-				<ul className="flex gap-2 auth items-center">
-					{isLoggedIn ? (
-						<>
-							<img
-								src={isLoggedIn.avatar}
-								className="rounded-full"
-								alt=""
-								width={50}
-								height={50}
-							/>
-							<li>{isLoggedIn.username}</li>
-							<li
-								onClick={toggleSignoutModal}
-								className="bg-red-600 whitespace-nowrap text-white hover:border-red-600 py-1  rounded-xl px-4  cursor-pointer"
+		)}
+				
+			<div className="dropdown">
+			<button className="hover:bg-yellow-400 whitespace-nowrap hover:text-white hover:border-white-100 border border-black-700 rounded-xl px-4 py-1 cursor-pointer" onClick={toggleDropdown}>
+                Genre
+                <span className={`arrow ${isOpen ? 'open' : ''}`}></span>
+            </button>
+            {isOpen && (
+                <ul className="dropdown-menu">
+				{categories.map((val: string, index: number) => (
+						<li
+							key={index}
+							className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+								expand ? "" : "flex-col justify-center text-xs gap-1 specific"
+							} `}
+						>
+							<div
+								onClick={() => nav("/category/" + val)}
+								className="relative rounded-full w-32px h-32px box-border flex-shrink-0 block"
 							>
-								Logout
-							</li>
-						</>
-					) : (
-						<>
-							<li
-								onClick={toggleSigninModal}
-								className="hover:bg-green-700 whitespace-nowrap hover:text-white hover:border-green-700 py-1  rounded-xl px-4  cursor-pointer"
-							>
-								Sign In
-							</li>
-							<li
-								onClick={toggleSignupModal}
-								className="hover:bg-green-700 whitespace-nowrap hover:text-white hover:border-green-700 border border-green-700 rounded-xl px-4 py-1 cursor-pointer"
-							>
-								Sign Up
-							</li>
-						</>
-					)}
-				</ul>
+								<div
+									className="items-center rounded-full flex-shrink-0 justify-center bg-center bg-no-repeat bg-cover flex"
+									style={{
+										width: 12,
+										height: 12,
+									}}
+									title="Fresh and Fit"
+								></div>
+							</div>
+							<Link to="#" className="text-sm">
+								{val}
+							</Link>
+						</li>
+						
+					))}
+                </ul>
+				
+            )}
+        </div>
+	
+		<div className="dropdown">
+    {/* <label className="block mb-2" htmlFor="rating">Rating:</label> */}
+    <select
+      id="rating"
+     
+     className="hover:bg-yellow-400 whitespace-nowrap hover:text-white hover:border-white-700 border border-white-700 rounded-xl px-4 py-1 cursor-pointer"
+	 
+    >
+	 <span className={`arrow ${isOpen ? 'open' : ''}`}></span>
+      <option value="" disabled>Select</option>
+      <option value="1">Rating</option>
+      <option value="2">G</option>
+      <option value="3">PG </option>
+      <option value="4">PG-13</option>
+      <option value="5">RS</option>
+      <option value="5">X</option>
+
+    </select>
+	</div>
 			</nav>
+		
 		</header>
+		
 	);
 };
 
