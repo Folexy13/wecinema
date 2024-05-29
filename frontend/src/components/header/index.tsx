@@ -1,5 +1,3 @@
-// import React from "react";
-
 import { MdMenu } from "react-icons/md";
 import logo from "../../assets/wecinema.png";
 import { useNavigate } from "react-router-dom";
