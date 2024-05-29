@@ -1,18 +1,20 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { Header, Modal, Sidebar } from "..";
+import { Header, Modal } from "..";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import { GoogleLogin } from "@react-oauth/google";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
-import { MdOutlineHome } from "react-icons/md";
-import { SlGraph } from "react-icons/sl";
-import { GrUpload } from "react-icons/gr";
-import { FaMoon, FaRegFileVideo, FaUserCheck } from "react-icons/fa6";
+import { FaMoon } from "react-icons/fa6";
 import { IoSunnyOutline } from "react-icons/io5";
 import "quill/dist/quill.snow.css";
 import { Itoken, decodeToken } from "../../utilities/helperfFunction";
 import { Link } from "react-router-dom";
+import { IoMdHome } from "react-icons/io";
+import { RiMovie2Line } from "react-icons/ri";
+import { MdOutlineDescription } from "react-icons/md"
+import { BiCameraMovie } from "react-icons/bi";
+import { CgProfile } from "react-icons/cg";
 
 export const categories = [
 	"Picks",
@@ -102,9 +104,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 				isMobile={screenWidth <= 1120}
 				toggler={() => setExpanded(!expanded)}
 				darkMode={darkMode}
-				toggleSigninModal={() => handleType("login")}
-				toggleSignupModal={() => handleType("register")}
-				toggleSignoutModal={() => handleType("logout")}
+				
 				isLoggedIn={decodedToken}
 			/>
 			{expanded && screenWidth <= 1120 && (
@@ -129,7 +129,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 											: "flex-col justify-center text-xs gap-1 specific"
 									}`}
 								>
-									<MdOutlineHome size="20" />
+									<IoMdHome size="20" />
 									<Link to="/" className="text-sm ">
 										Home
 									</Link>
@@ -142,7 +142,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 											: "flex-col justify-center text-xs gap-1 specific"
 									} `}
 								>
-									<SlGraph size="20" />
+									<RiMovie2Line size="20" />
 									<Link to="#" className="text-sm ">
 										Hype mode
 									</Link>
@@ -156,7 +156,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									} `}
 									onClick={() => handleType("video")}
 								>
-									<GrUpload size="20" />
+									<BiCameraMovie size="20" />
 									<span className="text-sm ">{`Upload ${
 										expanded ? "Movie" : ""
 									}`}</span>
@@ -170,7 +170,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									}`}
 									onClick={() => handleType("script")}
 								>
-									<FaRegFileVideo size="20" />
+									<MdOutlineDescription size="20" />
 									<span className="text-sm ">{`${
 										expanded ? "Upload scripts" : "Add Scripts"
 									}`}</span>
@@ -183,7 +183,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 											: "flex-col justify-center text-xs gap-1 specific"
 									}`}
 								>
-									<FaUserCheck size="20" />
+									<CgProfile size="20" />
 									<Link
 										to={"/user/" + decodedToken?.userId}
 										className="text-sm "
@@ -193,7 +193,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 								</Link>
 							</ul>
 						</nav>
-						<nav className="container mx-auto  items-center justify-between  p-2 my-3">
+						{/* <nav className="container mx-auto  items-center justify-between  p-2 my-3">
 							<h2
 								className={`font-bold ${
 									expanded ? "" : "text-sm text-center"
@@ -205,7 +205,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 								{categories.map((val: string, index: number) => (
 									<li
 										key={index}
-										className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+										className={`duration-75 flex gap- mx-4 my-2 cursor-pointer items-center ${
 											expanded
 												? ""
 												: "flex-col justify-center text-xs gap-1 specific"
@@ -229,11 +229,11 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									</li>
 								))}
 							</ul>
-						</nav>
-						<nav className="container mx-auto  items-center justify-between p		-2 my-3">
+						</nav> */}
+						<nav className="container mx-auto  items-center justify-between p-2 my-3">
 							<h2
 								className={`font-bold ${
-									expanded ? "" : "text-sm text-center"
+									expanded ? "ml-4" : "text-sm text-center ml-4"
 								} `}
 							>
 								Theme
@@ -289,20 +289,20 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									<FaSignOutAlt size="16" className="hover:text-green-500" />
 									Sign Up
 								</li>
+								<li
+									onClick={() => handleType("logout")}
+									className={`flex gap-4  mx-4 my-2 items-center text-sm hover:text-green-500`}
+								>
+									<FaSignOutAlt size="16" className="hover:text-green-500" />
+									Log out
+								</li>
 							</ul>
 						</nav>
 					</section>
 				</div>
 			)}
 			<div className="flex">
-				<Sidebar
-					expand={expanded && screenWidth > 1120}
-					setLightMode={setLightMode}
-					setDarkMode={setDarkiMode}
-					darkMode={darkMode}
-					toggleUploadModal={() => handleType("video")}
-					toggleUploadScriptModal={() => handleType("script")}
-				/>
+				
 				<main
 					className={`block main min-h-screen mt-12 ${
 						darkMode ? "body-dark text-dark" : "body-light text-light"
@@ -324,7 +324,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									key={i}
 									className={`${
 										darkMode && "text-dark body-dark cursor-pointer"
-									}  flex whitespace-nowrap w-full items-center text-xs rounded-xl px-4 py-1 border bg-gray-200`}
+									}  flex whitespace-nowrap w-full items-center text-xs rounded-xl px-4 py- border bg-gray-200`}
 								>
 									{val}
 								</div>
