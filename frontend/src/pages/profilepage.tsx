@@ -5,10 +5,12 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Gallery, Layout } from "../components";
 import { getRequest } from "../api";
-
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { decodeToken, isUserIdInArray } from "../utilities/helperfFunction";
+import '../components/header/drowpdown.css';
 
 let token =localStorage.getItem("token") ||null;
+
 const genrepage = () => {
 	const { id } = useParams();
 	const [loading, setLoading] = useState(false);
@@ -112,7 +114,19 @@ const genrepage = () => {
 	  <hr className="border-t border-gray-300 w-full my-2" />
     </ul>
 			</div>
-
+			<div className="social-media-icons">
+      <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <FaFacebookF />
+      </a>
+      <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <FaTwitter />
+      </a>
+      <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <FaInstagram />
+      </a>
+     
+    </div>
+	
 			<Gallery category="" length={5} data={id} />
 		</Layout>
 	);

@@ -48,3 +48,54 @@
 .dropdown-item:hover {
     background-color: #f1f1f1;
 }
+.social-media-icons {
+    display: flex;
+    justify-content: left;
+    gap: 15px;
+    margin-top: 20px;
+    margin-left: 50px;
+
+  }
+  
+  .social-media-icons a {
+    color: #000000;
+    font-size: 24px;
+    transition: color 0.3s;
+  }
+  
+  .social-media-icons a:hover {
+    color: #3a04ff;
+  }
+  /* Button.css */
+.styled-button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .styled-button:hover {
+    background-color: #0056b3;
+  }
+  .square-button {
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    border-radius: 4px; /* Optional: to slightly round the corners */
+  }
+  
+  .square-button:hover {
+    background-color: #0056b3;
+  }  

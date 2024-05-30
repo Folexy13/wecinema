@@ -38,10 +38,10 @@ const Header: React.FC<HeaderProps> = ({
 				<ul className="flex gap-4 items-center">
 					<MdMenu size={30} className="cursor-pointer mt-2 " onClick={toggler} />
 					<li
-						className="cursor-pointer flex-col sm:flex-row flex gap-2 mb-3 items-center"
+						className="cursor-pointer flex-col sm:flex-row flex gap-2 items-center"
 						onClick={() => nav("/")}
 					>
-						<img src={logo} alt="logo" width={50} title="wecinema" />
+						<img src={logo} alt="logo" width={60} title="wecinema" />
 						{!isMobile && (
 							<p className=" text-md sm:text-2xl mt-3 font-mono">
 								WeCinema
