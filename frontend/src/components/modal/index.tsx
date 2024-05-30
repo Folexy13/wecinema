@@ -128,7 +128,7 @@ const Popup: React.FC<IPopupProps> = React.memo(
 
 					axios
 						.post(
-							"https://api.cloudinary.com/v1_1/folajimidev/image/upload",
+							"https://api.cloudinary.com/v1_1/folajimidev/video/upload",
 							formData
 						)
 						.then(async (res: any) => {
@@ -438,7 +438,7 @@ const Popup: React.FC<IPopupProps> = React.memo(
 									className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
 									placeholder="Description..."
 									// autoFocus
-									rows={10}
+									rows={5}
 									value={description}
 									onChange={(e: any) => setDescription(e.target.value)}
 								/>
@@ -452,53 +452,65 @@ const Popup: React.FC<IPopupProps> = React.memo(
 										setSelectedItems(values);
 									}}
 								/>
-								<div className="flex items-center space-x-2">
+								
+   <div className="mt-3">
+    {/* <label className="block mb-2" htmlFor="rating">Rating:</label> */}
+    <select
+      id="rating"
+      className="rounded-md px-4 py-2 w-full border outline-none"
+    >
+    <option value="" disabled>Select</option>
+      <option value="1">Rating</option>
+      <option value="2">G</option>
+      <option value="3">PG </option>
+      <option value="4">PG-13</option>
+      <option value="5">RS</option>
+      <option value="5">X</option>
+    </select>
+  </div>
+								<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', border: '1px solid #ccc', borderRadius: '8px', maxWidth: '500px', margin: 'auto', marginTop: '10PX' }}>
 									<div className="relative">
 										<input
 											// autoFocus
 											type="file"
-											accept="image/*"
+											accept="video/*"
 											className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
 											onChange={handleFileChange}
 											ref={fileInputRef}
 										/>
 										<div
-											className="bg-gray-100 p-4 rounded-md cursor-pointer"
+											className="bg-gray-100 p-4 rounded-md mt-5 cursor-pointer"
 											onClick={handleThumbnailClick}
 										>
 											{selectedFile ? (
-												<img
+												<video
 													src={URL.createObjectURL(selectedFile)}
-													alt="Thumbnail Preview"
 													height={100}
 													width={100}
-													className=" object-cover rounded-full"
+													className=" object-cover"
 												/>
 											) : (
-												<svg
-													className="w-6 h-6 text-gray-600"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth="2"
-														d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-													/>
-												</svg>
+												<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="#555" className="bi bi-upload" viewBox="0 0 16 16">
+												<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+												<path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+											  </svg>
 											)}
 										</div>
 									</div>
 									<span
 										onClick={handleThumbnailClick}
-										className="text-gray-600"
+										className="text-gray-600 mt-5"
 									>
-										{selectedFile ? "Change Thumbnail" : "Add Thumbnail"}
+										{selectedFile ? "Change Video" : "Browser to upload movie"}
+									</span>
+									<span
+										onClick={handleThumbnailClick}
+										className="text-gray-600 mt-5"
+									>
+										{selectedFile ? "" : "No file Selected"}
 									</span>
 								</div>
+								
 								<button
 									disabled={loading}
 									className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white"

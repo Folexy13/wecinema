@@ -5,12 +5,15 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Gallery, Layout } from "../components";
 import { getRequest } from "../api";
+
 import { decodeToken, isUserIdInArray } from "../utilities/helperfFunction";
+
 let token =localStorage.getItem("token") ||null;
 const genrepage = () => {
 	const { id } = useParams();
 	const [loading, setLoading] = useState(false);
 	const [user, setUser] = useState<any>({});
+
 	useEffect(() => {
 		if (!id) {
 			toast.error("Please login first");
@@ -23,7 +26,24 @@ const genrepage = () => {
 				} catch (error) {
 					console.error("Error fetching data:", error);
 				}
-			};
+			}
+
+			fetchData();
+		}
+	}, []);
+	useEffect(() => {
+		if (!id) {
+			toast.error("Please login first");
+			return;
+		} else {
+			const fetchData = async () => {
+				try {
+					const result = await getRequest("/video/" + id, setLoading);
+					setUser(result);
+				} catch (error) {
+					console.error("Error fetching data:", error);
+				}
+			}
 
 			fetchData();
 		}
@@ -31,42 +51,26 @@ const genrepage = () => {
 	return (
 		<Layout hasHeader={false}>
 			<div style={{ marginTop: 12 }} className="">
-				<div className="flex bg-black justify-center w-full items-start my-0  mx-auto h-52 sm:h-80">
-					{/* <img
-						className="w-50 h-50"
-						src={user.coverImage}
-						alt="..."
-						width="400"
-						height="30"
-					/> */}
+				<div className="flex bg-grey justify-center w-full items-start my-0  mx-auto h-52 sm:h-80">
+					{ <img
+						className="w-50 h-45"
+						src="https://scontent.fskt1-1.fna.fbcdn.net/v/t39.30808-6/444216752_345821988607794_6329538777469570636_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=_p_NzgeFwVoQ7kNvgG4-MHA&_nc_ht=scontent.fskt1-1.fna&oh=00_AYAcd9_IIg6PaJWiQ_YUW58nmyPlSArCKSPvMm--KnyopA&oe=665B580B"
+						width="1200"
+						height="200"
+					/> }
 				</div>
 				<div className="flex items-center ">
-					<div className="w-full h-full -mt-12">
+					<div className="w-full h-full -mt-1">
 						<div className="items-center justify-center sm:justify-start flex-col sm:flex-row flex h-full sm:px-8 my-4 mx-auto w-full">
 							<div className="overflow-hidden  flex justify-center mt--8 items-center">
 								<img
 									className="rounded-full bg-white h-16 w-16 sm:h-36 sm:w-36  border-2 p-1 border-white"
-									src={user.avatar}
+									src="https://scontent.fskt1-1.fna.fbcdn.net/v/t39.30808-6/445203505_345868328603160_4760708580844450177_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=5f2048&_nc_ohc=dKPwXW28bEIQ7kNvgHT8IXv&_nc_ht=scontent.fskt1-1.fna&oh=00_AYDHSKGEg5pAanrNyZ7cHK0zRWhxBevGFLLigBc90BqTgw&oe=665B62E1"
 									alt="..."
 								/>
 							</div>
 							<div className="overflow-hidden">
-								<div className="flex items-center justify-center mb-1 ml-4">
-									<h1 className="overflow-hidden text-ellipsis font-extrabold text-base sm:text-2xl mr-4">
-										{user.username}
-									</h1>
-									<svg
-										className=" h-4 sm:h-6"
-										width="23"
-										viewBox="0 0 23 24"
-									>
-										<path
-											fill="#74CC1D"
-											fill-rule="evenodd"
-											d="M21.2 16a5.7 5.7 0 0 0 0-7.9A28.3 28.3 0 0 0 7.5.1 5.3 5.3 0 0 0 1.3 4 29 29 0 0 0 1 20.3a5.4 5.4 0 0 0 6.4 3.5A27 27 0 0 0 21.1 16Zm-6.5-6.3a1 1 0 0 0-1.4-1.4L8.5 13l-1.8-1.8a1 1 0 0 0-1.4 1.4l2.5 2.5c.4.4 1 .4 1.4 0l5.5-5.5Z"
-										></path>
-									</svg>
-								</div>
+								
 								<span className="mb-1 ml-4 text-sm sm:text-xl">
 									{user?.followers?.length} Followers
 								</span>
@@ -90,9 +94,23 @@ const genrepage = () => {
 									)}
 								</div>
 							)}
+							
 						</div>
 					</div>
+					
 				</div>
+				<ul className="flex flex-col items-left justify-left px-10 mt-5 mb-1 ml-4">
+      <li className="overflow-hidden text-ellipsis font-extrabold text-base sm:text-2xl mb-2">
+        {user.username}
+      </li>
+      <li className="overflow-hidden text-ellipsis font-normal text-base  mb-2">
+        {user.email}
+      </li>
+      <li className="overflow-hidden text-ellipsis font-normal text-base  mb-2">
+       Date of Birth: {user.dob}
+      </li>
+	  <hr className="border-t border-gray-300 w-full my-2" />
+    </ul>
 			</div>
 
 			<Gallery category="" length={5} data={id} />
@@ -101,3 +119,4 @@ const genrepage = () => {
 };
 
 export default genrepage;
+
