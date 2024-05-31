@@ -105,7 +105,6 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 				toggler={() => setExpanded(!expanded)}
 				darkMode={darkMode}
 				
-				isLoggedIn={decodedToken}
 			/>
 			{expanded && screenWidth <= 1120 && (
 				<div className="fixed  top-0 left-0 z-40 h-full w-full  bg-black bg-opacity-90 backdrop-filter backdrop-blur-15 flex items-center justify-center transition-opacity ease-in-out duration-300">

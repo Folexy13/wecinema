@@ -17,6 +17,7 @@ const Router: React.FC = () => {
 				<Route path="/category/:slug" element={<CategoryPage />} />
 				<Route path="/user/:id" element={<ProfilePage />} />
 				<Route path="/script/:id" element={<ScriptViewPage />} />
+
 			</Routes>
 		</BrowserRouter>
 	);

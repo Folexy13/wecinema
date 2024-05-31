@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({
 						)}
 					</li>
 				</ul>
-				{!isMobile && (
+				
 				<form className="w-full md:w-2/3">
 					<input
 						type="search"
@@ -57,8 +57,7 @@ const Header: React.FC<HeaderProps> = ({
 						className="w-full md:w-2/3 flex mx-auto border rounded-xl cursor-pointer p-2 outline-none"
 					/>
 				</form>
-		)}
-				
+		{!isMobile && (
 			<div className="dropdown">
 			<button className="hover:bg-yellow-400 whitespace-nowrap hover:text-white hover:border-white-100 border border-black-700 rounded-xl px-4 py-1 cursor-pointer" onClick={toggleDropdown}>
                 Genre
@@ -96,6 +95,8 @@ const Header: React.FC<HeaderProps> = ({
 				
             )}
         </div>
+		)}
+		{!isMobile && (
 	
 		<div className="dropdown">
     {/* <label className="block mb-2" htmlFor="rating">Rating:</label> */}
@@ -116,6 +117,8 @@ const Header: React.FC<HeaderProps> = ({
 
     </select>
 	</div>
+		)}
+
 			</nav>
 		
 		</header>
