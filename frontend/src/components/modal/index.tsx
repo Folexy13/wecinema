@@ -456,7 +456,7 @@ const Popup: React.FC<IPopupProps> = React.memo(
 								/>
 								
 								<div>
-    <label htmlFor="rating">Select Rating:</label>
+    {/* <label htmlFor="rating">Select Rating:</label> */}
     <select
         id="rating"
 		required
