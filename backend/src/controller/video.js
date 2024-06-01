@@ -13,7 +13,7 @@ const { authenticateMiddleware, isValidObjectId } = require("../utils");
 // Route for creating a video
 router.post("/create", async (req, res) => {
 	try {
-		const { title, description, genre, file, author, role, slug, status } =
+		const { title, description, genre, rating, file, author, role, slug, status } =
 			req.body;
 		// Check if the user exists
 		const user = role !== "admin" ? await User.findById(author) : true;
@@ -26,6 +26,7 @@ router.post("/create", async (req, res) => {
 			title,
 			description,
 			genre,
+			rating,
 			file,
 			slug,
 			status: status ?? true,
@@ -200,6 +201,17 @@ router.post(
 		}
 	}
 );
+// Route for getting videos by rating
+router.get("/rating/:rating", async (req, res) => {
+    try {
+        const rating = req.params.rating;
+        const videos = await Videos.find({ rating }).populate("author", "username avatar followers followings");
+        res.json(videos);
+    } catch (error) {
+        console.error("Error getting videos by rating:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 // Route for getting videos by genre
 router.get("/category/:genre", async (req, res) => {
 	try {
