@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Gallery, Layout } from "../components";
 import { getRequest } from "../api";
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 import { decodeToken, isUserIdInArray } from "../utilities/helperfFunction";
 import '../components/header/drowpdown.css';
 
