@@ -19,11 +19,7 @@ const videoSchema = new Schema(
 			type: Schema.Types.Mixed,
 			required: true,
 		},
-		rating:{
-			type: String,
-			required: true,
 
-		},
 		published: {
 			type: Boolean,
 			default: true,
