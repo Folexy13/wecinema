@@ -28,7 +28,6 @@ const Popup: React.FC<IPopupProps> = React.memo(
 		const [selectedFile, setSelectedFile] = useState<any>(null);
 		const [loading, setLoading] = useState<boolean>(false);
 		const [username, setUsername] = useState<string>("");
-		const [rating, setRating] = useState("");
 		const [dob, setDob] = useState("");
 		const [email, setEmail] = useState("");
 		const [title, setTitle] = useState("");
@@ -391,7 +390,7 @@ const Popup: React.FC<IPopupProps> = React.memo(
 										Forgot password?
 									</a>
 									<a
-										href="/"
+										href="#"
 										className=" sm:my-3 text-center italic hover:text-blue-600"
 									>
 										Don't have an account?
@@ -454,22 +453,21 @@ const Popup: React.FC<IPopupProps> = React.memo(
 									}}
 								/>
 								
-								<div>
-    {/* <label htmlFor="rating">Select Rating:</label> */}
+   <div className="mt-3">
+    {/* <label className="block mb-2" htmlFor="rating">Rating:</label> */}
     <select
-        id="rating"
-        value={rating}
-        onChange={(e) => setRating(e.target.value)}
-        className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
+      id="rating"
+      className="rounded-md px-4 py-2 w-full border outline-none"
     >
-        <option value="">Select Rating</option>
-        <option value="p">G</option>
-        <option value="pg">PG</option>
-        <option value="pg-13">PG-13</option>
-        <option value="RX">RX</option>
-        <option value="18">X</option>
+    <option value="" disabled>Select</option>
+      <option value="1">Rating</option>
+      <option value="2">G</option>
+      <option value="3">PG </option>
+      <option value="4">PG-13</option>
+      <option value="5">RS</option>
+      <option value="5">X</option>
     </select>
-</div>
+  </div>
 								<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', border: '1px solid #ccc', borderRadius: '8px', maxWidth: '500px', margin: 'auto', marginTop: '10PX' }}>
 									<div className="relative">
 										<input
@@ -588,7 +586,7 @@ const Popup: React.FC<IPopupProps> = React.memo(
 								</button>
 								<div className="flex gap-4 justify-between items-center">
 									<a
-										href="/"
+										href="#"
 										className=" my-3 text-center italic hover:text-blue-600"
 									>
 										Already have an account?
