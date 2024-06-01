@@ -472,7 +472,6 @@ const Popup: React.FC<IPopupProps> = React.memo(
         <option value="	X">X</option>
 
 
-        <option value="18">18+</option>
     </select>
 </div>
 								<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', border: '1px solid #ccc', borderRadius: '8px', maxWidth: '500px', margin: 'auto', marginTop: '10PX' }}>
