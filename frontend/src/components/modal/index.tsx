@@ -465,8 +465,13 @@ const Popup: React.FC<IPopupProps> = React.memo(
         className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
     >
         <option value="">Select Rating</option>
-        <option value="p">P</option>
+        <option value="p">G</option>
         <option value="pg">PG</option>
+        <option value="pg-13">PG-13</option>
+        <option value="RS">RS</option>
+        <option value="	X">X</option>
+
+
         <option value="18">18+</option>
     </select>
 </div>
