@@ -12,88 +12,87 @@ const { authenticateMiddleware, isValidObjectId } = require("../utils");
 
 // Route for creating a video
 router.post("/create", async (req, res) => {
-	try {
-		const { title, description, genre, file, author, role, slug, status } =
-			req.body;
-		// Check if the user exists
-		const user = role !== "admin" ? await User.findById(author) : true;
-		if (!user) {
-			return res.status(404).json({ error: "Video not found" });
-		}
-		console.log(req.user);
-		// Create a new video
-		await Videos.create({
-			title,
-			description,
-			genre,
-			file,
-			slug,
-			status: status ?? true,
-			author, //req.user._id,
-		});
-		res.status(201).json({ message: "Video created successfully" });
-	} catch (error) {
-		console.error("Error creating video:", error);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
+    try {
+        const { title, description, genre, rating, file, author, role, slug, status } = req.body;
+        // Check if the user exists
+        const user = role !== "admin" ? await User.findById(author) : true;
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        console.log(req.user);
+        // Create a new video
+        await Videos.create({
+            title,
+            description,
+            genre,
+            rating,
+            file,
+            slug,
+            status: status ?? true,
+            author, //req.user._id,
+        });
+        res.status(201).json({ message: "Video created successfully" });
+    } catch (error) {
+        console.error("Error creating video:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 // Route for getting all videos
 router.get("/all", async (req, res) => {
-	try {
-		const videos = await Videos.find().populate(
-			"author",
-			"username avatar followers followings "
-		);
-
-		res.json(videos);
-	} catch (error) {
-		console.error("Error getting all videos:", error);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
+    try {
+        const videos = await Videos.find().populate("author", "username avatar followers followings");
+        res.json(videos);
+    } catch (error) {
+        console.error("Error getting all videos:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
+
 router.get("/all/:user", async (req, res) => {
-	const userId = req.params.user;
+    const userId = req.params.user;
 
-	// Check if userId is a valid ObjectId
-	if (!mongoose.Types.ObjectId.isValid(userId)) {
-		return res.status(400).json({ error: "Invalid user ID" });
-	}
+    // Check if userId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ error: "Invalid user ID" });
+    }
 
-	try {
-		const videos = await Videos.find({ author: userId }).populate(
-			"author",
-			"username avatar followers followings"
-		);
-
-		res.json(videos);
-	} catch (error) {
-		console.error("Error getting all videos:", error);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
+    try {
+        const videos = await Videos.find({ author: userId }).populate("author", "username avatar followers followings");
+        res.json(videos);
+    } catch (error) {
+        console.error("Error getting all videos:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
+
 // Route for getting a specific video by ID
 router.get("/:id", async (req, res) => {
-	try {
-		const video = isValidObjectId(req.params.id)
-			? await Videos.findById(req.params.id).populate(
-					"author",
-					"username avatar followers followings "
-			  )
-			: await Videos.findOne({ slug: req.params.id }).populate(
-					"author",
-					"username avatar followers followings "
-			  );
-		if (!video) {
-			return res.status(404).json({ error: "Video not found" });
-		}
-		res.json(video);
-	} catch (error) {
-		console.error("Error getting video by ID:", error);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
+    try {
+        const video = isValidObjectId(req.params.id)
+            ? await Videos.findById(req.params.id).populate("author", "username avatar followers followings")
+            : await Videos.findOne({ slug: req.params.id }).populate("author", "username avatar followers followings");
+        if (!video) {
+            return res.status(404).json({ error: "Video not found" });
+        }
+        res.json(video);
+    } catch (error) {
+        console.error("Error getting video by ID:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
+// Route for getting videos by rating
+router.get("/rating/:rating", async (req, res) => {
+    try {
+        const rating = req.params.rating;
+        const videos = await Videos.find({ rating }).populate("author", "username avatar followers followings");
+        res.json(videos);
+    } catch (error) {
+        console.error("Error getting videos by rating:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 // Route for liking/disliking a specific video by ID
 router.put("/:id", authenticateMiddleware, async (req, res) => {
 	try {
