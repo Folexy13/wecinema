@@ -390,7 +390,7 @@ const Popup: React.FC<IPopupProps> = React.memo(
 										Forgot password?
 									</a>
 									<a
-										href="#"
+										href="/"
 										className=" sm:my-3 text-center italic hover:text-blue-600"
 									>
 										Don't have an account?
@@ -586,7 +586,7 @@ const Popup: React.FC<IPopupProps> = React.memo(
 								</button>
 								<div className="flex gap-4 justify-between items-center">
 									<a
-										href="#"
+										href="/"
 										className=" my-3 text-center italic hover:text-blue-600"
 									>
 										Already have an account?
