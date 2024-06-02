@@ -2,7 +2,6 @@
 
 import { useParams } from "react-router-dom";
 import { Gallery, Layout } from "../components";
-import { getCapitalizedFirstLetter } from "../utilities/helperfFunction";
 const genrepage = () => {
 	const {slug} = useParams();
 
