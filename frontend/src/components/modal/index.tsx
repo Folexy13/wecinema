@@ -444,9 +444,13 @@ const Popup: React.FC<IPopupProps> = React.memo(
 									value={description}
 									onChange={(e: any) => setDescription(e.target.value)}
 								/>
+							    {/* <label htmlFor="rating">Select Rating:</label> */}
+
 								<Select
 									values={selectedItems}
 									options={CAT}
+									placeholder="Select genr(s).."
+
 									required
 									multi
 									className="rounded-md px-4 py-2 w-full mt-3 border outline-none"

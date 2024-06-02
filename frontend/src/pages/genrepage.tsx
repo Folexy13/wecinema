@@ -10,26 +10,23 @@ const genrepage = () => {
 		<Layout hasHeader={false}>
 			<div style={{ marginTop: 12 }} className="">
 				<div className="flex bg-black justify-center w-full items-start my-0  mx-auto h-52 sm:h-80">
-					{/* <img
+					<img
 						className="w-50 h-50"
-						src={user.coverImage}
+						src={"https://scontent.fskt1-1.fna.fbcdn.net/v/t39.30808-6/444216752_345821988607794_6329538777469570636_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=_p_NzgeFwVoQ7kNvgG4-MHA&_nc_ht=scontent.fskt1-1.fna&oh=00_AYAcd9_IIg6PaJWiQ_YUW58nmyPlSArCKSPvMm--KnyopA&oe=665B580B"}
 						alt="..."
-						width="400"
-						height="30"
-					/> */}
+						width="1200"
+						height="50"
+					/>
 				</div>
 				<div className="flex items-center ">
 					<div className="w-full h-full -mt-12">
 						<div className="items-center justify-center sm:justify-start flex-col sm:flex-row flex h-full sm:px-8 my-4 mx-auto w-full">
-							<div className="overflow-hidden flex-col sm:flex-row flex justify-center mt--8 items-center">
-								<div className="relative rounded-full bg-black h-16 w-16 sm:h-36 sm:w-36  border-2 p-1 flex justify-center items-center border-white">
-									<span className="z-10 text-white sm:text-6xl relative">
-										{getCapitalizedFirstLetter(slug ?? "")}
+							<div className="overflow-hidden flex-col sm:flex-row flex justify-center mt-12 items-center">
+									<span className="z-10 text-black sm:text-6xl relative">
 									</span>
-								</div>
 								<div className="overflow-hidden">
-									<div className="flex items-center  justify-center mb-1 ml-4">
-										<h1 className="overflow-hidden  text-white text-ellipsis font-extrabold sm:text-5xl mr-4 text-base ">
+									<div className="flex items-center  text-left justify-center mb-1 ml-4">
+										<h1 className="overflow-hidden text-black text-ellipsis font-extrabold sm:text-6xl mr-4 mt-12 text-base ">
 											{slug}
 										</h1>
 									</div>

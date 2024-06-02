@@ -17,21 +17,27 @@ import { BiCameraMovie } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 
 export const categories = [
-	"Picks",
-	"My Feed",
-	"Gaming",
-	"Live",
-	"Sports",
-	"Virals",
-	"Podcasts",
-	"Finance",
-	"Leaderboard",
-	"Vlogs",
-	"News",
-	"Science",
-	"Music",
-	"Entertainment",
-	"Cooking",
+	"Coming-of-age story",
+	"Good versus evil",
+	"Love",
+	"Redemption",
+	"Family",
+	"Death",
+	"Oppression",
+	"Corruption",
+	"Survival",
+	"Revenge",
+	"Death",
+	"Justice",
+	"Perseverance",
+	"War",
+	"Bravery",
+	"Freedom",
+	"Friendship",
+	"Hope",
+	"Society",
+	"Isolation",
+	"Peace",
 ];
 interface LayoutProps {
 	hasHeader?: boolean;
@@ -323,7 +329,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 						<header
 							style={{
 								width: `${expanded && screenWidth > 1120 ? "83.3%" : "91.6%"}`,
-								marginTop: 41,
+								marginTop: 38,
 							}}
 							className={`z-30 flex gap-2 p-3 hh bg-white fixed overflow-x-auto ${
 								expanded && screenWidth > 1120 ? "" : "w-full"
@@ -334,7 +340,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									key={i}
 									className={`${
 										darkMode && "text-dark body-dark cursor-pointer"
-									}  flex whitespace-nowrap w-full items-center text-xs rounded-xl px-4 py- border bg-gray-200`}
+									}  flex whitespace-nowrap w-full items-center text-xs rounded-xl px-4  border bg-gray-200`}
 								>
 									{val}
 								</div>
