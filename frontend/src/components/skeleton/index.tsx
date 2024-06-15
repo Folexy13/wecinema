@@ -19,7 +19,12 @@ const SkeletonContainer = styled.div`
 `;
 
 const SkeletonImage = styled.div<any>`
-	
+	height: 200px;
+	width:230px;
+	border-radius: 6px;
+	background: #94856799;
+	margin-top: 10px;
+	animation: ${skeletonAnimation} 1.5s infinite;
 `;
 
 

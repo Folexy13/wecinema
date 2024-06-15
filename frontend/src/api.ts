@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, AxiosError, Method } from "axios";
 import { toast } from "react-toastify";
 
-const API_BASE_URL = "http://localhost:3000/"; //"https://wecinema.onrender.com/";//http://localhost:3000/
+const API_BASE_URL = "https://wecinema.onrender.com/"; //"https://wecinema.onrender.com/";//http://localhost:3000/
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -121,10 +121,9 @@ export const deleteRequest = <T>(
         .catch((error) => handleError(error, "delete", setLoading));
 
 		
-		import axios from 'axios';
 
 		// Function to add a video to bookmarks
-		export const addBookmark = async (videoId) => {
+		export const addBookmark = async (videoId:any) => {
 			try {
 				const token = localStorage.getItem("token");
 				const response = await axios.post(`/bookmarks/${videoId}`, {}, {
@@ -140,7 +139,7 @@ export const deleteRequest = <T>(
 		};
 		
 		// Function to remove a video from bookmarks
-		export const removeBookmark = async (videoId) => {
+		export const removeBookmark = async (videoId:any) => {
 			try {
 				const token = localStorage.getItem("token");
 				const response = await axios.delete(`/bookmarks/${videoId}`, {

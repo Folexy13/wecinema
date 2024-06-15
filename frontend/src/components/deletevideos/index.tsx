@@ -9,7 +9,6 @@ import {
     generateSlug,
     truncateText,
 } from "../../utilities/helperfFunction";
-import { Skeleton } from "..";
 
 interface DeleteProps {
     title?: string;
@@ -25,9 +24,7 @@ const Delete: React.FC<DeleteProps> = ({
     title,
     isFirst,
     data,
-    length,
     category,
-    type,
     isGalleryPage = true, // Default to false if not provided
 }) => {
     const nav = useNavigate();
@@ -87,8 +84,8 @@ const Delete: React.FC<DeleteProps> = ({
     const handlePublishVideo = async (videoId: string) => {
         try {
             setLoading(true);
-            await patchRequest(`/video/publish/${videoId}`, setLoading);
-            setVideos((prevVideos) =>
+            await patchRequest(`/video/publish/${videoId}`, setLoading,setLoading);
+            setVideos((prevVideos:any) =>
                 prevVideos.map((video: any) =>
                     video._id === videoId ? { ...video, status: true } : video
                 )
@@ -103,8 +100,8 @@ const Delete: React.FC<DeleteProps> = ({
     const handleUnpublishVideo = async (videoId: string) => {
         try {
             setLoading(true);
-            await patchRequest(`/video/unpublish/${videoId}`, setLoading);
-            setVideos((prevVideos) =>
+            await patchRequest(`/video/unpublish/${videoId}`, setLoading,setLoading);
+            setVideos((prevVideos:any) =>
                 prevVideos.map((video: any) =>
                     video._id === videoId ? { ...video, status: false } : video
                 )
@@ -123,7 +120,7 @@ const Delete: React.FC<DeleteProps> = ({
             for (const videoId of selectedVideos) {
                 await deleteRequest(`/video/delete/${videoId}`, setLoading);
             }
-            setVideos((prevVideos) => prevVideos.filter((video: any) => !selectedVideos.includes(video._id)));
+            setVideos((prevVideos:any) => prevVideos.filter((video: any) => !selectedVideos.includes(video._id)));
             setSelectedVideos([]);
         } catch (error) {
             console.error("Error deleting videos:", error);
