@@ -30,7 +30,7 @@ const Gallery: React.FC<GalleryProps> = ({
 
 	const [loading, setLoading] = useState<boolean>(false);
 	const [videos, setVideos] = useState<any>([]);
-	const [hiddenVideos, setHiddenVideos] = useState<any>([]);
+	// const [hiddenVideos, setHiddenVideos] = useState<any>([]);
 
 	useEffect(() => {
 		let isMounted = true; // Flag to track if the component is mounted
@@ -59,23 +59,23 @@ const Gallery: React.FC<GalleryProps> = ({
 			category ? v.genre.includes(category) : v
 		);
 	};
-	const handleHideVideo = async (videoId: string) => {
-		try {
-			await getRequest(`/video/hide/${videoId}`, setLoading);
-			setHiddenVideos((prev: any) => [...prev, videoId]);
-		} catch (error) {
-			console.error("Error hiding video:", error);
-		}
-	};
+	// const handleHideVideo = async (videoId: string) => {
+	// 	try {
+	// 		await getRequest(`/video/hide/${videoId}`, setLoading);
+	// 		setHiddenVideos((prev: any) => [...prev, videoId]);
+	// 	} catch (error) {
+	// 		console.error("Error hiding video:", error);
+	// 	}
+	// };
 	
-	const handleUnhideVideo = async (videoId: string) => {
-		try {
-			await getRequest(`/video/unhide/${videoId}`, setLoading);
-			setHiddenVideos((prev: any) => prev.filter((id: string) => id !== videoId));
-		} catch (error) {
-			console.error("Error unhiding video:", error);
-		}
-	};
+	// const handleUnhideVideo = async (videoId: string) => {
+	// 	try {
+	// 		await getRequest(`/video/unhide/${videoId}`, setLoading);
+	// 		setHiddenVideos((prev: any) => prev.filter((id: string) => id !== videoId));
+	// 	} catch (error) {
+	// 		console.error("Error unhiding video:", error);
+	// 	}
+	// };
 	
 	const handleVideolick = (video: any) => {
 		nav(video.slug ?? "/video/" + generateSlug(video._id), {

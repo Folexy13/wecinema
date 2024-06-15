@@ -23,8 +23,6 @@ interface RatingProps {
 const Rating: React.FC<RatingProps> = ({
     title,
     isFirst,
-    data,
-    length,
     ratings,
     type,
 }) => {
