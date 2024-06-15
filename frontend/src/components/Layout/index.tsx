@@ -140,7 +140,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									</Link>
 								</Link>
 								<Link
-									to="/"
+									to="/video"
 									className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 										expanded
 											? ""
@@ -148,7 +148,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									} `}
 								>
 									<RiMovie2Line size="20" />
-									<Link to="#" className="text-sm ">
+									<Link to="/video" className="text-sm ">
 										Hype mode
 									</Link>
 								</Link>

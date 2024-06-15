@@ -6,6 +6,9 @@ import {
 	ProfilePage,
 	ScriptViewPage,
 	Viewpage,
+	HypemodePage,
+	VideoEditorPage,
+	RatingPage,
 } from "../pages";
 
 const Router: React.FC = () => {
@@ -17,6 +20,9 @@ const Router: React.FC = () => {
 				<Route path="/category/:slug" element={<CategoryPage />} />
 				<Route path="/user/:id" element={<ProfilePage />} />
 				<Route path="/script/:id" element={<ScriptViewPage />} />
+				<Route path="/ratings/:slug" element={<RatingPage />} />
+				<Route path="/hypemode" element={<HypemodePage />} />
+				<Route path="/videoeditor" element={<VideoEditorPage />} />
 
 			</Routes>
 		</BrowserRouter>

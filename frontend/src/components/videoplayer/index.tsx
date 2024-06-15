@@ -77,7 +77,7 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 				"video/" + video._id,
 				payload,
 				setLoading,
-				"Video Liked!"
+				"Video Disliked!"
 			);
 			setvideoDisLikesLength(++videoDisLikesLength);
 			console.log("Post success:", result);
@@ -98,7 +98,7 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 				"user/" + video.author?._id + "/follow",
 				payload,
 				setLoading,
-				"Video Liked!"
+				"Followed!"
 			);
 			console.log("Post success:", result);
 			setComment("");
@@ -198,7 +198,6 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 						</address>
 						{isUserIdInArray(tokenData?.userId, video?.author?.followers) ? (
 							<button
-								disabled={loading}
 								onClick={() => handleFollowSubmit("unfollow")}
 								className="bg-red-600 btn cursor-pointer text-white  px-6 md:py-2 py-1 rounded-full"
 							>
@@ -206,7 +205,6 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 							</button>
 						) : (
 							<button
-								disabled={loading}
 								onClick={() => handleFollowSubmit("follow")}
 								className="bg-green-400 btn text-white cursor-pointer px-6 md:py-2 py-1 rounded-full"
 							>
@@ -225,7 +223,7 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 							className=" w-full sm:w-fit btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 "
 						>
 							{isLiked ? (
-								<AiFillLike size="24" color="green" />
+								<AiFillLike size="24" color="red" />
 							) : (
 								<AiOutlineLike size="24" color="green" />
 							)}
@@ -237,7 +235,7 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
 							className="w-full border-l-2 border-white sm:w-fit btn gap-2 flex text-white cursor-pointer px-6 md:py-2 py-1 "
 						>
 							{isDisliked ? (
-								<AiFillDislike size="24" color="green" />
+								<AiFillDislike size="24" color="red" />
 							) : (
 								<AiOutlineDislike size="24" color="green" />
 							)}

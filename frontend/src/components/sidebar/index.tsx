@@ -9,6 +9,7 @@ import { BiCameraMovie } from "react-icons/bi";
 import { IoSunnyOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { Link} from "react-router-dom";
+import { TbVideoPlus } from "react-icons/tb";
 import { decodeToken } from "../../utilities/helperfFunction";
 import { toast } from "react-toastify";
 import { FaUser } from "react-icons/fa";
@@ -68,14 +69,25 @@ const Sidebar: React.FC<SidebarProps> = ({
 						</Link>
 					</Link>
 					<Link
-						to="/"
+						to="/hypemode"
 						className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
 						} `}
 					>
 						<RiMovie2Line size="20" />
-						<Link to="#" className="text-sm ">
+						<Link to="/hypemode" className="text-sm ">
 							Hype mode
+						</Link>
+					</Link>
+					<Link
+						to="/videoeditor"
+						className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+							expand ? "" : "flex-col justify-center text-xs gap-1 specific"
+						} `}
+					>
+						<TbVideoPlus size="20" />
+						<Link to="/videoeditor" className="text-sm ">
+							Video Editor
 						</Link>
 					</Link>
 					<Link

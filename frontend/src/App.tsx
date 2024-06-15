@@ -13,6 +13,13 @@ export const categories = [
 	"Thriller ",
 ];
 
+export const ratings = [
+	"G ",
+	"PG ",
+	"PG-13 ",
+	"RS ",
+	"X ",
+];
 
 function App() {
 	return (

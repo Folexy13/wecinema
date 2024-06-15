@@ -314,11 +314,12 @@ const Popup: React.FC<IPopupProps> = React.memo(
 									placeholder="Select gener(s)..."
 									required
 									multi
-									className="rounded-md px-4 py-2 w-full mt-3 border outline-none"
+									className="rounded-md px-4 py- w-full mt- border outline-none"
 									onChange={(values: any) => {
 										setSelectedItems(values);
 									}}
 								/>
+								  
 								<button
 									disabled={loading}
 									className="rounded-md px-4 py-2 w-full my-3 bg-blue-500 text-white"

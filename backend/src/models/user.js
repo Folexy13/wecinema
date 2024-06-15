@@ -24,7 +24,6 @@ const userSchema = new Schema({
 		type: String,
 		// required: true,
 	},
-
 	avatar: {
 		type: String,
 		// required: true,
@@ -41,6 +40,13 @@ const userSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	bookmarks: [
+		{ 
+			type: mongoose.Schema.Types.ObjectId, ref: "Video" 
+
+		}
+	], 
+
 	followers: [
 		{
 			type: Schema.Types.ObjectId,

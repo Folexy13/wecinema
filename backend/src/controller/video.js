@@ -58,7 +58,7 @@ router.get("/all/:user", async (req, res) => {
     }
 
     try {
-        const videos = await Videos.find({ author: userId }).populate("author", "username avatar followers followings");
+        const videos = await Videos.find({ author: userId, hidden: false }).populate("author", "username avatar followers followings");
         res.json(videos);
     } catch (error) {
         console.error("Error getting all videos:", error);
@@ -70,8 +70,8 @@ router.get("/all/:user", async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const video = isValidObjectId(req.params.id)
-            ? await Videos.findById(req.params.id).populate("author", "username avatar followers followings")
-            : await Videos.findOne({ slug: req.params.id }).populate("author", "username avatar followers followings");
+            ? await Videos.findById({ _id: req.params.id}).populate("author", "username avatar followers followings")
+            : await Videos.findOne({ slug: req.params.id, hidden: false }).populate("author", "username avatar followers followings");
         if (!video) {
             return res.status(404).json({ error: "Video not found" });
         }
@@ -81,9 +81,88 @@ router.get("/:id", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+// Route for publishing a video
+router.patch("/publish/:id", async (req, res) => {
+    try {
+        const video = await Videos.findByIdAndUpdate(
+            req.params.id,
+            { status: true }, // Set status to true to publish
+            { new: true }
+        );
+        if (!video) {
+            return res.status(404).json({ error: "Video not found" });
+        }
+        res.status(200).json({ message: "Video published successfully", video });
+    } catch (error) {
+        console.error("Error publishing video:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Route for unpublishing a video
+router.patch("/unpublish/:id", async (req, res) => {
+    try {
+        const video = await Videos.findByIdAndUpdate(
+            req.params.id,
+            { status: false }, // Set status to false to unpublish
+            { new: true }
+        );
+        if (!video) {
+            return res.status(404).json({ error: "Video not found" });
+        }
+        res.status(200).json({ message: "Video unpublished successfully", video });
+    } catch (error) {
+        console.error("Error unpublishing video:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Route to hide a video by ID
+router.patch("/hide/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Check if video exists
+        const video = await Videos.findById(id);
+        if (!video) {
+            return res.status(404).json({ error: "Video not found" });
+        }
+
+        // Update hidden status to true
+        video.hidden = true;
+        await video.save();
+
+        res.status(200).json({ message: "Video hidden successfully", video });
+    } catch (error) {
+        console.error("Error hiding video:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Route to unhide a video by ID
+router.patch("/unhide/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Check if video exists
+        const video = await Videos.findById(id);
+        if (!video) {
+            return res.status(404).json({ error: "Video not found" });
+        }
+
+        // Update hidden status to false
+        video.hidden = false;
+        await video.save();
+
+        res.status(200).json({ message: "Video unhidden successfully", video });
+    } catch (error) {
+        console.error("Error unhiding video:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 // Route for getting videos by rating
-router.get("/rating/:rating", async (req, res) => {
+router.get("/ratings/:rating", async (req, res) => {
     try {
         const rating = req.params.rating;
         const videos = await Videos.find({ rating }).populate("author", "username avatar followers followings");
@@ -92,7 +171,8 @@ router.get("/rating/:rating", async (req, res) => {
         console.error("Error getting videos by rating:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
-})
+});
+
 // Route for liking/disliking a specific video by ID
 router.put("/:id", authenticateMiddleware, async (req, res) => {
 	try {

@@ -118,7 +118,7 @@ const Viewpage: React.FC<any> = () => {
 										</small>
 									</div>
 								</section>
-								<h3 className="leading-5 overflow-hidden text-sm sm:text-lg my-1 mx-2">
+								<h3 className="leading-5 overflow-hidden text-sm sm:text-lg my-1 mx-1">
 									{truncateText(video.title, 40)}
 								</h3>
 								<div className="flex items-center justify-between mx-2">

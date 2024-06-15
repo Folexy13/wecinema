@@ -19,10 +19,9 @@ const videoSchema = new Schema(
 			type: Schema.Types.Mixed,
 			required: true,
 		},
-		rating:{
+		rating: {
 			type: String,
 			required: true,
-
 		},
 		published: {
 			type: Boolean,
@@ -43,6 +42,10 @@ const videoSchema = new Schema(
 		author: {
 			type: Schema.Types.ObjectId,
 			ref: "User",
+		},
+		hidden: {
+			type: Boolean,
+			default: false,
 		},
 		likes: [
 			{
@@ -71,10 +74,17 @@ const videoSchema = new Schema(
 				type: Schema.Types.Mixed,
 			},
 		],
+		bookmarks: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "User",
+			},
+		],
 	},
 	{
 		timestamps: true, // Add createdAt and updatedAt fields
 	}
 );
+
 const videoModel = mongoose.model("Video", videoSchema);
 module.exports = videoModel;
