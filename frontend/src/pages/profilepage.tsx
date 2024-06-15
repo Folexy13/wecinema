@@ -1,9 +1,8 @@
 // import React from 'react'
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Delete, Gallery, Layout } from "../components";
+import { Delete, Layout } from "../components";
 import { getRequest } from "../api";
 import { decodeToken, isUserIdInArray } from "../utilities/helperfFunction";
 import '../components/header/drowpdown.css';
