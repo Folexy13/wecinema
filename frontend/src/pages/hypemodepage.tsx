@@ -1,7 +1,5 @@
 // import React from 'react'
-
-import { useParams } from "react-router-dom";
-import { Gallery, Layout } from "../components";
+import {  Layout } from "../components";
 const hypemodepage = () => {
 
 	return (

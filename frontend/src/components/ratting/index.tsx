@@ -37,7 +37,7 @@ const Rating: React.FC<RatingProps> = ({
             setLoading(true);
             try {
                 console.log("Fetching videos...");
-                const result = ratings
+                const result:any = ratings
                     ? await getRequest(`video/ratings/${ratings}`, setLoading)
                     : await getRequest("video/all", setLoading);
 
