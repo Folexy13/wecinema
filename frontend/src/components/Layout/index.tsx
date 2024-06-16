@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 // import { GoogleLogin } from "@react-oauth/google";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { TbVideoPlus } from "react-icons/tb";
 import { FaMoon} from "react-icons/fa6";
 import { IoSunnyOutline } from "react-icons/io5";
 import "quill/dist/quill.snow.css";
@@ -140,7 +141,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									</Link>
 								</Link>
 								<Link
-									to="/video"
+									to="/hypemode"
 									className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
 										expanded
 											? ""
@@ -148,10 +149,25 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 									} `}
 								>
 									<RiMovie2Line size="20" />
-									<Link to="/video" className="text-sm ">
+									<Link to="/hypemode" className="text-sm ">
 										Hype mode
 									</Link>
 								</Link>
+
+								<Link
+									to="/videoeditor"
+									className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
+										expanded
+											? ""
+											: "flex-col justify-center text-xs gap-1 specific"
+									} `}
+								>
+									<TbVideoPlus size="20" />
+									<Link to="/videoeditor" className="text-sm ">
+										Video Editor
+									</Link>
+								</Link>
+
 								<Link
 									to="/"
 									className={`duration-75 flex gap-4  mx-4 my-2 cursor-pointer items-center ${
