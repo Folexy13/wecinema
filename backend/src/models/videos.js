@@ -43,6 +43,8 @@ const videoSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: "User",
 		},
+		users: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+
 		hidden: {
 			type: Boolean,
 			default: false,

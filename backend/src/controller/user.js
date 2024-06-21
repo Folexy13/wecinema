@@ -117,20 +117,31 @@ router.put("/:id/follow", authenticateMiddleware, async (req, res) => {
 
 //Route for getting a particular user
 router.get("/:id", async (req, res) => {
-	try {
-		const userId = req.params.id; // Extract user ID from request parameters
-		const user = await User.findById(userId); // Find user by ID
+    try {
+        const userId = req.params.id;
+        const user = await User.findById(userId).lean();
 
-		if (!user) {
-			return res.status(404).json({ error: "User not found" }); // Return error if user is not found
-		}
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
 
-		res.json(user); // Return the user as JSON
-	} catch (error) {
-		console.error("Error fetching user by ID:", error);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
+        const age = new User(user).calculateAge();
+        let allowedGenres = ["G", "PG"];
+
+        if (age >= 13) {
+            allowedGenres.push("PG-13", "R");
+        }
+        if (age >= 22) {
+            allowedGenres.push("X");
+        }
+
+        res.json({ ...user, allowedGenres });
+    } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
+
 
 //Route for Changing password
 router.put("/change-password", async (req, res) => {
