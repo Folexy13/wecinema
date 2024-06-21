@@ -101,7 +101,7 @@ const GenrePage = () => {
                 <div className="flex bg-grey justify-center w-full items-start my-0 mx-auto h-52 sm:h-80">
                     <img
                         className="w-50 h-45"
-                        src="https://scontent.fskt1-1.fna.fbcdn.net/v/t39.30808-6/444216752_345821988607794_6329538777469570636_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=2okqw2b2yRgQ7kNvgGoimHb&_nc_ht=scontent.fskt1-1.fna&oh=00_AYA6KaJWPkrNSp9maFEvHlJ8XBKAZpatuQPqV_FDN2hL_w&oe=6673BBCB"
+                        src="https://scontent.fskt1-1.fna.fbcdn.net/v/t39.30808-6/444216752_345821988607794_6329538777469570636_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=qvvn7toE2PUQ7kNvgGVXy_Y&_nc_ht=scontent.fskt1-1.fna&oh=00_AYCqUyb6-ilebDh0cAGpx6nxvVqhC92Lk6IxlCPsmJwSTA&oe=667B344B"
                         width="1200"
                         height="200"
                         alt="Cover"
@@ -113,7 +113,7 @@ const GenrePage = () => {
                             <div className="overflow-hidden flex justify-center mt--8 items-center">
                                 <img
                                     className="rounded-full bg-white h-16 w-16 sm:h-36 sm:w-36 border-2 p-1 border-white"
-                                    src="https://scontent.fskt1-1.fna.fbcdn.net/v/t39.30808-6/445203505_345868328603160_4760708580844450177_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=5f2048&_nc_ohc=WxbqXef-6b8Q7kNvgE_NB3g&_nc_ht=scontent.fskt1-1.fna&oh=00_AYCEQmqkOmLp-CUiw9LV91Q-woIEWIdJBOYQCFMslAL3cw&oe=6673C6A1"
+                                    src="https://scontent.fskt1-1.fna.fbcdn.net/v/t39.30808-6/445203505_345868328603160_4760708580844450177_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=5f2048&_nc_ohc=Q3AEaaEPdfMQ7kNvgEXDf-h&_nc_ht=scontent.fskt1-1.fna&oh=00_AYANKpz9O2ki0E0AUlnrxigknqXUFRjtKo02_xOnfYMf-w&oe=667B3F21"
                                     alt="Avatar"
                                 />
                             </div>
