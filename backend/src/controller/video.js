@@ -204,7 +204,58 @@ router.put("/:id", authenticateMiddleware, async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+router.post('/:id/bookmark', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.body;
 
+        const video = await Videos.findById(id);
+        if (!video) {
+            return res.status(404).json({ error: 'Video not found' });
+        }
+
+        // Check if the user already bookmarked the video
+        if (video.bookmarks.includes(userId)) {
+            return res.status(400).json({ error: 'Video already bookmarked' });
+        }
+
+        // Add userId to bookmarks array
+        video.bookmarks.push(userId);
+        await video.save();
+
+        res.status(200).json({ message: 'Video bookmarked successfully', video });
+    } catch (error) {
+        console.error('Error bookmarking video:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Remove bookmark from video
+router.delete('/:id/bookmark', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.body;
+
+        const video = await Videos.findById(id);
+        if (!video) {
+            return res.status(404).json({ error: 'Video not found' });
+        }
+
+        // Check if the user has bookmarked the video
+        if (!video.bookmarks.includes(userId)) {
+            return res.status(400).json({ error: 'Video not bookmarked yet' });
+        }
+
+        // Remove userId from bookmarks array
+        video.bookmarks = video.bookmarks.filter(b => b !== userId);
+        await video.save();
+
+        res.status(200).json({ message: 'Bookmark removed successfully', video });
+    } catch (error) {
+        console.error('Error removing bookmark:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 // Route for commenting on a video by ID
 router.post("/:id/comment", authenticateMiddleware, async (req, res) => {
 	try {

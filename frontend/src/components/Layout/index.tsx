@@ -108,7 +108,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 			<ToastContainer />
 			<Header
 				expand={expanded}
-				isMobile={screenWidth <= 1120}
+				isMobile={screenWidth <= 420}
 				toggler={() => setExpanded(!expanded)}
 				darkMode={darkMode}
 				

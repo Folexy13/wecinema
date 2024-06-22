@@ -14,11 +14,11 @@ export const categories = [
 ];
 
 export const ratings = [
-	"G ",
-	"PG ",
-	"PG-13 ",
-	"RS ",
-	"X ",
+	"g ",
+	"pg ",
+	"pg-13 ",
+	"rs ",
+	"x ",
 ];
 
 function App() {

@@ -145,25 +145,27 @@ const Delete: React.FC<DeleteProps> = ({
             </div>
             <div className="flex flex-wrap w-full">
     {filteredVideo(category).map((video: any, index: any) => (
-        <div key={index} style={{ maxWidth: "20%" }} className="cursor-pointer gallery relative flex-wrap border-gray-200 w-full p-2">
+        <div key={index} style={{ maxWidth: "30%" }} className="cursor-pointer gallery relative flex-wrap border-gray-200 w-full p-2">
             <div onClick={() => handleVideoClick(video)} className="thumbnail relative overflow-hidden">
                 <VideoThumbnail videoUrl={video.file} className="border-gray-200 rounded-xl w-full" />
             </div>
             <div className="footer flex-1 block">
+              
+                <a href="#" className="inline-flex max-w-max overflow-hidden">
+                    <h3 className="text-base font-semibold leading-5 my-2">{truncateText(video.title, 60)}</h3>
+                </a>
                 {isGalleryPage && (
                     <input
                         type="checkbox"
                         checked={selectedVideos.includes(video._id)}
                         onChange={() => handleSelectVideo(video._id)}
-                        className="mr-2"
+                        className="mr-2 mx-2"
                     />
                 )}
-                <a href="#" className="inline-flex max-w-max overflow-hidden">
-                    <h3 className="text-base font-semibold leading-5 my-2">{truncateText(video.title, 60)}</h3>
-                </a>
-                
                 <address className="flex items-center justify-between mt-8px">
+                    
                     <a href="#" className="flex w-full overflow-hidden relative items-center">
+                        
                         <div className="relative rounded-full w-32px box-border flex-shrink-0 block">
                             <div
                                 className="items-center rounded-full flex-shrink-0 justify-center bg-center bg-no-repeat bg-cover flex"

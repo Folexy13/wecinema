@@ -8,8 +8,15 @@ import '../components/header/drowpdown.css';
 import { FaEdit } from 'react-icons/fa';
 
 let token = localStorage.getItem("token") || null;
-
-const GenrePage = () => {
+interface GenreProps {
+    darkMode: boolean;
+    toggler: any;
+    expand: boolean;
+    isMobile: boolean;
+}
+const GenrePage: React.FC<GenreProps> = ({
+    isMobile,
+}) => {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState<any>({});
@@ -118,12 +125,23 @@ const GenrePage = () => {
                                 />
                             </div>
                             <div>
-                                <button className="mb-1 ml-4 text-sm sm:text-xl bg-purple-500 text-white py-2 px-4 rounded">
-                                    {user?.followers?.length} Followers
-                                </button>
-								<button className="mb-1 ml-4 text-sm sm:text-xl bg-purple-500 text-white py-2 px-4 rounded">
-                                    {user?.followers?.length} Videos
-                                </button>
+							<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+ 									{user?.followers?.length} Followers
+								</button>
+								<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+ 									{user?.followers?.length} 	Videos
+								</button>
+								<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+ 									{user?.followers?.length} Scripts
+								</button>
+								<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+ 									{user?.followers?.length} likes
+								</button>
+								<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+ 									{user?.bookmarks?.length} Bookmarks
+								</button>
+								
+
                                 <hr className="border-t border-gray-300 w-full my-2" />
                             </div>
                             {id !== decodeToken(token)?.userId && (
@@ -150,6 +168,7 @@ const GenrePage = () => {
                 </div>
                 <div className="left-container">
                     <ul className="flex flex-col items-left justify-left px-10 mt-5 mb-1 ml-4">
+
                         {editMode ? (
                             <form onSubmit={handleSubmit} className="flex flex-col">
                                 <input
@@ -170,6 +189,7 @@ const GenrePage = () => {
                                     Save
                                 </button>
                             </form>
+							
                         ) : (
                             <>
                                 <li className="overflow-hidden text-ellipsis font-extrabold text-base sm:text-2xl mb-2">
@@ -186,6 +206,7 @@ const GenrePage = () => {
                                 </button>
                             </>
                         )}
+						
                         <hr className="border-t border-gray-300 w-full my-2" />
                     </ul>
                     <ul>
@@ -199,11 +220,15 @@ const GenrePage = () => {
                         </li>
                     </ul>
                 </div>
-                <div className="right-container">
-                    <div style={{ width: '140%' }}>
+				
+				
+				{!isMobile && (
+				<div className="right-container">
+                   <div style={{ width: '100%' }}>
                         <Delete category="" length={3} data={id} />
                     </div>
                 </div>
+				    )}
             </div>
         </Layout>
     );
