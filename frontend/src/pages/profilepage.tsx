@@ -9,9 +9,6 @@ import { FaEdit } from 'react-icons/fa';
 
 let token = localStorage.getItem("token") || null;
 interface GenreProps {
-    darkMode: boolean;
-    toggler: any;
-    expand: boolean;
     isMobile: boolean;
 }
 const GenrePage: React.FC<GenreProps> = ({

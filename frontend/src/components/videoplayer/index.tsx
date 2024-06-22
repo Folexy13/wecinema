@@ -54,6 +54,7 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
         setLoading,
         "Video Liked!"
       );
+	  console.log(result)
       setvideoLikesLength(++videoLikesLength);
     } catch (error: any) {
       setLoading(false);
