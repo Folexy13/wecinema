@@ -9,10 +9,8 @@ import { FaEdit } from 'react-icons/fa';
 
 let token = localStorage.getItem("token") || null;
 interface GenreProps {
-    isMobile: boolean;
 }
 const GenrePage: React.FC<GenreProps> = ({
-    isMobile,
 }) => {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
@@ -219,13 +217,11 @@ const GenrePage: React.FC<GenreProps> = ({
                 </div>
 				
 				
-				{!isMobile && (
 				<div className="right-container">
                    <div style={{ width: '100%' }}>
                         <Delete category="" length={3} data={id} />
                     </div>
                 </div>
-				    )}
             </div>
         </Layout>
     );
