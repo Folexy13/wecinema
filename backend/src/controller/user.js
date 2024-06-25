@@ -7,7 +7,27 @@ const router = express.Router();
 
 // Import your User model (assuming you have a MongoDB User model)
 const User = require("../models/user");
+const Contact = require("../models/contact");
 const { authenticateMiddleware, isAdmin } = require("../utils");
+router.post("/contact", async (req, res) => {
+    try {
+        const { name, email, message } = req.body;
+
+        // Validate input
+        if (!name || !email || !message) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+
+        // Create a new contact message
+        const newContact = new Contact({ name, email, message });
+        await newContact.save();
+
+        res.status(201).json({ message: "Contact message sent successfully" });
+    } catch (error) {
+        console.error("Error handling contact form submission:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 // Route for creating a user account
 router.post("/register", async (req, res) => {

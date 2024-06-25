@@ -14,6 +14,7 @@ import { decodeToken } from "../../utilities/helperfFunction";
 import { toast } from "react-toastify";
 import { FaUser } from "react-icons/fa";
 import { FaSignOutAlt } from "react-icons/fa";
+import { RiCustomerService2Line } from "react-icons/ri"; // Importing the customer support icon
 
 interface SidebarProps {
   expand: boolean;
@@ -132,6 +133,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <CgProfile size="20" />
             <span className="text-sm">Profile</span>
           </Link>
+         
         </ul>
       </nav>
 
@@ -217,6 +219,19 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <span className="text-sm">{`${
                   expand ? "Sign up" : "Sign up"
                 }`}</span>
+                 <Link
+            to="/customersupport" // Adding the customer support link
+            className={`duration-75 flex gap-4 mx-4 my-2 cursor-pointer items-center ${
+              expand ? "" : "flex-col justify-center text-xs gap-1 specific"
+            } ${
+              window.location.pathname === "/customersupport"
+                ? "active-button"
+                : ""
+            }`}
+          >
+            <RiCustomerService2Line size="20" />
+            <span className="text-sm">Support</span>
+          </Link>
               </div>
             </>
           )}

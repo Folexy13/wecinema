@@ -9,6 +9,7 @@ import {
 	HypemodePage,
 	VideoEditorPage,
 	RatingPage,
+	CustomerSupportPage,
 } from "../pages";
 
 const Router: React.FC = () => {
@@ -23,6 +24,8 @@ const Router: React.FC = () => {
 				<Route path="/ratings/:slug" element={<RatingPage />} />
 				<Route path="/hypemode" element={<HypemodePage />} />
 				<Route path="/videoeditor" element={<VideoEditorPage />} />
+				<Route path="/customersupport" element={<CustomerSupportPage />} />
+
 
 			</Routes>
 		</BrowserRouter>

@@ -5,6 +5,7 @@ export { default as ProfilePage } from "./profilepage";
 export { default as ScriptViewPage } from "./scriptpage";
 export { default as HypemodePage } from "./hypemodepage";
 export { default as VideoEditorPage } from "./videoeditorpage";
+export { default as CustomerSupportPage } from "./customercare";
 export { default as RatingPage } from "./ratingpage";
 
 
