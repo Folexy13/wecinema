@@ -617,13 +617,13 @@ const Popup: React.FC<IPopupProps> = React.memo(
 			);
 		}
 		if (type === "") {
-			return <div>Hello</div>;
+			return <div>Helloo</div>;
 		}
 	}
 );
 Popup.defaultProps = {
 	background: "linear-gradient(to right, #ffd700, #ffff00)",
 	type: "",
-};
+}; 
 
 export default Popup;
