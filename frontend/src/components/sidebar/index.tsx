@@ -219,7 +219,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <span className="text-sm">{`${
                   expand ? "Sign up" : "Sign up"
                 }`}</span>
-                 <Link
+              
+              </div>
+            </>
+          )}
+             <Link
             to="/customersupport" // Adding the customer support link
             className={`duration-75 flex gap-4 mx-4 my-2 cursor-pointer items-center ${
               expand ? "" : "flex-col justify-center text-xs gap-1 specific"
@@ -232,9 +236,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             <RiCustomerService2Line size="20" />
             <span className="text-sm">Support</span>
           </Link>
-              </div>
-            </>
-          )}
         </ul>
       </nav>
     </section>
