@@ -206,5 +206,8 @@ nav img {
     flexDirection: row;  
     gap: 10px;  
   }
-  
+  /* Correct */
+.flex-container {
+    flex-direction: row;
+}
   
