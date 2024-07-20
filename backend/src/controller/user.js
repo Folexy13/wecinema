@@ -11,6 +11,7 @@ const Subscription  = require("../models/subscription");
 const Transaction = require("../models/transaction"); 
 const admin = require('firebase-admin');
 
+const serviceAccount = require('../../serviceAccountKey.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
