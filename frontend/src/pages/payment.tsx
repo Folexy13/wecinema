@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Layout } from "../components";
@@ -79,19 +79,31 @@ const Button = styled.button`
     background: #218838;
   }
 `;
+interface TransactionPopupProps {
+  message: string;
+  onClose: () => void;
+  isError: boolean;
+}
 
-const TransactionPopup = ({ message, onClose, isError }) => (
-  <>
-    <Overlay onClick={onClose} />
-    <Popup>
-      <h3>{isError ? 'Error' : 'Success'}!</h3>
-      <p>{message}</p>
-      <Button onClick={onClose}>Close</Button>
-    </Popup>
-  </>
+const TransactionPopup: React.FC<TransactionPopupProps> = ({ message, onClose, isError }) => (
+<>
+  <Overlay onClick={onClose} />
+  <Popup>
+    <h3>{isError ? 'Error' : 'Success'}!</h3>
+    <p>{message}</p>
+    <Button onClick={onClose}>Close</Button>
+  </Popup>
+</>
 );
 
-const PayPalButtonWrapper = ({ amount, userId, onSuccess, onError }) => {
+interface PayPalButtonWrapperProps {
+  amount: number;
+  userId: string | null;
+  onSuccess: (details: any) => void;
+  onError: (message: string) => void;
+}
+
+const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userId, onSuccess, onError }) => {
   return (
     <PayPalScriptProvider options={{ "clientId": "ATCFEkRI4lCXYSceFX1O3WVIym-HN0raTtEpXUUH8hTDI5kmPbbaWqI6I0K6nLRap16jZJoO33HtcFy7" }}>
       <PayPalButtons
@@ -135,7 +147,6 @@ const PayPalButtonWrapper = ({ amount, userId, onSuccess, onError }) => {
 
 const PaymentComponent = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const { subscriptionType, amount } = location.state as { subscriptionType: string, amount: number };
 
@@ -143,8 +154,6 @@ const PaymentComponent = () => {
   const [popupMessage, setPopupMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [userHasPaid, setUserHasPaid] = useState(false);
-  const [user, setUser] = useState<any>({});
-  const [loading, setLoading] = useState(false);
 
   // Extract data from token
   const token = localStorage.getItem("token") || null;
@@ -250,7 +259,7 @@ const PaymentComponent = () => {
   };
 
   return (
-    <Layout hasHeader={false}>
+    <Layout expand={false}hasHeader={false}>
       <Container>
         {!userHasPaid ? (
           <>

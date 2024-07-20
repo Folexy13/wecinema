@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from 'axios';
 import styled from 'styled-components';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
@@ -14,20 +14,7 @@ const MainContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const ListItem = styled.li`
-  margin-top: 10px; // Adjust the value as needed
-`;
 
-const LeftContainer = styled.div`
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 50px;
-  background: linear-gradient(to right, #ffffa1 0%, #ffc800 100%);
-  color: #333;
-`;
 
 const RightContainer = styled.div`
   width: 50%;
@@ -38,11 +25,6 @@ const RightContainer = styled.div`
   margin-bottom: 60px;
 `;
 
-const InfoText = styled.div`
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: left;
-`;
 
 const SubscriptionContainer = styled.div`
   display: flex;
@@ -103,13 +85,6 @@ const ToggleButton = styled.button`
   &:hover {
     background: #f0f0f0;
   }
-`;
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Align items to the top */
-  height: 100vh; /* Full height of the viewport */
-  padding-top: 20px; /* Add some padding from the top */
 `;
 
 const Popup = styled.div`
@@ -269,7 +244,7 @@ const HypeModeProfile = () => {
   };
 
   return (
-    <Layout hasHeader={false}>
+    <Layout expand={false} hasHeader={false}>
       <SubscriptionContainers>
 
       <ToggleButton onClick={toggleSignupSignin}>

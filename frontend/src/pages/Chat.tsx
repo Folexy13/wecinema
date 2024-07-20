@@ -1,11 +1,25 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, onValue, serverTimestamp, remove, set } from 'firebase/database';
 import { Layout } from "../components";
 import { decodeToken } from '../utilities/helperfFunction';
 import Modal from 'react-modal';
 import '../App.css'; // Import CSS file
+
+interface Order {
+  description: string;
+  price: string;
+  type: string;
+  deliveryTime: string;
+}
+
+interface FormErrors {
+  description?: string;
+  price?: string;
+  type?: string;
+  deliveryTime?: string;
+}
 
 const firebaseConfig = {
   apiKey: "AIzaSyD_vZlgkqS51NVCkQ6GeaqaMo3F74A0ACI",
@@ -22,16 +36,21 @@ const database = getDatabase(app);
 
 const Chat = () => {
   const { chatId } = useParams();
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [orders, setOrders] = useState([]);
-  const [newOrder, setNewOrder] = useState({ description: "", price: "", type: "Script", deliveryTime: "" });
-  const [username, setUsername] = useState("anonymous");
-  const [avatar, setAvatar] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPaymentSuccessModalOpen, setIsPaymentSuccessModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errors, setErrors] = useState({});
+  const [messages, setMessages] = useState<any[]>([]);
+  const [newMessage, setNewMessage] = useState<string>("");
+  const [orders, setOrders] = useState<any[]>([]);
+  const [newOrder, setNewOrder] = useState<Order>({
+    description: "",
+    price: "",
+    type: "Script",
+    deliveryTime: ""
+  });
+  const [username, setUsername] = useState<string>("anonymous");
+  const [avatar, setAvatar] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isPaymentSuccessModalOpen, setIsPaymentSuccessModalOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -72,7 +91,7 @@ const Chat = () => {
 
   const createOrder = async () => {
     try {
-      let formErrors = {};
+      let formErrors: FormErrors = {};
       if (!newOrder.description) {
         formErrors.description = "Description is required";
       }
@@ -109,7 +128,7 @@ const Chat = () => {
     }
   };
 
-  const withdrawOrder = async (orderId) => {
+  const withdrawOrder = async (orderId: string) => {
     try {
       const orderRef = ref(database, `chats/${chatId}/orders/${orderId}`);
       await remove(orderRef);
@@ -118,7 +137,7 @@ const Chat = () => {
     }
   };
 
-  const acceptOrder = (order) => {
+  const acceptOrder = (order: any) => {
     // Add your logic for accepting the order
     console.log('Order accepted:', order);
     setIsPaymentSuccessModalOpen(true);
@@ -129,7 +148,7 @@ const Chat = () => {
   }
 
   return (
-    <Layout hasHeader={false}>
+    <Layout expand={false} hasHeader={false}>
       <div style={styles.chatContainer}>
         <div style={styles.messageBox}>
           {messages.map((msg, index) => (
@@ -165,58 +184,63 @@ const Chat = () => {
           </div>
         </div>
         <div className='inputContainer'>
-  <input
-    type="text"
-    value={newMessage}
-    onChange={(e) => setNewMessage(e.target.value)}
-    placeholder="Type a message"
-    style={styles.input}
-  />
-  <button onClick={sendMessage} style={styles.sendButton}>Send</button>
-  <button onClick={() => setIsModalOpen(true)} style={styles.createOfferButton}>Create Offer</button>
-</div>
-
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            placeholder="Type a message"
+            style={styles.input}
+          />
+          <button onClick={sendMessage} style={styles.sendButton}>Send</button>
+          <button onClick={() => setIsModalOpen(true)} style={styles.createOfferButton}>Create Offer</button>
+        </div>
         <Modal
           isOpen={isModalOpen}
           onRequestClose={() => setIsModalOpen(false)}
           style={modalStyles}
         >
+          <h3>Create New Order</h3>
           <div style={styles.modalContent}>
-            <h3 style={{ color: '#000' }}>Create an offer</h3>
-            <h4 style={{ color: '#000' }}>Select Offer Type</h4>
+            <label>Description:</label>
+            <input
+              type="text"
+              value={newOrder.description}
+              onChange={(e) => setNewOrder({ ...newOrder, description: e.target.value })}
+              style={styles.input}
+            />
+            {errors.description && <div style={styles.errorText}>{errors.description}</div>}
+            
+            <label>Price:</label>
+            <input
+              type="text"
+              value={newOrder.price}
+              onChange={(e) => setNewOrder({ ...newOrder, price: e.target.value })}
+              style={styles.input}
+            />
+            {errors.price && <div style={styles.errorText}>{errors.price}</div>}
+            
+            <label>Type:</label>
             <select
               value={newOrder.type}
               onChange={(e) => setNewOrder({ ...newOrder, type: e.target.value })}
               style={styles.select}
             >
               <option value="Script">Script</option>
-              <option value="Video">Video</option>
+              <option value="Design">Design</option>
+              <option value="Content">Content</option>
             </select>
-            {errors.type && <p style={styles.errorText}>{errors.type}</p>}
-            <textarea
-              value={newOrder.description}
-              onChange={(e) => setNewOrder({ ...newOrder, description: e.target.value })}
-              placeholder="Describe your offer...."
-              style={{ ...styles.input, height: '400px' }} // Adjust height here
-            />
-            {errors.description && <p style={styles.errorText}>{errors.description}</p>}
-            <input
-              type="number"
-              value={newOrder.price}
-              onChange={(e) => setNewOrder({ ...newOrder, price: e.target.value })}
-              placeholder="Order Price"
-              style={styles.input}
-            />
-            {errors.price && <p style={styles.errorText}>{errors.price}</p>}
+            {errors.type && <div style={styles.errorText}>{errors.type}</div>}
+            
+            <label>Delivery Time:</label>
             <input
               type="text"
               value={newOrder.deliveryTime}
               onChange={(e) => setNewOrder({ ...newOrder, deliveryTime: e.target.value })}
-              placeholder="Delivery Time (e.g., 3 days)"
               style={styles.input}
             />
-            {errors.deliveryTime && <p style={styles.errorText}>{errors.deliveryTime}</p>}
-            <button onClick={createOrder} style={styles.sendButton}>Send Offer</button>
+            {errors.deliveryTime && <div style={styles.errorText}>{errors.deliveryTime}</div>}
+            
+            <button onClick={createOrder} style={styles.createOfferButton}>Create Order</button>
             <button onClick={() => setIsModalOpen(false)} style={styles.closeButton}>Close</button>
           </div>
         </Modal>
@@ -280,7 +304,6 @@ const styles = {
     borderRadius: '5px',
     backgroundColor: '#f1f1f1',
   },
- 
   input: {
     flex: 1,
     padding: '10px',
@@ -308,7 +331,6 @@ const styles = {
     cursor: 'pointer',
     marginBottom: '10px',  // Adjust margin for spacing
   },
-  
   orderContainer: {
     marginTop: '20px',
   },
@@ -362,8 +384,6 @@ const styles = {
     color: 'red',
     marginBottom: '5px',
   },
-  
-  
 };
 
 const modalStyles = {
@@ -385,6 +405,5 @@ const modalStyles = {
     marginTop: '50px', // Add margin top here
   },
 };
-
 
 export default Chat;

@@ -11,10 +11,7 @@ import {
 	VideoEditorPage,
 	RatingPage,
 	CustomerSupportPage,
-	MessagePage,
-	StudioMode,
 	PaymentComponent,
-	PlanSelector,
 	ChatPage,
 	ThemePage,
 	SearchPage,
@@ -36,7 +33,6 @@ const Router: React.FC = () => {
 				<Route path="/search/:slug" element={<SearchPage />} />
 
 				<Route path="/hypemode" element={<HypeMode />} />
-				<Route path="/studio" element={<StudioMode />} />
 				<Route path="/payment" element={<PaymentComponent />} />
 				<Route path="/hypemodeprofile" element={<HypeModeProfile />} />
 				<Route path="/chat/:chatId" element={<ChatPage />} />

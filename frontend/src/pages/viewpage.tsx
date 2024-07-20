@@ -76,7 +76,7 @@ const Viewpage: React.FC<any> = () => {
 
 	const nav = useNavigate();
 	return (
-		<Layout hasHeader={true}>
+		<Layout expand={false} hasHeader={true}>
 			<div className="sm:flex flex-col md:flex-row" style={{ marginTop: 12 }}>
 				<div className="sm:w-4/5 ">
 					<Player video={loggedVideo} tokenData={decodeToken(token)} />

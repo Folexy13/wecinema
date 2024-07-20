@@ -4,7 +4,7 @@ import {Layout } from "../components";
 const videoeditorpage = () => {
 
 	return (
-		<Layout hasHeader={false}>
+		<Layout expand={false} hasHeader={false}>
 			<div style={{ marginTop: 12 }} className="">
 				<div className="">
 					<img

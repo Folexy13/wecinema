@@ -55,7 +55,7 @@ const genrepage = () => {
 	// }, []);
 	console.log(script);
 	return (
-		<Layout hasHeader={false}>
+		<Layout expand={false} hasHeader={false}>
 			<div style={{ marginTop: 12 }} className="">
 				<div className="flex bg-black justify-center w-full items-start my-0  mx-auto h-52 sm:h-80">
 					<p className="text-white mt-24 font-bold text-xl sm:text-2xl">

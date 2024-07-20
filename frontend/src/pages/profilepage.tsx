@@ -21,10 +21,6 @@ const GenrePage: React.FC<GenreProps> = ({}) => {
     const [formData, setFormData] = useState({ username: "", dob: "" });
     const [userHasPaid, setUserHasPaid] = useState(false);
     const [currentUserHasPaid, setCurrentUserHasPaid] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const navigate = useNavigate();
-    const [scripts, setScripts] = useState([]);
-	const [data, setData] = useState<any>([]);
 	const [showMoreIndex, setShowMoreIndex] = useState<number | null>(null);
 	const nav = useNavigate();
     
@@ -136,10 +132,7 @@ const GenrePage: React.FC<GenreProps> = ({}) => {
         }
     };
 
-    const handleCloseModal = () => {
-        setShowModal(false);
-        navigate('/'); // Redirect to home page
-    };
+  
     const handleScriptMouseEnter = (index: number) => {
 		setShowMoreIndex(index);
 	};
@@ -149,7 +142,7 @@ const GenrePage: React.FC<GenreProps> = ({}) => {
 	};
 
     return (
-        <Layout hasHeader={false}>
+        <Layout expand={false} hasHeader={false}>
             <div style={{ marginTop: 12 }} className="">
                 <div className="flex bg-grey justify-center w-full items-start my-0 mx-auto h-52 sm:h-80">
                     <img

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useNavigate, Link } from "react-router-dom";
 import { HypemodeGallery} from "../components";
 import { MdForwardToInbox } from "react-icons/md";
 import { Layout } from "../components";
@@ -24,9 +23,6 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 const GenrePage: React.FC = () => {
-  const { id } = useParams();
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<any>({});
   const [userHasPaid, setUserHasPaid] = useState(false);
   const [showPaidUsersModal, setShowPaidUsersModal] = useState(false);
   const [paidUsers, setPaidUsers] = useState<any[]>([]);
@@ -92,7 +88,7 @@ const GenrePage: React.FC = () => {
     setShowPaidUsersModal(true);
   };
 
-  const startChat = (chatUserId: string, chatUsername: string, chatUserAvatar: string) => {
+  const startChat = (chatUserId: string) => {
     if (!userId || !chatUserId) {
       console.error('User ID or Chat User ID is not defined.');
       return;
@@ -109,7 +105,7 @@ const GenrePage: React.FC = () => {
   };
 
   return (
-    <Layout hasHeader={false}>
+    <Layout expand={false}hasHeader={false}>
       <div style={{ position: 'fixed', top: '100px', right: '20px', zIndex: 999 }}>
         <button onClick={handleOpenPaidUsersModal} style={{
           padding: '5px 12px',
