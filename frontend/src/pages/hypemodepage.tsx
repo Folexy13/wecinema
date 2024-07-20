@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
-import { gapi } from "gapi-script";
 import { decodeToken } from "../utilities/helperfFunction";
 
 const MainContainer = styled.div`
@@ -216,17 +215,7 @@ const HypeModeProfile = () => {
 
   const clientId = "854144808645-t4jd10ehpngjnfvki8mcuq7q0uvr2kjo.apps.googleusercontent.com";
 
-  useEffect(() => {
-    function start() {
-      gapi.client.init({
-        clientId: clientId,
-        scope: 'email https://www.googleapis.com/auth/user.birthday.read',
-      });
-    }
-
-    gapi.load('client:auth2', start);
-  }, []);
-
+ 
   const closePopup = () => {
     setShowPopup(false);
   };
