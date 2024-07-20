@@ -64,7 +64,7 @@ const HypemodeGallery: React.FC<GalleryProps> = ({
 			  });
 	  
 			  const viewsData = await Promise.all(viewsPromises);
-			  const viewsMap = {};
+			  const viewsMap:any = {};
 			  viewsData.forEach((item) => {
 				viewsMap[item.videoId] = item.views;
 			  });

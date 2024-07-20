@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, CSSProperties } from 'react';
 import { useParams } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, onValue, serverTimestamp, remove, set } from 'firebase/database';
@@ -117,14 +117,26 @@ const Chat = () => {
         price: newOrder.price,
         type: newOrder.type,
         deliveryTime: newOrder.deliveryTime,
-        createdBy: username,
-        timestamp: serverTimestamp()
+        status: "pending"
       });
-      setNewOrder({ description: "", price: "", type: "Script", deliveryTime: "" });
+      setNewOrder({
+        description: "",
+        price: "",
+        type: "Script",
+        deliveryTime: ""
+      });
       setIsModalOpen(false);
-      setErrors({});
     } catch (error) {
       console.error("Error creating order:", error);
+    }
+  };
+
+  const acceptOrder = async (orderId: string) => {
+    try {
+      const orderRef = ref(database, `chats/${chatId}/orders/${orderId}/status`);
+      await set(orderRef, "accepted");
+    } catch (error) {
+      console.error("Error accepting order:", error);
     }
   };
 
@@ -137,12 +149,6 @@ const Chat = () => {
     }
   };
 
-  const acceptOrder = (order: any) => {
-    // Add your logic for accepting the order
-    console.log('Order accepted:', order);
-    setIsPaymentSuccessModalOpen(true);
-  };
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -153,42 +159,45 @@ const Chat = () => {
         <div style={styles.messageBox}>
           {messages.map((msg, index) => (
             <div key={index} style={styles.message}>
-              <img
-                src={msg.avatar}
-                alt={`${msg.sender}'s avatar`}
-                style={styles.avatar}
-              />
+              <img src={msg.avatar} alt={msg.sender} style={styles.avatar} />
               <div style={styles.messageContent}>
-                <strong style={msg.sender === username ? styles.mySender : styles.otherSender}>
-                  {msg.sender === username ? "Me" : msg.sender}
-                </strong>
-                <span style={styles.messageText}>{msg.message}</span>
+                <span style={msg.sender === username ? styles.mySender : styles.otherSender}>
+                  {msg.sender}
+                </span>
+                <div style={styles.messageText}>
+                  {msg.message}
+                </div>
               </div>
             </div>
           ))}
-          <div style={styles.orderContainer}>
-            {orders.map(([orderId, order], index) => (
-              <div key={index} style={styles.order}>
-                <p><strong>Description:</strong> {order.description}</p>
-                <p><strong>Price:</strong> ${order.price}</p>
-                <p><strong>Type:</strong> {order.type}</p>
-                <p><strong>Delivery Time:</strong> {order.deliveryTime}</p>
-                <p><strong>Created By:</strong> {order.createdBy}</p>
-                {order.createdBy === username ? (
-                  <button onClick={() => withdrawOrder(orderId)} style={styles.withdrawButton}>Withdraw Offer</button>
-                ) : (
-                  <button onClick={() => acceptOrder(order)} style={styles.acceptButton}>Accept Offer</button>
-                )}
-              </div>
-            ))}
-          </div>
         </div>
-        <div className='inputContainer'>
+        <div style={styles.orderContainer}>
+          {orders.map(([orderId, order], index) => (
+            <div key={index} style={styles.order}>
+              <div>Description: {order.description}</div>
+              <div>Price: {order.price}</div>
+              <div>Type: {order.type}</div>
+              <div>Delivery Time: {order.deliveryTime}</div>
+              <div>Status: {order.status}</div>
+              {order.status === "pending" && (
+                <>
+                  <button onClick={() => acceptOrder(orderId)} style={styles.acceptButton}>
+                    Accept Order
+                  </button>
+                  <button onClick={() => withdrawOrder(orderId)} style={styles.withdrawButton}>
+                    Withdraw Order
+                  </button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+        <div>
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type a message"
+            placeholder="Type a message..."
             style={styles.input}
           />
           <button onClick={sendMessage} style={styles.sendButton}>Send</button>
@@ -258,7 +267,7 @@ const Chat = () => {
   );
 };
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   chatContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -386,7 +395,7 @@ const styles = {
   },
 };
 
-const modalStyles = {
+const modalStyles: { content: CSSProperties } = {
   content: {
     top: '50%',
     left: '50%',
@@ -399,9 +408,8 @@ const modalStyles = {
     backgroundColor: '#fff',
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
     width: '80%', // Increase the width of the modal
-    maxWidth: '500px', 
+    maxWidth: '500px',
     maxHeight: '500px', // Maximum width of the modal
-    // Maximum width of the modal
     marginTop: '50px', // Add margin top here
   },
 };

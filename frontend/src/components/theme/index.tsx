@@ -24,7 +24,6 @@ interface ThemeProps {
 const Theme: React.FC<ThemeProps> = ({
     title,
     isFirst,
-    ratings,
     themes,
     type,
 }) => {

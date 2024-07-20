@@ -65,10 +65,10 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
       setLoading(true);
       setIsLiked(!isLiked);
       setIsDisliked(false);
-      let payload = {
-        action: "like",
-        userId: tokenData?.userId,
-      };
+      // let payload = {
+      //   action: "like",
+      //   userId: tokenData?.userId,
+      // };
       // const result: any = await putRequest(
       //   "video/" + video._id,
       //   payload,
@@ -88,10 +88,10 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
       setLoading(true);
       setIsDisliked(!isDisliked);
       setIsLiked(false);
-      let payload = {
-        action: "dislike",
-        userId: tokenData?.userId,
-      };
+      // let payload = {
+      //   action: "dislike",
+      //   userId: tokenData?.userId,
+      // };
       // const result: any = await putRequest(
       //   "video/" + video._id,
       //   payload,
