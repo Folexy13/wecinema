@@ -156,7 +156,7 @@ const GenrePage: React.FC = () => {
                 <img src={paidUser.avatar} alt={`${paidUser.username}'s avatar`} style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '10px' }} />
               </Link>
               <span style={{ fontWeight: 'bold' }}>{paidUser.username}</span>
-              <button onClick={() => startChat(paidUser._id, paidUser.username, paidUser.avatar)} style={{
+              <button onClick={() => startChat(paidUser._id)} style={{
                 marginLeft: '10px',
                 padding: '5px 10px',
                 background: '#f1c40f',
