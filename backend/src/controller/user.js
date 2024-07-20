@@ -2,12 +2,30 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 
 const argon2 = require("argon2");
-
+const axios = require('axios');
 const router = express.Router();
-
 // Import your User model (assuming you have a MongoDB User model)
 const User = require("../models/user");
 const Contact = require("../models/contact");
+const Subscription  = require("../models/subscription");
+const Transaction = require("../models/transaction"); 
+const admin = require('firebase-admin');
+
+const serviceAccount = require('../../serviceAccountKey.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://wecinema-821f9-default-rtdb.firebaseio.com"
+});
+const db = admin.database();
+
+
+// PayPal credentials
+const PAYPAL_CLIENT_ID = 'ATCFEkRI4lCXYSceFX1O3WVIym-HN0raTtEpXUUH8hTDI5kmPbbaWqI6I0K6nLRap16jZJoO33HtcFy7';
+const PAYPAL_SECRET = 'EIom_qzr0MhKHqPqFfhl6hqaTZFBg6n4AENu_8i8Bgsx86cQ9q0bWIIb235hLwdaDKPdG-i7qYUHpf5L';
+
+
+
 const { authenticateMiddleware, isAdmin } = require("../utils");
 router.post("/contact", async (req, res) => {
     try {
@@ -65,7 +83,6 @@ router.post("/register", async (req, res) => {
 	}
 });
 
-// Route for user login and authentication
 router.post("/login", async (req, res) => {
 	try {
 		const { email, password } = req.body;
@@ -77,6 +94,7 @@ router.post("/login", async (req, res) => {
 		if (!user) {
 			return res.status(401).json({ error: "Invalid credentials" });
 		}
+
 		// Compare the provided password with the hashed password in the database
 		const passwordMatch = await argon2.verify(user.password, password);
 
@@ -85,13 +103,12 @@ router.post("/login", async (req, res) => {
 			const token = jwt.sign(
 				{ userId: user._id, username: user.username, avatar: user.avatar },
 				process.env.SECRET_KEY,
-				{
-					expiresIn: "8h",
-				}
+				{ expiresIn: "8h" }
 			);
 
 			res.status(200).json({ token });
 		} else {
+			// If passwords do not match, return an error
 			res.status(401).json({ error: "Invalid credentials" });
 		}
 	} catch (error) {
@@ -99,6 +116,7 @@ router.post("/login", async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+
 
 //Route for following an author
 router.put("/:id/follow", authenticateMiddleware, async (req, res) => {
@@ -134,8 +152,18 @@ router.put("/:id/follow", authenticateMiddleware, async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+// New route to get paid users (should be before /user/:id)
+router.get('/paid-users', async (req, res) => {
+    try {
+        const paidUsers = await User.find({ hasPaid: true }).lean();
+        res.status(200).json(paidUsers);
+    } catch (error) {
+        console.error('Error fetching paid users:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
-//Route for getting a particular user
+// Route for getting a particular user
 router.get("/:id", async (req, res) => {
     try {
         const userId = req.params.id;
@@ -162,6 +190,32 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+
+router.get("/payment/user/:id", async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findById(userId).lean();
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const age = new User(user).calculateAge();
+        let allowedGenres = ["G", "PG"];
+
+        if (age >= 13) {
+            allowedGenres.push("PG-13", "R");
+        }
+        if (age >= 22) {
+            allowedGenres.push("X");
+        }
+
+        res.json({ ...user, allowedGenres });
+    } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 //Route for Changing password
 router.put("/change-password", async (req, res) => {
@@ -228,7 +282,7 @@ router.put("/edit/:id", authenticateMiddleware, async (req, res) => {
 });
 
 //delete a particular user - only admin function
-router.delete("/delete/:id", isAdmin, async (req, res) => {
+router.delete("/delete/:id",  async (req, res) => {
 	try {
 		const { id } = req.params;
 
@@ -289,5 +343,113 @@ router.post("/change-user-status", async (req, res) => {
 		return res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+// GET /api/subscription/status/:userId
+router.get('/status/:userId', async (req, res) => {
+  const userId = req.params.userId;  // Get userId from URL parameters
+
+  try {
+    const subscription = await Subscription.findOne({ userId });
+    res.json({ isSubscribed: !!subscription, subscription });
+  } catch (err) {
+    console.error('Error fetching subscription status for user:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+// Route to check user payment status
+router.get('/payment-status/:userId', async (req, res) => {
+	const { userId } = req.params;
+  
+	try {
+	  const user = await User.findOne({ _id: userId });
+  
+	  if (!user) {
+		return res.status(404).json({ hasPaid: false, message: 'User not found' });
+	  }
+  
+	  res.json({ hasPaid: user.hasPaid });
+	} catch (err) {
+	  console.error('Error fetching user payment status:', err);
+	  res.status(500).json({ message: 'Server error' });
+	}
+  });
+router.post('/save-transaction', async (req, res) => {
+	const { userId, username, email, orderId, payerId, amount, currency } = req.body;
+  
+	try {
+	  const newTransaction = new Transaction({
+		userId,
+		username,
+		email,
+		orderId,
+		payerId,
+		amount,
+		currency
+	  });
+  
+	  await newTransaction.save();
+  
+	  await User.updateOne({ _id: userId }, { hasPaid: true },{ lastPaymentDate: new Date()});
+  
+	  res.status(201).send({ message: 'Transaction saved and user payment status updated successfully!' });
+	} catch (error) {
+	  console.error('Error saving transaction:', error);
+	  res.status(500).send({ message: 'Failed to save transaction and update user payment status.' });
+	}
+  });
+  
+  
+router.get("/transactions", async (req, res) => {
+    try {
+        const transactions = await Transaction.find(); // Retrieve all transactions
+        res.status(200).json(transactions);
+    } catch (error) {
+        console.error("Error fetching transactions:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+// Route to get transactions by userId
+router.get("/transactions/:userId",  async (req, res) => {
+    const userId = req.params.userId; // Extract userId from URL parameters
+
+    try {
+        const transactions = await Transaction.find({ userId }); // Retrieve transactions by userId
+        res.status(200).json(transactions);
+    } catch (error) {
+        console.error("Error fetching transactions by userId:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+// In your backend server (Node.js/Express)
+router.post('/update-payment-status', async (req, res) => {
+	const { userId, hasPaid } = req.body;
+	try {
+	  const user = await User.findById(userId);
+	  user.hasPaid = hasPaid;
+	  await user.save();
+	  res.status(200).send({ message: 'Payment status updated successfully.' });
+	} catch (error) {
+	  res.status(500).send({ message: 'Failed to update payment status.', error });
+	}
+  });
+  
+ 
+  router.post('/orders', async (req, res) => {
+	const { chatId, description, price, createdBy } = req.body;
+	try {
+	  const orderRef = db.ref(`chats/${chatId}/orders`).push();
+	  await orderRef.set({
+		description,
+		price,
+		createdBy,
+		timestamp: admin.database.ServerValue.TIMESTAMP
+	  });
+	  res.status(200).send({ message: 'Order created successfully', orderId: orderRef.key });
+	} catch (error) {
+	  res.status(500).send({ error: 'Error creating order' });
+	}
+  });
 
 module.exports = router;
+

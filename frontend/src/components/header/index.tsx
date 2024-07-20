@@ -1,5 +1,5 @@
-import { MdMenu } from "react-icons/md";
 import React, { useState } from 'react';
+import { MdMenu } from "react-icons/md";
 import logo from "../../assets/wecinema.png";
 import search from "../../assets/search.png";
 import close from "../../assets/close.png";
@@ -27,9 +27,23 @@ const Header: React.FC<HeaderProps> = ({
     const toggleDropdown = () => setIsOpen(!isOpen);
     const [isOpened, setIsOpened] = useState(false);
     const toggleDropdowned = () => setIsOpened(!isOpened);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (searchTerm.trim() !== "") {
+            const capitalizedSearchTerm = searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1);
+            nav(`/search/${capitalizedSearchTerm.trim()}`);
+        }
+    };
     const toggleSearch = () => {
         setIsExpanded(!isExpanded);
     };
+
     return (
         <header
             className={`text-blue z-50 border-b fixed w-screen border-gray-200 ${
@@ -56,31 +70,33 @@ const Header: React.FC<HeaderProps> = ({
                     </li>
                 </ul>
                 {!isMobile && (
-                <form className="w-full md:w-2/3">
-					<input
-						type="search"
-						placeholder="Search anything..."
-						className="w-full md:w-2/3 flex mx-auto border rounded-xl cursor-pointer p-2 outline-none"
-					/>
-				</form>
-                
-        )}
+                    <form className="w-full md:w-2/3" onSubmit={handleSearchSubmit}>
+                        <input
+                            type="search"
+                            placeholder="Search anything..."
+                            className="w-full md:w-2/3 flex mx-auto border rounded-xl cursor-pointer p-2 outline-none"
+                            value={searchTerm}
+                            onChange={handleSearchInputChange}
+                        />
+                    </form>
+                )}
                 {isMobile && (
-                <div className="search-container">
-            <form className="search-form">
-                <input
-                    type="search"
-                    placeholder="Search anything..."
-                    className={`search-input ${isExpanded ? 'expanded' : ''}`}
-                />
-                <div className="search-icon" onClick={toggleSearch}>
-                {isExpanded ? <img src={close} alt="logo" width={30} title="wecinema" /> : 
-                        <img src={search} alt="logo" width={30} title="wecinema" />}
-                
-                </div>
-            </form>
-        </div>
-        )}
+                    <div className="search-container">
+                        <form className="search-form" onSubmit={handleSearchSubmit}>
+                            <input
+                                type="search"
+                                placeholder="Search anything..."
+                                className={`search-input ${isExpanded ? 'expanded' : ''}`}
+                                value={searchTerm}
+                                onChange={handleSearchInputChange}
+                            />
+                            <div className="search-icon" onClick={toggleSearch}>
+                                {isExpanded ? <img src={close} alt="close" width={30} /> :
+                                    <img src={search} alt="search" width={30} />}
+                            </div>
+                        </form>
+                    </div>
+                )}
                 {!isMobile && (
                     <div className="dropdown">
                         <button className="hover:bg-yellow-400 whitespace-nowrap hover:text-white hover:border-white-100 border border-black-700 rounded-xl px-4 py-1 cursor-pointer" onClick={toggleDropdown}>

@@ -1,79 +1,118 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
-import { Delete, Layout } from "../components";
-import { getRequest, putRequest } from "../api"; // Assuming postRequest is used for updating data
+import { Delete, Layout,Render } from "../components";
+import { getRequest, putRequest } from "../api";
 import { decodeToken, isUserIdInArray } from "../utilities/helperfFunction";
 import '../components/header/drowpdown.css';
 import { FaEdit } from 'react-icons/fa';
+import axios from 'axios';
 
 let token = localStorage.getItem("token") || null;
-interface GenreProps {
-}
-const GenrePage: React.FC<GenreProps> = ({
-}) => {
+
+interface GenreProps {}
+
+const GenrePage: React.FC<GenreProps> = ({}) => {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState<any>({});
     const [editMode, setEditMode] = useState(false);
     const [formData, setFormData] = useState({ username: "", dob: "" });
+    const [userHasPaid, setUserHasPaid] = useState(false);
+    const [currentUserHasPaid, setCurrentUserHasPaid] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
+    const [scripts, setScripts] = useState([]);
+	const [data, setData] = useState<any>([]);
+	const [showMoreIndex, setShowMoreIndex] = useState<number | null>(null);
+	const nav = useNavigate();
+    
 
     useEffect(() => {
+		let isMounted = true; // Flag to track if the component is mounted
+
         if (!id) {
             toast.error("Please login first");
             return;
         }
+        
 
         const fetchData = async () => {
             try {
-                const result:any = await getRequest("/user/" + id, setLoading);
+                const result: any = await getRequest("/user/" + id, setLoading);
                 setUser(result);
+                const response = await axios.get(`http://localhost:3000/user/payment-status/${id}`);
+                setUserHasPaid(response.data.hasPaid);
+                const tokenData = decodeToken(token);
+                if (tokenData) {
+                    const currentUserResponse = await axios.get(`http://localhost:3000/user/payment-status/${tokenData.userId}`);
+                    setCurrentUserHasPaid(currentUserResponse.data.hasPaid);
+                }
                 setFormData({ username: result.username, dob: result.dob });
+			   setLoading(true);
+                
+                // Fetch user scripts
+                // const results: any = await getRequest("video/author/scripts", setLoading);
+                // console.log(results);
+                // if (isMounted && results) {
+                //     // Update state only if the component is still mounted
+                //     setScripts(results.map((res: any) => res.script));
+                //     setData(results); // Assuming a `videos` state variable
+                //     setLoading(false);
+                // }
+                
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
-        }
+        };
 
         fetchData();
+        return () => {
+			isMounted = false;
+		};
     }, [id]);
 
-	const renderAllowedGenres = () => {
-		if (!user.allowedGenres) return null;
-		
-		return user.allowedGenres.map((genre: string) => {
-			let bgColor, marginLeft;
-			switch (genre) {
-				case "G":
-					bgColor = "bg-green-500";
-					marginLeft = "ml-12";
-					break;
-				case "PG":
-					bgColor = "bg-blue-500";
-					marginLeft = "ml-4";
-					break;
-				case "PG-13":
-					bgColor = "bg-blue-500";
-					marginLeft = "ml-4";
-					break;
-				case "R":
-					bgColor = "bg-yellow-500";
-					marginLeft = "ml-4";
-					break;
-				case "X":
-					bgColor = "bg-red-500";
-					marginLeft = "ml-12";
-					break;
-				default:
-					bgColor = "bg-gray-500";
-					marginLeft = "ml-4";
-			}
-			return (
-				<button key={genre} className={`mb-1 ${marginLeft} text-sm sm:text-xl ${bgColor} text-white py-2 px-4 rounded`}>
-					{genre}
-				</button>
-			);
-		});
-	};
+    useEffect(() => {
+        if (userHasPaid && !currentUserHasPaid) {
+            setShowModal(true);
+        }
+    }, [userHasPaid, currentUserHasPaid]);
+
+    const renderAllowedGenres = () => {
+        if (!user.allowedGenres) return null;
+        
+        return user.allowedGenres.map((genre: string) => {
+            let bgColor, marginLeft;
+            switch (genre) {
+                case "G":
+                    bgColor = "bg-green-500";
+                    marginLeft = "ml-12";
+                    break;
+                case "PG":
+                case "PG-13":
+                    bgColor = "bg-blue-500";
+                    marginLeft = "ml-4";
+                    break;
+                case "R":
+                    bgColor = "bg-yellow-500";
+                    marginLeft = "ml-4";
+                    break;
+                case "X":
+                    bgColor = "bg-red-500";
+                    marginLeft = "ml-12";
+                    break;
+                default:
+                    bgColor = "bg-gray-500";
+                    marginLeft = "ml-4";
+            }
+            return (
+                <button key={genre} className={`mb-1 ${marginLeft} text-sm sm:text-xl ${bgColor} text-white py-2 px-4 rounded`}>
+                    {genre}
+                </button>
+            );
+        });
+    };
 
     const handleEdit = () => {
         setEditMode(true);
@@ -90,12 +129,24 @@ const GenrePage: React.FC<GenreProps> = ({
             const result = await putRequest("/user/edit/" + id, formData, setLoading);
             setUser(result);
             setEditMode(false);
-			window.location.reload()
+            window.location.reload();
         } catch (error) {
             console.error("Error updating profile:", error);
             toast.error("Failed to update profile");
         }
     };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        navigate('/'); // Redirect to home page
+    };
+    const handleScriptMouseEnter = (index: number) => {
+		setShowMoreIndex(index);
+	};
+
+	const handleScriptMouseLeave = () => {
+		setShowMoreIndex(null);
+	};
 
     return (
         <Layout hasHeader={false}>
@@ -103,7 +154,7 @@ const GenrePage: React.FC<GenreProps> = ({
                 <div className="flex bg-grey justify-center w-full items-start my-0 mx-auto h-52 sm:h-80">
                     <img
                         className="w-50 h-45"
-                        src="https://scontent.fskt1-1.fna.fbcdn.net/v/t39.30808-6/444216752_345821988607794_6329538777469570636_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=qvvn7toE2PUQ7kNvgGVXy_Y&_nc_ht=scontent.fskt1-1.fna&oh=00_AYCqUyb6-ilebDh0cAGpx6nxvVqhC92Lk6IxlCPsmJwSTA&oe=667B344B"
+                        src="https://scontent.flhe2-3.fna.fbcdn.net/v/t39.30808-6/444216752_345821988607794_6329538777469570636_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGYFCDEJ1QbFUUd1O9lu-MCLkagD0qX1oguRqAPSpfWiP3Oet-k3fSC3nzNN-Ys5ScBx-IItAfH-SZPks5l3M4t&_nc_ohc=_KTwnbQlAB0Q7kNvgGL19pq&_nc_zt=23&_nc_ht=scontent.flhe2-3.fna&oh=00_AYAp4ZpG5Yn9MrzkjwqFPA4awpKnjWdthyTmBGapfnKhvg&oe=6697FD0B"
                         width="1200"
                         height="200"
                         alt="Cover"
@@ -115,27 +166,34 @@ const GenrePage: React.FC<GenreProps> = ({
                             <div className="overflow-hidden flex justify-center mt--8 items-center">
                                 <img
                                     className="rounded-full bg-white h-16 w-16 sm:h-36 sm:w-36 border-2 p-1 border-white"
-                                    src="https://scontent.fskt1-1.fna.fbcdn.net/v/t39.30808-6/445203505_345868328603160_4760708580844450177_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=5f2048&_nc_ohc=Q3AEaaEPdfMQ7kNvgEXDf-h&_nc_ht=scontent.fskt1-1.fna&oh=00_AYANKpz9O2ki0E0AUlnrxigknqXUFRjtKo02_xOnfYMf-w&oe=667B3F21"
+                                    src="https://scontent.flhe2-4.fna.fbcdn.net/v/t39.30808-6/445203505_345868328603160_4760708580844450177_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeE8P2dumlbz7izsnsIVcGg8OBz1JUUJV-s4HPUlRQlX6w0dohiahoR1GJWJNrVI7F95g_SqgTiSbotvIX9S-_UU&_nc_ohc=KXBrT5ifmwMQ7kNvgGENLwx&_nc_zt=23&_nc_ht=scontent.flhe2-4.fna&oh=00_AYAhYdSYD9aJQhlbLDin0hTxM4Y6zxbxghYRvSIJxmjuOw&oe=669807E1"
                                     alt="Avatar"
                                 />
                             </div>
                             <div>
-							<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
- 									{user?.followers?.length} Followers
-								</button>
-								<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
- 									{user?.followers?.length} 	Videos
-								</button>
-								<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
- 									{user?.followers?.length} Scripts
-								</button>
-								<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
- 									{user?.followers?.length} likes
-								</button>
-								<button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
- 									{user?.bookmarks?.length} Bookmarks
-								</button>
-								
+                                <button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+                                    {user?.followers?.length} Followers
+                                </button>
+                                <button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+                                    {user?.followers?.length} Videos
+                                </button>
+                                <button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+                                    {scripts.length} Scripts
+                                </button>
+                                <button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+                                    {user?.followers?.length} Likes
+                                </button>
+                                <button className="mb-1 ml-4 text-sm sm:text-xl bg-white-500 text-black py-2 px-4 rounded border-2 border-gray-700">
+                                    {user?.bookmarks?.length} Bookmarks
+                                </button>
+
+                                {userHasPaid && (
+                                    <a href="/hypemodeprofile">
+                                        <button className="mb-1 ml-4 text-sm sm:text-xl bg-yellow-500 text-white py-2 px-4 rounded border-2 border-gray-700">
+                                            Hypemode
+                                        </button>
+                                    </a>
+                                )}
 
                                 <hr className="border-t border-gray-300 w-full my-2" />
                             </div>
@@ -163,7 +221,6 @@ const GenrePage: React.FC<GenreProps> = ({
                 </div>
                 <div className="left-container">
                     <ul className="flex flex-col items-left justify-left px-10 mt-5 mb-1 ml-4">
-
                         {editMode ? (
                             <form onSubmit={handleSubmit} className="flex flex-col">
                                 <input
@@ -184,7 +241,6 @@ const GenrePage: React.FC<GenreProps> = ({
                                     Save
                                 </button>
                             </form>
-							
                         ) : (
                             <>
                                 <li className="overflow-hidden text-ellipsis font-extrabold text-base sm:text-2xl mb-2">
@@ -197,11 +253,11 @@ const GenrePage: React.FC<GenreProps> = ({
                                     Date of Birth: {user.dob}
                                 </li>
                                 <button onClick={handleEdit}>
-                                    <FaEdit size="20"/>
+                                    <FaEdit size="20" />
                                 </button>
                             </>
                         )}
-						
+
                         <hr className="border-t border-gray-300 w-full my-2" />
                     </ul>
                     <ul>
@@ -215,11 +271,47 @@ const GenrePage: React.FC<GenreProps> = ({
                         </li>
                     </ul>
                 </div>
-				
-				
-				<div className="right-container">
-                   <div style={{ width: '100%' }}>
+
+                <div className="right-container">
+                    <div style={{ width: '100%' }}>
                         <Delete category="" length={3} data={id} />
+                    </div>
+                    <div className="left-container">
+                    {!loading && (
+					<h2 className="text-l font-extrabold text-lg sm:text-xl">Scripts</h2>
+				)}
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+					{scripts?.map((script: string, index: number) => (
+						<div
+							key={index}
+							className={`${
+								showMoreIndex === index
+									? "bg-black text-white bg-opacity-50 overflow-y-auto"
+									: "bg-white text-black overflow-y-hidden"
+							} overflow-y-hidden hide-scrollbar border w-full max-h-64 text-slate-950 p-4 rounded-sm relative`}
+							onMouseEnter={() => handleScriptMouseEnter(index)}
+							onMouseLeave={handleScriptMouseLeave}
+							onClick={() =>
+								nav(`/script/${data[index]._id}`, {
+									state: JSON.stringify(data[index]),
+								})
+							}
+						>
+							<h2>{data[index].title}</h2>
+							{showMoreIndex === index && (
+								<button
+									className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-500 text-white px-2 py-1 rounded-md"
+									onClick={() => console.log("Read more clicked")}
+								>
+									Read More
+								</button>
+							)}
+							<Render htmlString={script} />
+						</div>
+					))}
+				
+				</div>
+
                     </div>
                 </div>
             </div>

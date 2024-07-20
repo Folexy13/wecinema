@@ -12,12 +12,31 @@ export const categories = [
 	"Romance ",
 	"Thriller ",
 ];
-
+export const themes = [
+	"Coming-of-age story", 
+	"Good versus evil",
+	"Love", 
+    "Redemption",
+	"Family",
+	"Death", 
+	"Opperession",
+	 "Survival", 
+	 "Revenge", 
+	"Justice",
+	"War", 
+	"Bravery", 
+    "Freedom", 
+	"Friendship",
+	"Death",
+	"Isolation",
+    "Peace", 
+	"Perseverance", 
+];
 export const ratings = [
 	"g ",
 	"pg ",
 	"pg-13 ",
-	"rs ",
+	"r ",
 	"x ",
 ];
 

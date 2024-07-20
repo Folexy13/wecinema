@@ -32,6 +32,12 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+   
+    hasPaid: { type: Boolean, default: false },
+    lastPaymentDate: { type: Date, default: null },
+
+    // isSubscribed: { type: Boolean, default: false },
+    
     bookmarks: [
         { 
             type: mongoose.Schema.Types.ObjectId, ref: "Video" 

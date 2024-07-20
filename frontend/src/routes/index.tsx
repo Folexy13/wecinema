@@ -6,10 +6,20 @@ import {
 	ProfilePage,
 	ScriptViewPage,
 	Viewpage,
-	HypemodePage,
+	HypeModeProfile,
+	HypeMode,
 	VideoEditorPage,
 	RatingPage,
 	CustomerSupportPage,
+	MessagePage,
+	StudioMode,
+	PaymentComponent,
+	PlanSelector,
+	ChatPage,
+	ThemePage,
+	SearchPage,
+
+
 } from "../pages";
 
 const Router: React.FC = () => {
@@ -22,7 +32,15 @@ const Router: React.FC = () => {
 				<Route path="/user/:id" element={<ProfilePage />} />
 				<Route path="/script/:id" element={<ScriptViewPage />} />
 				<Route path="/ratings/:slug" element={<RatingPage />} />
-				<Route path="/hypemode" element={<HypemodePage />} />
+				<Route path="/themes/:slug" element={<ThemePage />} />
+				<Route path="/search/:slug" element={<SearchPage />} />
+
+				<Route path="/hypemode" element={<HypeMode />} />
+				<Route path="/studio" element={<StudioMode />} />
+				<Route path="/payment" element={<PaymentComponent />} />
+				<Route path="/hypemodeprofile" element={<HypeModeProfile />} />
+				<Route path="/chat/:chatId" element={<ChatPage />} />
+
 				<Route path="/videoeditor" element={<VideoEditorPage />} />
 				<Route path="/customersupport" element={<CustomerSupportPage />} />
 

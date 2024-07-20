@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdHome } from "react-icons/io";
 import { RiMovie2Line } from "react-icons/ri";
 import { LiaSignInAltSolid } from "react-icons/lia";
@@ -8,13 +8,14 @@ import { MdOutlineDescription } from "react-icons/md";
 import { BiCameraMovie } from "react-icons/bi";
 import { IoSunnyOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { TbVideoPlus } from "react-icons/tb";
 import { decodeToken } from "../../utilities/helperfFunction";
 import { toast } from "react-toastify";
 import { FaUser } from "react-icons/fa";
 import { FaSignOutAlt } from "react-icons/fa";
-import { RiCustomerService2Line } from "react-icons/ri"; // Importing the customer support icon
+import { RiCustomerService2Line } from "react-icons/ri";
+import axios from 'axios';
 
 interface SidebarProps {
   expand: boolean;
@@ -43,8 +44,37 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const token = localStorage.getItem("token") || null;
   const tokenData = decodeToken(token);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [hasPaid, setHasPaid] = useState(false);
+  const navigate = useNavigate();
 
-  console.log(tokenData);
+  useEffect(() => {
+    if (tokenData) {
+      fetchPaymentStatus(tokenData.userId);
+    }
+  }, [tokenData]);
+
+ 
+
+  const fetchPaymentStatus = async (userId: any) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/user/payment-status/${userId}`);
+      setHasPaid(response.data.hasPaid);
+    } catch (error) {
+      console.error('Payment status error:', error);
+    }
+  };
+
+  const handleHypemodeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (hasPaid) {
+      event.preventDefault();
+      toast.info("You are already subscribed to Hypemode!");
+    } else if (!hasPaid) {
+        navigate("/hypemode");
+
+    } else {
+    }
+  };
 
   return (
     <section
@@ -68,6 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </Link>
           <Link
             to="/hypemode"
+            onClick={handleHypemodeClick}
             className={`duration-75 flex gap-4 mx-4 my-2 cursor-pointer items-center ${
               expand ? "" : "flex-col justify-center text-xs gap-1 specific"
             } ${
@@ -119,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             onClick={(event) => {
               if (!tokenData) {
                 toast.error("Please login!!");
-                event.preventDefault(); // Prevent the default link behavior if condition is not met
+                event.preventDefault();
               }
             }}
             className={`duration-75 flex gap-4 mx-4 my-2 cursor-pointer items-center ${
@@ -133,7 +164,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             <CgProfile size="20" />
             <span className="text-sm">Profile</span>
           </Link>
-         
         </ul>
       </nav>
 
@@ -219,23 +249,24 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <span className="text-sm">{`${
                   expand ? "Sign up" : "Sign up"
                 }`}</span>
-              
               </div>
+              
             </>
+            
           )}
-             <Link
-            to="/customersupport" // Adding the customer support link
-            className={`duration-75 flex gap-4 mx-4 my-2 cursor-pointer items-center ${
-              expand ? "" : "flex-col justify-center text-xs gap-1 specific"
-            } ${
-              window.location.pathname === "/customersupport"
-                ? "active-button"
-                : ""
-            }`}
-          >
-            <RiCustomerService2Line size="20" />
-            <span className="text-sm">Support</span>
-          </Link>
+          <Link
+                to="/customersupport"
+                className={`duration-75 flex gap-4 mx-4 my-2 cursor-pointer items-center ${
+                  expand ? "" : "flex-col justify-center text-xs gap-1 specific"
+                } ${
+                  window.location.pathname === "/customersupport"
+                    ? "active-button"
+                    : ""
+                }`}
+              >
+                <RiCustomerService2Line size="20" />
+                <span className="text-sm">Support</span>
+              </Link>
         </ul>
       </nav>
     </section>

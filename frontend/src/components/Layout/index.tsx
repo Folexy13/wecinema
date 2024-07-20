@@ -10,16 +10,14 @@ import { FaMoon} from "react-icons/fa6";
 import { IoSunnyOutline } from "react-icons/io5";
 import "quill/dist/quill.snow.css";
 import { Itoken, decodeToken } from "../../utilities/helperfFunction";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { IoMdHome } from "react-icons/io";
 import { RiMovie2Line } from "react-icons/ri";
 import { MdOutlineDescription } from "react-icons/md"
 import { BiCameraMovie } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 
-export const categories = [
-	"Coming-of-age story",
-	"Good versus evil",
+export const theme = [
 	"Love",
 	"Redemption",
 	"Family",
@@ -43,8 +41,9 @@ export const categories = [
 interface LayoutProps {
 	hasHeader?: boolean;
 	children: ReactNode;
+	expand: boolean;
 }
-const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
+const Layout: React.FC<LayoutProps> = ({ children, hasHeader,expand, }) => {
 	const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
 	const [token, _] = useState<string | null>(
@@ -57,6 +56,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 	const [modalShow, setModalShow] = useState(false);
 	const [type, setType] = useState("");
 	const [show, setShow] = useState<boolean>(false);
+    const nav = useNavigate();
 
 	// Update screenWidth when the window is resized
 	const handleResize = () => {
@@ -345,22 +345,37 @@ const Layout: React.FC<LayoutProps> = ({ children, hasHeader }) => {
 						<header
 							style={{
 								width: `${expanded && screenWidth > 1120 ? "83.3%" : "91.6%"}`,
-								marginTop: 38,
+								marginTop: 25,
 							}}
 							className={`z-30 flex gap-2 p-3 hh bg-white fixed overflow-x-auto ${
 								expanded && screenWidth > 1120 ? "" : "w-full"
 							} ${darkMode && "bg-dark"}`}
 						>
-							{categories.map((val: string, i: number) => (
-								<div
-									key={i}
-									className={`${
-										darkMode && "text-dark body-dark cursor-pointer"
-									}  flex whitespace-nowrap w-full items-center text-xs rounded-xl px-4  border bg-gray-200`}
-								>
-									{val}
-								</div>
-							))}
+						   {theme.map((val: string, index: number) => (
+                                    <li
+                                        key={index}
+                                        className={`duration-75 flex gap-4 mx-4 my-2 cursor-pointer items-center ${
+                                            expand ? "" : "flex-col justify-center text-xs gap-1 specific"
+                                        } `}
+                                    >
+                                        <div
+                                            onClick={() => nav("/themes/" + val)}
+                                            className="relative rounded-full w-32px h-32px box-border flex-shrink-0 block"
+                                        >
+                                            <div
+                                                className="items-center rounded-full flex-shrink-0 justify-center bg-center bg-no-repeat bg-cover flex"
+                                                style={{
+                                                    width: 12,
+                                                    height: 6,
+                                                }}
+                                                title="Fresh and Fit"
+                                            ></div>
+                                        </div>
+                                        <Link to="#" className="text-sm">
+                                            {val}
+                                        </Link>
+                                    </li>
+                                ))}
 						</header>
 					)}
 					<Modal type={type} authorized={!!token} show={modalShow} />

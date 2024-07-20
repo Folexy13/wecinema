@@ -1,13 +1,13 @@
 // import React from 'react'
 
 import { useParams } from "react-router-dom";
-import { Gallery, Layout } from "../components";
-const genrepage = () => {
+import { Search, Layout } from "../components";
+const SearchPage = () => {
 	const {slug} = useParams();
 
 	return (
 		<Layout hasHeader={false}>
-			 <div style={{ marginTop: 12 }} className="">
+		   <div style={{ marginTop: 12 }} className="">
                 <div className="flex bg-grey justify-center w-full items-start my-0 mx-auto h-52 sm:h-80">
                     <img
                         className="w-50 h-45"
@@ -36,9 +36,9 @@ const genrepage = () => {
 				</div>
 			</div>
 
-			<Gallery category={slug} length={5} type="profile"/>
+			<Search search={slug} length={5} type="search"/>
 		</Layout>
 	);
 };
 
-export default genrepage;
+export default SearchPage;

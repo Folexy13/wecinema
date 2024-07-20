@@ -312,3 +312,68 @@ button:hover {
   width: 35px;
   height: 35px;
 }
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  border-bottom: 1px solid #eee;
+}
+
+.message {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.sent {
+  background-color: #d4edda;
+  align-self: flex-end;
+}
+
+.received {
+  background-color: #f8d7da;
+  align-self: flex-start;
+}
+
+.order-section {
+  margin: 20px 0;
+}
+
+.order {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}

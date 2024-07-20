@@ -3,6 +3,7 @@ import moment from "moment";
 export interface Itoken {
 	userId: string;
 	avatar: string;
+	hasPaid: boolean;
 	username?: string;
 	// Add other payload properties as needed
 }

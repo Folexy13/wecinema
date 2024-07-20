@@ -4,6 +4,7 @@ import { BsDot } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import VideoThumbnail from "react-video-thumbnail";
 import { getRequest } from "../../api";
+
 import {
 	formatDateAgo,
 	generateSlug,
@@ -18,7 +19,7 @@ interface GalleryProps {
 	length?: number;
 	isFirst?: boolean;
 }
-const Gallery: React.FC<GalleryProps> = ({
+const HypemodeGallery: React.FC<GalleryProps> = ({
 	title,
 	isFirst,
 	data,
@@ -30,33 +31,59 @@ const Gallery: React.FC<GalleryProps> = ({
 
 	const [loading, setLoading] = useState<boolean>(false);
 	const [videos, setVideos] = useState<any>([]);
+	const [viewCounts, setViewCounts] = useState<{ [key: string]: number }>({});
 	// const [hiddenVideos, setHiddenVideos] = useState<any>([]);
-
+	const fetchVideoViews = async (videoId:any) => {
+		try {
+		  const response = await fetch(`//video/views/${videoId}`);
+		  const data = await response.json();
+		  return data.views;
+		} catch (error) {
+		  console.error('Error fetching video views:', error);
+		  return 0;
+		}
+	  };
+	  
 	useEffect(() => {
-		let isMounted = true; // Flag to track if the component is mounted
-
+		let isMounted = true;
+	  
 		(async () => {
-			setLoading(true);
-			const result = !data
-				? await getRequest("video/all", setLoading)
-				: await getRequest("video/all/" + data, setLoading);
-
-			if (isMounted && result) {
-				// Update state only if the component is still mounted
-				setVideos(result); // Assuming a `videos` state variable
-				setLoading(false);
-			}
+		  setLoading(true);
+		  const result = !data
+			? await getRequest("video/all", setLoading)
+			: await getRequest("video/all/" + data, setLoading);
+	  
+		  if (isMounted && result) {
+			setVideos(result);
+			setLoading(false);
+	  
+			const fetchViewCounts = async () => {
+			  const viewsPromises = result.map(async (video) => {
+				const views = await fetchVideoViews(video._id);
+				return { videoId: video._id, views };
+			  });
+	  
+			  const viewsData = await Promise.all(viewsPromises);
+			  const viewsMap = {};
+			  viewsData.forEach((item) => {
+				viewsMap[item.videoId] = item.views;
+			  });
+			  setViewCounts(viewsMap);
+			};
+	  
+			fetchViewCounts();
+		  }
 		})();
-
-		// Clean-up function
+	  
 		return () => {
-			isMounted = false; // Set the flag to false when the component unmounts
+		  isMounted = false;
 		};
-	}, [category]);
+	  }, [category]);
+	  
 
-	const filteredVideo = (category?: string) => {
+	  const filteredVideo = (category?: string) => {
 		return videos.filter((v: any) =>
-			category ? v.genre.includes(category) : v
+			v.hasPaid && (category ? v.genre.includes(category) : v)
 		);
 	};
 	// const handleHideVideo = async (videoId: string) => {
@@ -170,9 +197,10 @@ const Gallery: React.FC<GalleryProps> = ({
 											<div className="ml-2 w-full">
 												<span>
 													{formatDateAgo(video.createdAt ?? video.updatedAt)}
-													<BsDot className="inline-flex items-center" /> {video.views}
+													<BsDot className="inline-flex items-center" /> {viewCounts[video._id]} 
 													Views
 												</span>
+
 											</div>
 										</div>
 									</a>
@@ -245,7 +273,7 @@ const Gallery: React.FC<GalleryProps> = ({
 													height: 32,
 													backgroundImage: `url(${video?.author?.avatar})`,
 												}}
-												
+												title={video?.author?.username}
 											></div>
 										</div>
 										<div style={{ fontSize: 13 }} className="w-full">
@@ -260,9 +288,9 @@ const Gallery: React.FC<GalleryProps> = ({
 												/>
 											</div>
 											<div className="ml-2 w-full">
-												<span>
-													9 hours ago{" "}
-													<BsDot className="inline-flex items-center" /> 155k
+													<span>
+													{formatDateAgo(video.createdAt ?? video.updatedAt)}
+													<BsDot className="inline-flex items-center" /> {viewCounts[video._id]} 
 													Views
 												</span>
 											</div>
@@ -317,4 +345,4 @@ const Gallery: React.FC<GalleryProps> = ({
 	}
 };
 
-export default Gallery;
+export default HypemodeGallery;

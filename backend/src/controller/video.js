@@ -13,7 +13,7 @@ const { authenticateMiddleware, isValidObjectId } = require("../utils");
 // Route for creating a video
 router.post("/create", async (req, res) => {
     try {
-        const { title, description, genre, rating, file, author, role, slug, status,users } = req.body;
+        const { title, description, genre, theme,rating, file, author, role, slug, status,users,hasPaid} = req.body;
         // Check if the user exists
         const user = role !== "admin" ? await User.findById(author) : true;
         if (!user) {
@@ -25,12 +25,14 @@ router.post("/create", async (req, res) => {
             title,
             description,
             genre,
+            theme,
             rating,
             file,
             slug,
 			users,
             status: status ?? true,
             author, //req.user._id,
+			hasPaid,
         });
         res.status(201).json({ message: "Video created successfully" });
     } catch (error) {
@@ -173,7 +175,40 @@ router.get("/ratings/:rating", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+// Route for getting videos by theme
+router.get("/themes/:theme", async (req, res) => {
+    try {
+        const theme = req.params.theme;
+        const videos = await Videos.find({ theme }).populate("author", "username avatar followers followings");
+        res.json(videos);
+    } catch (error) {
+        console.error("Error getting videos by theme:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
+// Route for getting videos by theme
+router.get("/search/:genre", async (req, res) => {
+	try {
+		const genre = req.params.genre;
+
+		// Use the find method to get all videos
+		let videos = await Videos.find().populate(
+			"author",
+			"username avatar followers followings "
+		);
+
+		// Filter videos based on the specified genre
+		const filteredVideos = videos.filter((video) =>
+			video.genre.includes(genre)
+		);
+
+		res.json(filteredVideos);
+	} catch (error) {
+		console.error("Error getting videos by genre:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
 // Route for liking/disliking a specific video by ID
 router.put("/:id", authenticateMiddleware, async (req, res) => {
 	try {
@@ -471,7 +506,37 @@ router.put("/scripts/:id", authenticateMiddleware, async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+// Get video views
+router.get('/views/:id', async (req, res) => {
+    try {
+        const videoId = req.params.id;
+        const video = await Videos.findById(videoId);
+        if (!video) {
+            return res.status(404).json({ error: "Video not found" });
+        }
+        res.status(200).json({ views: video.views || 0 });
+    } catch (error) {
+        console.error("Error fetching video views:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
+// Increment video views
+router.put('/view/:videoId', async (req, res) => {
+    try {
+        const videoId = req.params.videoId;
+        const video = await Videos.findById(videoId);
+        if (!video) {
+            return res.status(404).json({ error: 'Video not found' });
+        }
+        video.views += 1; // Increment the views count
+        await video.save();
+        res.status(200).json({ message: 'Video views incremented', views: video.views });
+    } catch (error) {
+        console.error("Error incrementing video views:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 // delete scripts
 router.delete("/scripts/:id", authenticateMiddleware, async (req, res) => {
 	try {

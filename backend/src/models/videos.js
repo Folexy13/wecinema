@@ -19,6 +19,10 @@ const videoSchema = new Schema(
 			type: Schema.Types.Mixed,
 			required: true,
 		},
+		theme: {
+			type: Schema.Types.Mixed,
+			required: true,
+		},
 		rating: {
 			type: String,
 			required: true,
@@ -43,6 +47,7 @@ const videoSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: "User",
 		},
+		hasPaid: { type: Boolean, default: false },
 
 		hidden: {
 			type: Boolean,
@@ -54,12 +59,8 @@ const videoSchema = new Schema(
 				ref: "User",
 			},
 		],
-		views: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: "User",
-			},
-		],
+		views: { type: Number, default: 0 }, // Use Number instead of ObjectId
+		
 		dislikes: [
 			{
 				type: Schema.Types.ObjectId,
