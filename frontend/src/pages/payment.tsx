@@ -8,6 +8,7 @@ import { decodeToken } from "../utilities/helperfFunction";
 import { getRequest } from "../api"; // Assuming getRequest is used for fetching data
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { OnApproveData } from '@paypal/paypal-js';
 
 const Container = styled.div`
   display: flex;
@@ -125,18 +126,15 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
           }
           return Promise.reject(new Error("actions.order is undefined"));
         }}
-        onApprove={async (actions) => {
-          if (actions && actions.order) {
-            return actions.order.capture().then(details => {
-              console.log('Payment successful:', details);
-              onSuccess(details);
-            }).catch(error => {
-              console.error('Capture error:', error);
-              onError('Capture error. Please try again.');
-              throw error; // Throw error to handle in onError
-            });
-          }
-          return Promise.reject(new Error("actions.order is undefined"));
+        onApprove={async (actions:any) => {
+          return actions.order.capture().then((details: OnApproveData) => {
+            console.log('Payment successful:', details);
+            onSuccess(details);
+          }).catch(error => {
+            console.error('Capture error:', error);
+            onError('Capture error. Please try again.');
+            throw error; // Throw error to handle in onError
+          });
         }}
         onError={(err) => {
           console.error('PayPal payment error:', err);
@@ -146,7 +144,14 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
     </PayPalScriptProvider>
   );
 };
-
+interface PayPalDetails {
+  id: string;
+  payer: {
+    email_address: string;
+    payer_id: string;
+  };
+  // Add other properties as needed based on PayPal's response
+}
 const PaymentComponent = () => {
   const location = useLocation();
 
@@ -222,7 +227,7 @@ const PaymentComponent = () => {
     checkUserPaymentStatus();
   }, [userId]);
 
-  const handlePaymentSuccess = async (details:any) => {
+  const handlePaymentSuccess = async (details: PayPalDetails) => {
     try {
       console.log('Payment details:', details);
       
