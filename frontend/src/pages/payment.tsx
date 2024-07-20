@@ -110,7 +110,7 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
     <PayPalScriptProvider options={{ "clientId": "ATCFEkRI4lCXYSceFX1O3WVIym-HN0raTtEpXUUH8hTDI5kmPbbaWqI6I0K6nLRap16jZJoO33HtcFy7" }}>
       <PayPalButtons
         style={{ layout: 'vertical' }}
-        createOrder={(actions) => {
+        createOrder={(actions:any) => {
           if (actions.order) {
             return actions.order.create({
               intent: 'CAPTURE',
@@ -138,7 +138,6 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
           }
           return Promise.reject(new Error("actions.order is undefined"));
         }}
-        
         onError={(err) => {
           console.error('PayPal payment error:', err);
           onError('PayPal payment error. Please try again.');
