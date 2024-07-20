@@ -106,7 +106,10 @@ interface PayPalButtonWrapperProps {
 }
 
 const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userId, onSuccess, onError }) => {
-  
+  interface CustomPayPalError {
+    message: string;
+    // Add any other properties based on what your error object contains
+  }
   return (
     <PayPalScriptProvider options={{ "clientId": "ATCFEkRI4lCXYSceFX1O3WVIym-HN0raTtEpXUUH8hTDI5kmPbbaWqI6I0K6nLRap16jZJoO33HtcFy7" }}>
       <PayPalButtons
@@ -130,7 +133,7 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
           return actions.order.capture().then((details: OnApproveData) => {
             console.log('Payment successful:', details);
             onSuccess(details);
-          }).catch(error => {
+          }).catch((error: CustomPayPalError) => {
             console.error('Capture error:', error);
             onError('Capture error. Please try again.');
             throw error; // Throw error to handle in onError
