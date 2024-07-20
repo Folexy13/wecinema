@@ -23,6 +23,8 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 const GenrePage: React.FC = () => {
+  const [setLoading] = useState<any>({});
+  const [setUser] = useState<any>({});
   const [userHasPaid, setUserHasPaid] = useState(false);
   const [showPaidUsersModal, setShowPaidUsersModal] = useState(false);
   const [paidUsers, setPaidUsers] = useState<any[]>([]);
@@ -88,7 +90,7 @@ const GenrePage: React.FC = () => {
     setShowPaidUsersModal(true);
   };
 
-  const startChat = (chatUserId: string) => {
+  const startChat = (chatUserId: string, chatUsername: string, chatUserAvatar: string) => {
     if (!userId || !chatUserId) {
       console.error('User ID or Chat User ID is not defined.');
       return;
@@ -105,7 +107,7 @@ const GenrePage: React.FC = () => {
   };
 
   return (
-    <Layout expand={false}hasHeader={false}>
+    <Layout expand={false} hasHeader={false}>
       <div style={{ position: 'fixed', top: '100px', right: '20px', zIndex: 999 }}>
         <button onClick={handleOpenPaidUsersModal} style={{
           padding: '5px 12px',

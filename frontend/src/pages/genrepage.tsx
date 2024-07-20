@@ -6,7 +6,7 @@ const genrepage = () => {
 	const {slug} = useParams();
 
 	return (
-		<Layout hasHeader={false}>
+		<Layout expand={false} hasHeader={false}>
 			 <div style={{ marginTop: 12 }} className="">
                 <div className="flex bg-grey justify-center w-full items-start my-0 mx-auto h-52 sm:h-80">
                     <img

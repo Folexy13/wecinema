@@ -86,6 +86,7 @@ interface TransactionPopupProps {
 }
 
 const TransactionPopup: React.FC<TransactionPopupProps> = ({ message, onClose, isError }) => (
+  
 <>
   <Overlay onClick={onClose} />
   <Popup>
@@ -104,11 +105,12 @@ interface PayPalButtonWrapperProps {
 }
 
 const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userId, onSuccess, onError }) => {
+  
   return (
     <PayPalScriptProvider options={{ "clientId": "ATCFEkRI4lCXYSceFX1O3WVIym-HN0raTtEpXUUH8hTDI5kmPbbaWqI6I0K6nLRap16jZJoO33HtcFy7" }}>
       <PayPalButtons
         style={{ layout: 'vertical' }}
-        createOrder={(data, actions) => {
+        createOrder={(actions:any) => {
           if (actions.order) {
             return actions.order.create({
               intent: 'CAPTURE',
@@ -123,7 +125,7 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
           }
           return Promise.reject(new Error("actions.order is undefined"));
         }}
-        onApprove={async (data, actions) => {
+        onApprove={async (actions:any) => {
           if (actions && actions.order) {
             return actions.order.capture().then(details => {
               console.log('Payment successful:', details);
@@ -154,7 +156,8 @@ const PaymentComponent = () => {
   const [popupMessage, setPopupMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [userHasPaid, setUserHasPaid] = useState(false);
-
+  const [setLoading] = useState<any>({});
+  const [setUser] = useState<any>({});
   // Extract data from token
   const token = localStorage.getItem("token") || null;
   let userId = null;

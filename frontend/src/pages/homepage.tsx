@@ -39,7 +39,7 @@ const Homepage: React.FC = () => {
 	};
 
 	return (
-		<Layout>
+		<Layout expand={false}>
 			<Gallery title="Action" category="Action" length={5} isFirst />
 			<Gallery title="Comedy" length={5} category="Comedy" />
 			<Gallery title="Horror" length={5} category="Horror" />

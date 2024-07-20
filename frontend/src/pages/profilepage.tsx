@@ -21,6 +21,9 @@ const GenrePage: React.FC<GenreProps> = ({}) => {
     const [formData, setFormData] = useState({ username: "", dob: "" });
     const [userHasPaid, setUserHasPaid] = useState(false);
     const [currentUserHasPaid, setCurrentUserHasPaid] = useState(false);
+    const [setShowModal] = useState<any>({});
+    const [scripts] = useState([]);
+	const [data] = useState<any>([]);
 	const [showMoreIndex, setShowMoreIndex] = useState<number | null>(null);
 	const nav = useNavigate();
     
@@ -130,9 +133,7 @@ const GenrePage: React.FC<GenreProps> = ({}) => {
             console.error("Error updating profile:", error);
             toast.error("Failed to update profile");
         }
-    };
-
-  
+    }
     const handleScriptMouseEnter = (index: number) => {
 		setShowMoreIndex(index);
 	};

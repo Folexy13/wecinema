@@ -42,7 +42,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ userId }) => {
   };
 
   return (
-	<Layout hasHeader={false}>
+	<Layout expand={false} hasHeader={false}>
 
 <div className="direct-messaging" style={{ marginTop: '20px' }}>
       <div className="message-list">
