@@ -69,12 +69,12 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
         action: "like",
         userId: tokenData?.userId,
       };
-      const result: any = await putRequest(
-        "video/" + video._id,
-        payload,
-        setLoading,
-        "Video Liked!"
-      );
+      // const result: any = await putRequest(
+      //   "video/" + video._id,
+      //   payload,
+      //   setLoading,
+      //   "Video Liked!"
+      // );
       setVideoLikesLength(isLiked ? videoLikesLength - 1 : videoLikesLength + 1);
     } catch (error: any) {
       setLoading(false);
@@ -92,12 +92,12 @@ const VideoPlayer: React.FC<any> = ({ video, tokenData }) => {
         action: "dislike",
         userId: tokenData?.userId,
       };
-      const result: any = await putRequest(
-        "video/" + video._id,
-        payload,
-        setLoading,
-        "Video Disliked!"
-      );
+      // const result: any = await putRequest(
+      //   "video/" + video._id,
+      //   payload,
+      //   setLoading,
+      //   "Video Disliked!"
+      // );
       setVideoDislikesLength(isDisliked ? videoDislikesLength - 1 : videoDislikesLength + 1);
     } catch (error: any) {
       setLoading(false);

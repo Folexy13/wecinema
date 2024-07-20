@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, onValue, serverTimestamp, remove, set } from 'firebase/database';
@@ -22,7 +22,6 @@ const database = getDatabase(app);
 
 const Chat = () => {
   const { chatId } = useParams();
-  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [orders, setOrders] = useState([]);

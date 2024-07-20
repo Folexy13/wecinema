@@ -44,7 +44,6 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const token = localStorage.getItem("token") || null;
   const tokenData = decodeToken(token);
-  const [isSubscribed, setIsSubscribed] = useState(false);
   const [hasPaid, setHasPaid] = useState(false);
   const navigate = useNavigate();
 

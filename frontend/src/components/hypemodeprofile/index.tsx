@@ -49,7 +49,7 @@ const HypemodeGallery: React.FC<GalleryProps> = ({
 	  
 		(async () => {
 		  setLoading(true);
-		  const result = !data
+		  const result:any = !data
 			? await getRequest("video/all", setLoading)
 			: await getRequest("video/all/" + data, setLoading);
 	  
@@ -58,7 +58,7 @@ const HypemodeGallery: React.FC<GalleryProps> = ({
 			setLoading(false);
 	  
 			const fetchViewCounts = async () => {
-			  const viewsPromises = result.map(async (video) => {
+			  const viewsPromises = result.map(async (video:any) => {
 				const views = await fetchVideoViews(video._id);
 				return { videoId: video._id, views };
 			  });
