@@ -90,7 +90,7 @@ const GenrePage: React.FC = () => {
     setShowPaidUsersModal(true);
   };
 
-  const startChat = (chatUserId: string, chatUsername: string, chatUserAvatar: string) => {
+  const startChat = (chatUserId: string) => {
     if (!userId || !chatUserId) {
       console.error('User ID or Chat User ID is not defined.');
       return;

@@ -29,7 +29,7 @@ const GenrePage: React.FC<GenreProps> = ({}) => {
     
 
     useEffect(() => {
-		let isMounted = true; // Flag to track if the component is mounted
+		// let isMounted = true; // Flag to track if the component is mounted
 
         if (!id) {
             toast.error("Please login first");
@@ -67,9 +67,9 @@ const GenrePage: React.FC<GenreProps> = ({}) => {
         };
 
         fetchData();
-        return () => {
-			isMounted = false;
-		};
+        // return () => {
+		// 	isMounted = false;
+		// };
     }, [id]);
 
     useEffect(() => {

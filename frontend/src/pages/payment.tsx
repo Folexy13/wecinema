@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Layout } from "../components";
 import styled from 'styled-components';
@@ -110,7 +110,7 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
     <PayPalScriptProvider options={{ "clientId": "ATCFEkRI4lCXYSceFX1O3WVIym-HN0raTtEpXUUH8hTDI5kmPbbaWqI6I0K6nLRap16jZJoO33HtcFy7" }}>
       <PayPalButtons
         style={{ layout: 'vertical' }}
-        createOrder={(actions:any) => {
+        createOrder={(actions) => {
           if (actions.order) {
             return actions.order.create({
               intent: 'CAPTURE',
@@ -125,7 +125,7 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
           }
           return Promise.reject(new Error("actions.order is undefined"));
         }}
-        onApprove={async (actions:any) => {
+        onApprove={async (actions) => {
           if (actions && actions.order) {
             return actions.order.capture().then(details => {
               console.log('Payment successful:', details);
@@ -138,6 +138,7 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
           }
           return Promise.reject(new Error("actions.order is undefined"));
         }}
+        
         onError={(err) => {
           console.error('PayPal payment error:', err);
           onError('PayPal payment error. Please try again.');
