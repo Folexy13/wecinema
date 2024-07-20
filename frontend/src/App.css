@@ -203,11 +203,9 @@ nav img {
 .inputContainer {
 	display: flex;
 	margin-top: 10px;
-    flexDirection: row;  
+    flex-direction: row;
     gap: 10px;  
   }
   /* Correct */
-.flex-container {
-    flex-direction: row;
-}
+
   
