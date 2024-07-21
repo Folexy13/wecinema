@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import styled from 'styled-components';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
 import { gapi } from "gapi-script";
@@ -122,52 +121,8 @@ const HypeModeProfile = () => {
   const tokenData = decodeToken(token);
 
   console.log(tokenData);
-  const fetchBirthday = async (token:any) => {
-    try {
-      const res = await axios.get('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const birthday = res.data.birthdays?.[0]?.date;
-      return birthday ? `${birthday.year}-${birthday.month}-${birthday.day}` : '';
-    } catch (error) {
-      console.error('Error fetching birthday:', error);
-      return '';
-    }
-  };
-
-  const registerUser = async (username:any, email:any, avatar:any, dob:any, password:any, callback:any) => {
-    try {
-      const res = await axios.post('http://localhost:3000/user/register', {
-        username,
-        email,
-        avatar,
-        dob,
-        password
-      });
-
-      console.log('User registered successfully:', res.data);
-      const token = tokenData;
-      const userId = token.userid; // Assuming userId is returned from 
-      
-      if (token) {
-        setIsLoggedIn(true);
-        setUserId(userId); // Set userId state
-        setPopupMessage('Registration successful and logged in!');
-        setShowPopup(true);
-        if (callback) callback(userId);
-      }
-    } catch (error:any) {
-      if (error.response && error.response.data && error.response.data.error === 'Email already exists') {
-        setPopupMessage('Email already exists.');
-      } else {
-        setPopupMessage('Registration successful Go back to Signin.');
-      }
-      setShowPopup(true);
-    }
-  };
-
+  
+ 
   const loginUser = async (email:any, password:any, callback:any) => {
     try {
       const res = await axios.post('http://localhost:3000/user/login', { email, password });
@@ -187,32 +142,6 @@ const HypeModeProfile = () => {
     }
   };
 
-  const onLoginSuccess = async (response:any) => {
-    console.log('Login Success:', response.profileObj);
-
-    const { email, name: username, imageUrl: avatar } = response.profileObj;
-    const token = response.tokenObj.access_token;
-
-    const dob = await fetchBirthday(token);
-    const callback = () => navigate('/payment', { state: { subscriptionType: selectedSubscription, amount: selectedSubscription === 'user' ? 5 : 10, userId } });
-
-    if (isSignup) {
-      await registerUser(username, email, avatar, dob, password, callback);
-    } else {
-      await loginUser(email, password, callback);
-    }
-  };
-
-  const onLoginFailure = (response:any) => {
-    console.error('Login Failed:', response);
-  };
-
-  const onLogoutSuccess = () => {
-    console.log('Logout successful');
-    localStorage.clear();
-    setIsLoggedIn(false);
-    navigate('/hypemode');
-  };
 
   const clientId = "854144808645-t4jd10ehpngjnfvki8mcuq7q0uvr2kjo.apps.googleusercontent.com";
 
@@ -270,11 +199,11 @@ const HypeModeProfile = () => {
             <SubscriptionContainer>
               <SubscriptionBox>
                 <Title>Logout</Title>
-                <GoogleLogout
+                {/* <GoogleLogout
                   clientId={clientId}
                   buttonText="Logout"
                   onLogoutSuccess={onLogoutSuccess}
-                />
+                /> */}
               </SubscriptionBox>
               
             </SubscriptionContainer>
@@ -285,26 +214,26 @@ const HypeModeProfile = () => {
               <SubscriptionBox onClick={() => handleSubscriptionClick('user')}>
                 <Title>User Subscription</Title>
                 <Description>$5 a month to buy and sell films and scripts</Description>
-                <GoogleLogin
+                {/* <GoogleLogin
                   clientId={clientId}
                   buttonText={isSignup ? "Sign up with Google" : "Sign in with Google"}
                   onSuccess={onLoginSuccess}
                   onFailure={onLoginFailure}
                   cookiePolicy={'single_host_origin'}
                   scope="email profile https://www.googleapis.com/auth/user.birthday.read"
-                />
+                /> */}
               </SubscriptionBox>
               <SubscriptionBox onClick={() => handleSubscriptionClick('studio')}>
                 <Title>Studio Subscription</Title>
                 <Description>$10 a month to buy and sell, get early access to new features</Description>
-                <GoogleLogin
+                {/* <GoogleLogin
                   clientId={clientId}
                   buttonText={isSignup ? "Sign up with Google" : "Sign in with Google"}
                   onSuccess={onLoginSuccess}
                   onFailure={onLoginFailure}
                   cookiePolicy={'single_host_origin'}
                   scope="email profile https://www.googleapis.com/auth/user.birthday.read"
-                />
+                /> */}
               </SubscriptionBox>
               <SubscriptionBox>
                 <h3>{isSignup ? 'Register' : 'Login'} with Email</h3>
