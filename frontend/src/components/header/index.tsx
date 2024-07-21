@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { MdMenu } from "react-icons/md";
 import logo from "../../assets/wecinema.png";
 import search from "../../assets/search.png";
-import close from "../../assets/close.png";
+import close from "../../assets/close.png"; 
 
 import { Link, useNavigate } from "react-router-dom";
 import { categories, ratings } from "../../App";
