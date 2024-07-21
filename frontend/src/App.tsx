@@ -30,6 +30,7 @@ export const themes = [
 	"Death",
 	"Isolation",
     "Peace", 
+	"Perseverance", 
 ];
 export const ratings = [
 	"g ",
