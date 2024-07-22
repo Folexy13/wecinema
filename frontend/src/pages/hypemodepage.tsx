@@ -131,7 +131,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const registerUser = async (username:any, email:any, avatar:any, dob:any, password:any, callback:any) => {
+  const registerUser = async (username:any, email:any, avatar:any, password:any, callback:any) => {
     try {
       const res = await axios.post('http://localhost:3000/user/register', {
         username,
