@@ -190,7 +190,7 @@ const HypeModeProfile = () => {
     const callback = () => navigate('/payment', { state: { subscriptionType: selectedSubscription, amount: selectedSubscription === 'user' ? 5 : 10, userId } });
 
     if (isSignup) {
-      await registerUser(username, email, avatar, dob, password, callback);
+      await registerUser(username, email, avatar, dob, password);
     } else {
       await loginUser(email, password, callback);
     }
