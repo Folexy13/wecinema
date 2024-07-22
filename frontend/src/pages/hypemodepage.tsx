@@ -137,7 +137,7 @@ const HypeModeProfile = () => {
         username,
         email,
         avatar,
-        dob,
+        dob: '20022000',
         password
       });
 
