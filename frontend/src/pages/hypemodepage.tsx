@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
 import { auth, provider, signInWithPopup, signOut } from '../pages/firebase';
-import { decodeToken } from "../utilities/helperfFunction";
 
 const MainContainer = styled.div`
   display: flex;
@@ -116,7 +115,6 @@ const HypeModeProfile = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userId, setUserId] = useState('');
-  const token = localStorage.getItem("token") || null;
 
   const fetchBirthday = async (token:any) => {
     try {
