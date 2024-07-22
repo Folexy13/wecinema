@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import axios from 'axios';
 import styled from 'styled-components';
 import { Layout } from "../components";
@@ -117,9 +117,8 @@ const HypeModeProfile = () => {
   const [password, setPassword] = useState('');
   const [userId, setUserId] = useState('');
   const token = localStorage.getItem("token") || null;
-  const tokenData = decodeToken(token);
 
-  const fetchBirthday = async (token) => {
+  const fetchBirthday = async (token:any) => {
     try {
       const res = await axios.get('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
         headers: {
@@ -134,7 +133,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const registerUser = async (username, email, avatar, dob, password, callback) => {
+  const registerUser = async (username:any, email:any, avatar:any, dob:any, password:any, callback:any) => {
     try {
       const res = await axios.post('http://localhost:3000/user/register', {
         username,
@@ -154,7 +153,7 @@ const HypeModeProfile = () => {
         setShowPopup(true);
         if (callback) callback(userId);
       }
-    } catch (error) {
+    } catch (error:any) {
       if (error.response && error.response.data && error.response.data.error === 'Email already exists') {
         setPopupMessage('Email already exists.');
       } else {
@@ -164,7 +163,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const loginUser = async (email, password, callback) => {
+  const loginUser = async (email:any, password:any, callback:any) => {
     try {
       const res = await axios.post('http://localhost:3000/user/login', { email, password });
       const token = res.data.token;
@@ -184,7 +183,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const onLoginSuccess = async (response) => {
+  const onLoginSuccess = async (response:any) => {
     const { user } = response;
     const { email, displayName: username, photoURL: avatar } = user;
     const token = await user.getIdToken();
@@ -199,7 +198,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const onLoginFailure = (error) => {
+  const onLoginFailure = (error:any) => {
     console.error('Login Failed:', error);
     setPopupMessage('Login failed.');
     setShowPopup(true);
@@ -227,7 +226,7 @@ const HypeModeProfile = () => {
     setShowPopup(false);
   };
 
-  const handleSubscriptionClick = (subscriptionType) => {
+  const handleSubscriptionClick = (subscriptionType:any) => {
     setSelectedSubscription(subscriptionType);
     if (isLoggedIn) {
       const amount = subscriptionType === 'user' ? 5 : subscriptionType === 'studio' ? 10 : 0;
