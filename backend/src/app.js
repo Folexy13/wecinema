@@ -26,7 +26,8 @@ const allowedOrigins = [
 	"https://wecinema.onrender.com",
 	"https://wecinema-admin.onrender.com",
 	"https://wecinema.co/hypemode",
-	"https://wecinema.co/videoeditor"
+	"https://wecinema.co/videoeditor",
+	"https://wecinema.onrender.com/user/login"
 
 ];
 app.use(cors()); // Enable CORS for all routes
