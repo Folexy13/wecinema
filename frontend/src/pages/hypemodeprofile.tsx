@@ -11,13 +11,14 @@ import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, serverTimestamp } from 'firebase/database'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD_vZlgkqS51NVCkQ6GeaqaMo3F74A0ACI",
-  authDomain: "wecinema-821f9.firebaseapp.com",
-  databaseURL: "https://wecinema-821f9-default-rtdb.firebaseio.com/",
-  projectId: "wecinema-821f9",
-  storageBucket: "wecinema-821f9.appspot.com",
-  messagingSenderId: "152315337920",
-  appId: "wecinema-821f9"
+  apiKey: "AIzaSyDst7s0XVPLrGr7S0S0IMZ4e9T4Z_W8rVs",
+  authDomain: "wecinemaco.firebaseapp.com",
+  databaseURL: "https://wecinemaco-default-rtdb.firebaseio.com",
+  projectId: "wecinemaco",
+  storageBucket: "wecinemaco.appspot.com",
+  messagingSenderId: "133384787906",
+  appId: "1:133384787906:web:93ef08a61ffa389622285b",
+  measurementId: "G-L7XZ0MBR1C"
 };
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
