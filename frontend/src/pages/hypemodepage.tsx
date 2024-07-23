@@ -237,8 +237,11 @@ const HypeModeProfile = () => {
     if (isSignup) {
       await registerUser(username, email, avatar, dob, password, callback);
       console.log('Date of Birth:', dob);
+
     } else {
       await loginUser(email, password, callback);
+      console.log('Date of password:', password);
+
     }
   };
 
