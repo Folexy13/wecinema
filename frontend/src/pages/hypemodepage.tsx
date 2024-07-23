@@ -202,8 +202,9 @@ const HypeModeProfile = () => {
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password });
       const token = res.data.token;
-      const userId = res.data.id;
 
+      const userId = res.data.id;
+      
       if (token) {
         localStorage.setItem('token', token);
         setIsLoggedIn(true);
