@@ -8,7 +8,6 @@ import { decodeToken } from "../utilities/helperfFunction";
 import { getRequest } from "../api"; // Assuming getRequest is used for fetching data
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { OnApproveData } from '@paypal/paypal-js';
 
 const Container = styled.div`
   display: flex;
@@ -80,6 +79,7 @@ const Button = styled.button`
     background: #218838;
   }
 `;
+
 interface TransactionPopupProps {
   message: string;
   onClose: () => void;
@@ -87,15 +87,14 @@ interface TransactionPopupProps {
 }
 
 const TransactionPopup: React.FC<TransactionPopupProps> = ({ message, onClose, isError }) => (
-  
-<>
-  <Overlay onClick={onClose} />
-  <Popup>
-    <h3>{isError ? 'Error' : 'Success'}!</h3>
-    <p>{message}</p>
-    <Button onClick={onClose}>Close</Button>
-  </Popup>
-</>
+  <>
+    <Overlay onClick={onClose} />
+    <Popup>
+      <h3>{isError ? 'Error' : 'Success'}!</h3>
+      <p>{message}</p>
+      <Button onClick={onClose}>Close</Button>
+    </Popup>
+  </>
 );
 
 interface PayPalButtonWrapperProps {
@@ -106,37 +105,34 @@ interface PayPalButtonWrapperProps {
 }
 
 const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userId, onSuccess, onError }) => {
-  interface CustomPayPalError {
-    message: string;
-    // Add any other properties based on what your error object contains
-  }
   return (
     <PayPalScriptProvider options={{ "clientId": "ATCFEkRI4lCXYSceFX1O3WVIym-HN0raTtEpXUUH8hTDI5kmPbbaWqI6I0K6nLRap16jZJoO33HtcFy7" }}>
       <PayPalButtons
         style={{ layout: 'vertical' }}
-        createOrder={(actions:any) => {
-          if (actions.order) {
-            return actions.order.create({
-              intent: 'CAPTURE',
-              purchase_units: [{
-                amount: {
-                  currency_code: 'USD',
-                  value: amount.toString(),
-                },
-                custom_id: userId,
-              }],
-            });
-          }
-          return Promise.reject(new Error("actions.order is undefined"));
+        createOrder={(data, actions) => {
+          return actions.order.create({
+            intent: 'CAPTURE',
+            purchase_units: [{
+              amount: {
+                currency_code: 'USD',
+                value: amount.toString(),
+              },
+              custom_id: userId,
+            }],
+          }).catch((error: any) => {
+            console.error("Error creating order:", error);
+            onError('Error creating order. Please try again.');
+            throw error;
+          });
         }}
-        onApprove={async (actions:any) => {
-          return actions.order.capture().then((details: OnApproveData) => {
+        onApprove={async (data, actions) => {
+          return actions.order.capture().then(details => {
             console.log('Payment successful:', details);
             onSuccess(details);
-          }).catch((error: CustomPayPalError) => {
+          }).catch((error: any) => {
             console.error('Capture error:', error);
             onError('Capture error. Please try again.');
-            throw error; // Throw error to handle in onError
+            throw error;
           });
         }}
         onError={(err) => {
@@ -147,14 +143,7 @@ const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userI
     </PayPalScriptProvider>
   );
 };
-interface PayPalDetails {
-  id: string;
-  payer: {
-    email_address: string;
-    payer_id: string;
-  };
-  // Add other properties as needed based on PayPal's response
-}
+
 const PaymentComponent = () => {
   const location = useLocation();
 
@@ -166,6 +155,7 @@ const PaymentComponent = () => {
   const [userHasPaid, setUserHasPaid] = useState(false);
   const [setLoading] = useState<any>({});
   const [setUser] = useState<any>({});
+
   // Extract data from token
   const token = localStorage.getItem("token") || null;
   let userId = null;
@@ -220,7 +210,6 @@ const PaymentComponent = () => {
           setShowPopup(true);
         } else {
           setUserHasPaid(hasPaid);
-
         }
       } catch (error) {
         console.error('Error fetching user payment status:', error);
@@ -230,7 +219,7 @@ const PaymentComponent = () => {
     checkUserPaymentStatus();
   }, [userId]);
 
-  const handlePaymentSuccess = async (details: PayPalDetails) => {
+  const handlePaymentSuccess = async (details:any) => {
     try {
       console.log('Payment details:', details);
       
@@ -270,7 +259,7 @@ const PaymentComponent = () => {
   };
 
   return (
-    <Layout expand={false}hasHeader={false}>
+    <Layout expand={false} hasHeader={false}>
       <Container>
         {!userHasPaid ? (
           <>
@@ -289,7 +278,7 @@ const PaymentComponent = () => {
         ) : (
           <SubscriptionBox>
             <Title>Go back to Home</Title>
-            <Description>Congratulatons you successfully subscribed hypemode.</Description>
+            <Description>Congratulations, you successfully subscribed to hypemode.</Description>
           </SubscriptionBox>
         )}
       </Container>

@@ -97,9 +97,8 @@ const Header: React.FC<HeaderProps> = ({
                         </form>
                     </div>
                 )}
-                {!isMobile && (
                     <div className="dropdown">
-                        <button className="hover:bg-yellow-400 whitespace-nowrap hover:text-white hover:border-white-100 border border-black-700 rounded-xl px-4 py-1 cursor-pointer" onClick={toggleDropdown}>
+                        <button className="hover:bg-yellow-400 whitespace-nowrap hover:text-white hover:border-white-100 border border-black-700 rounded-xl px-1 py-1 cursor-pointer" onClick={toggleDropdown}>
                             Genre
                             <span className={`arrow ${isOpen ? 'open' : ''}`}></span>
                         </button>
@@ -133,10 +132,9 @@ const Header: React.FC<HeaderProps> = ({
                             </ul>
                         )}
                     </div>
-                )}
-                {!isMobile && (
+                
                     <div className="dropdown">
-                        <button className="hover:bg-yellow-400 whitespace-nowrap hover:text-white hover:border-white-100 border border-black-700 rounded-xl px-4 py-1 cursor-pointer" onClick={toggleDropdowned}>
+                        <button className="hover:bg-yellow-400 whitespace-nowrap hover:text-white hover:border-white-100 border border-black-700 rounded-xl px-1 py-1 cursor-pointer" onClick={toggleDropdowned}>
                             Rating
                             <span className={`arrow ${isOpened ? 'open' : ''}`}></span>
                         </button>
@@ -170,7 +168,6 @@ const Header: React.FC<HeaderProps> = ({
                             </ul>
                         )}
                     </div>
-                )}
             </nav>
         </header>
     );

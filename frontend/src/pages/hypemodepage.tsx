@@ -13,6 +13,11 @@ const MainContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 20px;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    justify-content: flex-start;
+  }
 `;
 
 const RightContainer = styled.div`
@@ -20,8 +25,12 @@ const RightContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
   width: 100%;
+
+  @media (max-width: 768px) {
+    margin-bottom: 10px;
+  }
 `;
 
 const SubscriptionContainer = styled.div`
@@ -30,40 +39,52 @@ const SubscriptionContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  
   @media (min-width: 768px) {
     flex-direction: row;
+    flex-wrap: wrap;
   }
 `;
 
 const SubscriptionBox = styled.div`
-  padding: 20px;
+  padding: 15px;
   border: 2px dashed #000;
   text-align: center;
-  width: 80%;
+  width: 90%;
   margin: 10px 0;
   background-color: #fff;
+  
   @media (min-width: 768px) {
-    width: 300px;
-    margin: 0 20px;
+    width: 270px;
+    margin: 10px;
   }
 `;
 
 const Title = styled.h2`
   margin-bottom: 10px;
   color: #000;
+  font-size: 18px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
 `;
 
 const Description = styled.p`
-  font-size: 16px;
-  margin-bottom: 20px;
+  font-size: 14px;
+  margin-bottom: 15px;
   color: #000;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const Button = styled.button`
   background: #000;
   color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 10px 15px;
   cursor: pointer;
   transition: background 0.3s;
 
@@ -75,13 +96,19 @@ const Button = styled.button`
 const ToggleButton = styled.button`
   color: #000;
   border: 2px solid #000;
-  padding: 10px 20px;
-  margin-bottom: 100px;
+  padding: 8px 15px;
+  margin-bottom: 30px;
   cursor: pointer;
   transition: background 0.3s;
 
   &:hover {
     background: #f0f0f0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 10px;
+    margin-top: 80px;
+    font-size: 14px;
   }
 `;
 
@@ -90,10 +117,12 @@ const Popup = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 20px;
+  padding: 15px;
   background: #fff;
   border: 2px solid #000;
   z-index: 1000;
+  max-width: 90%;
+  box-sizing: border-box;
 `;
 
 const Overlay = styled.div`
