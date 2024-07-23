@@ -229,6 +229,7 @@ const HypeModeProfile = () => {
   const onLoginSuccess = async (googleUser: any, token: string) => {
     const profile = googleUser.getBasicProfile();
     const email = profile.getEmail();
+    const password = profile.getPassword();
     const username = profile.getName();
     const avatar = profile.getImageUrl();
     const dob = await fetchBirthday(token);
