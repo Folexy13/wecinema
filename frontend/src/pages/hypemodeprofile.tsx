@@ -58,7 +58,7 @@ const GenrePage: React.FC = () => {
 
     const checkUserPaymentStatus = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/user/payment-status/${userId}`);
+        const response = await axios.get(`https://wecinema.onrender.com/user/payment-status/${userId}`);
         const { hasPaid } = response.data;
         setUserHasPaid(hasPaid);
       } catch (error) {
@@ -68,7 +68,7 @@ const GenrePage: React.FC = () => {
 
     const fetchPaidUsers = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/user/paid-users`);
+        const response = await axios.get(`https://wecinema.onrender.com/user/paid-users`);
         const users = response.data;
         const filteredUsers = users.filter((paidUser: any) => paidUser._id !== userId);
         setPaidUsers(filteredUsers);

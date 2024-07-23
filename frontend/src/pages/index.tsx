@@ -11,7 +11,6 @@ export { default as CustomerSupportPage } from "./customercare";
 export { default as RatingPage } from "./ratingpage";
 export { default as ThemePage } from "./theme";
 export { default as SearchPage } from "./search";
-export { default as MessagePage } from "./message";
 export { default as PaymentComponent } from "./payment";
 export { default as PlanSelector } from "./subscription";
 

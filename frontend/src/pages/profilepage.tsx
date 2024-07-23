@@ -40,11 +40,11 @@ const GenrePage: React.FC<GenreProps> = ({}) => {
             try {
                 const result: any = await getRequest("/user/" + id, setLoading);
                 setUser(result);
-                const response = await axios.get(`http://localhost:3000/user/payment-status/${id}`);
+                const response = await axios.get(`https://wecinema.onrender.com/user/payment-status/${id}`);
                 setUserHasPaid(response.data.hasPaid);
                 const tokenData = decodeToken(token);
                 if (tokenData) {
-                    const currentUserResponse = await axios.get(`http://localhost:3000/user/payment-status/${tokenData.userId}`);
+                    const currentUserResponse = await axios.get(`https://wecinema.onrender.com/user/payment-status/${tokenData.userId}`);
                     setCurrentUserHasPaid(currentUserResponse.data.hasPaid);
                 }
                 setFormData({ username: result.username, dob: result.dob });
