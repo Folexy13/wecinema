@@ -83,40 +83,28 @@ router.post("/register", async (req, res) => {
 	}
 });
 
-router.post("/login", async (req, res) => {
-	try {
-		const { email, password } = req.body;
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
 
-		// Find the user by email
-		const user = await User.findOne({ email });
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
 
-		// Check if the user exists
-		if (!user) {
-			return res.status(401).json({ error: "Invalid credentials" });
-		}
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
 
-		// Compare the provided password with the hashed password in the database
-		const passwordMatch = await argon2.verify(user.password, password);
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-		if (passwordMatch) {
-			// If the passwords match, generate a JWT token for authentication
-			const token = jwt.sign(
-				{ userId: user._id, username: user.username, avatar: user.avatar },
-				process.env.SECRET_KEY,
-				{ expiresIn: "8h" }
-			);
-
-			res.status(200).json({ token });
-		} else {
-			// If passwords do not match, return an error
-			res.status(401).json({ error: "Invalid credentials" });
-		}
-	} catch (error) {
-		console.error("Error during login:", error);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
+        res.json({ token, id: user._id });
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
-
 
 //Route for following an author
 router.put("/:id/follow", authenticateMiddleware, async (req, res) => {

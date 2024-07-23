@@ -200,24 +200,31 @@ const HypeModeProfile = () => {
 
   const loginUser = async (email: string, password: string, callback: () => void) => {
     try {
-      const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password });
-      const token = res.data.token;
-      const userId = res.data.id;
+        console.log('Logging in with:', email, password); // Debug: Log email and password
+        const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password });
+        console.log('Response from login:', res); // Debug: Log response
 
-      if (token) {
-        localStorage.setItem('token', token);
-        setIsLoggedIn(true);
-        setUserId(userId);
-        console.log(userId, 'userid')
-        setPopupMessage('Login successful!');
+        const token = res.data.token;
+        const userId = res.data.id;
+
+        if (token) {
+            localStorage.setItem('token', token);
+            setIsLoggedIn(true);
+            setUserId(userId);
+            console.log(userId, 'userid');
+            setPopupMessage('Login successful!');
+            setShowPopup(true);
+            if (callback) callback();
+        }
+    } catch (error: any) {
+        console.error('Login failed:', error); // Debug: Log error details
+        if (error.response) {
+            console.error('Error response data:', error.response.data); // Debug: Log server response
+        }
+        setPopupMessage('Login failed.');
         setShowPopup(true);
-        if (callback) callback();
-      }
-    } catch (error) {
-      setPopupMessage('Login failed.');
-      setShowPopup(true);
     }
-  };
+};
 
   const onLoginSuccess = async (googleUser: any, token: string) => {
     const profile = googleUser.getBasicProfile();
