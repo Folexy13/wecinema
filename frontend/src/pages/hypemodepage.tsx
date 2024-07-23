@@ -146,7 +146,7 @@ const HypeModeProfile = () => {
   const [password, setPassword] = useState('');
   const [userId, setUserId] = useState('');
 
-  const fetchBirthday = async (token:any) => {
+  const fetchBirthday = async (token: string) => {
     try {
       console.log('Fetching birthday with token:', token);
       const res = await axios.get('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
@@ -162,13 +162,13 @@ const HypeModeProfile = () => {
       }
       console.log('No birthday found.');
       return '';
-    } catch (error:any) {
+    } catch (error: any) {
       console.error('Error fetching birthday:', error.response ? error.response.data : error.message);
       return '';
     }
   };
 
-  const registerUser = async (username:any, email:any, avatar:any, dob:any, password:any, callback:any) => {
+  const registerUser = async (username: string, email: string, avatar: string, dob: string, password: string, callback: () => void) => {
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/register', {
         username,
@@ -186,9 +186,9 @@ const HypeModeProfile = () => {
         setIsLoggedIn(true);
         setUserId(userId);
         setShowPopup(true);
-        if (callback) callback(userId);
+        if (callback) callback();
       }
-    } catch (error:any) {
+    } catch (error: any) {
       if (error.response && error.response.data && error.response.data.error === 'Email already exists') {
         setPopupMessage('Email already exists.');
       } else {
@@ -198,18 +198,17 @@ const HypeModeProfile = () => {
     }
   };
 
-  const loginUser = async (email:any, password:any, callback:any) => {
+  const loginUser = async (email: string, password: string, callback: () => void) => {
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password });
       const token = res.data.token;
-
       const userId = res.data.id;
-      
+
       if (token) {
         localStorage.setItem('token', token);
         setIsLoggedIn(true);
         setUserId(userId);
-        console.log(userId,'userid')
+        console.log(userId, 'userid')
         setPopupMessage('Login successful!');
         setShowPopup(true);
         if (callback) callback();
@@ -220,7 +219,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const onLoginSuccess = async (googleUser:any, token:any) => {
+  const onLoginSuccess = async (googleUser: any, token: string) => {
     const profile = googleUser.getBasicProfile();
     const email = profile.getEmail();
     const username = profile.getName();
@@ -236,7 +235,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const onLoginFailure = (error:any) => {
+  const onLoginFailure = (error: any) => {
     console.error('Login Failed:', error);
     setPopupMessage('Login failed.');
     setShowPopup(true);
@@ -244,7 +243,7 @@ const HypeModeProfile = () => {
 
   const handleGoogleLogin = () => {
     gapi.auth2.getAuthInstance().signIn()
-      .then(async (googleUser:any) => {
+      .then(async (googleUser: any) => {
         const token = googleUser.getAuthResponse().access_token;
         console.log('Access token acquired:', token);
         await onLoginSuccess(googleUser, token);
@@ -259,7 +258,7 @@ const HypeModeProfile = () => {
         setIsLoggedIn(false);
         navigate('/hypemode');
       })
-      .catch((error:any) => {
+      .catch((error: any) => {
         console.error('Logout Failed:', error);
       });
   };
@@ -273,7 +272,7 @@ const HypeModeProfile = () => {
         scope: 'https://www.googleapis.com/auth/user.birthday.read email profile',
       }).then(() => {
         console.log('Google API client initialized.');
-      }).catch((error:any) => {
+      }).catch((error: any) => {
         console.error('Error initializing Google API client:', error);
       });
     }
@@ -285,7 +284,7 @@ const HypeModeProfile = () => {
     setShowPopup(false);
   };
 
-  const handleSubscriptionClick = (subscriptionType:any) => {
+  const handleSubscriptionClick = (subscriptionType: string) => {
     setSelectedSubscription(subscriptionType);
     if (isLoggedIn) {
       const amount = subscriptionType === 'user' ? 5 : subscriptionType === 'studio' ? 10 : 0;
