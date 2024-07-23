@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Layout } from "../components";
 import styled from 'styled-components';
 import axios from 'axios';
@@ -8,6 +7,7 @@ import { decodeToken } from "../utilities/helperfFunction";
 import { getRequest } from "../api"; // Assuming getRequest is used for fetching data
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PayPalButtonWrapper from './PayPalButtonWrapper'; // Import updated PayPalButtonWrapper
 
 const Container = styled.div`
   display: flex;
@@ -97,56 +97,8 @@ const TransactionPopup: React.FC<TransactionPopupProps> = ({ message, onClose, i
   </>
 );
 
-interface PayPalButtonWrapperProps {
-  amount: number;
-  userId: string | null;
-  onSuccess: (details: any) => void;
-  onError: (message: string) => void;
-}
-
-const PayPalButtonWrapper: React.FC<PayPalButtonWrapperProps> = ({ amount, userId, onSuccess, onError }) => {
-  return (
-    <PayPalScriptProvider options={{ "clientId": "ATCFEkRI4lCXYSceFX1O3WVIym-HN0raTtEpXUUH8hTDI5kmPbbaWqI6I0K6nLRap16jZJoO33HtcFy7" }}>
-      <PayPalButtons
-        style={{ layout: 'vertical' }}
-        createOrder={(data, actions) => {
-          return actions.order.create({
-            intent: 'CAPTURE',
-            purchase_units: [{
-              amount: {
-                currency_code: 'USD',
-                value: amount.toString(),
-              },
-              custom_id: userId,
-            }],
-          }).catch((error: any) => {
-            console.error("Error creating order:", error);
-            onError('Error creating order. Please try again.');
-            throw error;
-          });
-        }}
-        onApprove={async (data, actions) => {
-          return actions.order.capture().then(details => {
-            console.log('Payment successful:', details);
-            onSuccess(details);
-          }).catch((error: any) => {
-            console.error('Capture error:', error);
-            onError('Capture error. Please try again.');
-            throw error;
-          });
-        }}
-        onError={(err) => {
-          console.error('PayPal payment error:', err);
-          onError('PayPal payment error. Please try again.');
-        }}
-      />
-    </PayPalScriptProvider>
-  );
-};
-
 const PaymentComponent = () => {
   const location = useLocation();
-
   const { subscriptionType, amount } = location.state as { subscriptionType: string, amount: number };
 
   const [showPopup, setShowPopup] = useState(false);
@@ -243,7 +195,6 @@ const PaymentComponent = () => {
       setShowPopup(true);
       setUserHasPaid(true);
       toast.success('Transaction successful! Redirecting to profile...');
-
       
     } catch (error) {
       console.error('Failed to save transaction:', error);

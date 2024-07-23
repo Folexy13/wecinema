@@ -74,7 +74,6 @@ const GenrePage: React.FC<GenreProps> = ({}) => {
 
     useEffect(() => {
         if (userHasPaid && !currentUserHasPaid) {
-            setShowModal(true);
         }
     }, [userHasPaid, currentUserHasPaid]);
 
