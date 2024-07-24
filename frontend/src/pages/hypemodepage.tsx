@@ -200,30 +200,44 @@ const HypeModeProfile = () => {
 
   const loginUser = async (email:any, password:any, callback:any) => {
     try {
+      if (!email || !password) {
+        setPopupMessage('Email and password are required.');
+        setShowPopup(true);
+        return;
+      }
+
+      console.log('Logging in with:', email, password); // Debug: Log email and password
+
       const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password }, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-  
+
+      console.log('Response from login:', res); // Debug: Log response
+
       const token = res.data.token;
       const userId = res.data.id;
-  
+
       if (token) {
         localStorage.setItem('token', token);
         setIsLoggedIn(true);
         setUserId(userId);
+        console.log(userId, 'userid');
         setPopupMessage('Login successful!');
         setShowPopup(true);
         if (callback) callback();
       }
     } catch (error:any) {
-      console.error('Login failed:', error);
+      console.error('Login failed:', error); // Debug: Log error details
+
       if (error.response) {
+        console.error('Error response data:', error.response.data); // Debug: Log server response
         setPopupMessage(error.response.data.message || 'Login failed.');
       } else {
         setPopupMessage('Login failed.');
       }
+
       setShowPopup(true);
     }
   };
