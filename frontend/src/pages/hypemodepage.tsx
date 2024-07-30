@@ -4,9 +4,6 @@ import styled from 'styled-components';
 import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
 import { gapi } from "gapi-script";
-import { GoogleLogin } from '@react-oauth/google';
-import { decodeToken } from "../utilities/helperfFunction";
-
 
 const MainContainer = styled.div`
   display: flex;
@@ -149,40 +146,52 @@ const HypeModeProfile = () => {
   const [password, setPassword] = useState('');
   const [userId, setUserId] = useState('');
 
-  const fetchBirthday = async (token:any) => {
+  const fetchBirthday = async (token: string) => {
     try {
+      console.log('Fetching birthday with token:', token);
       const res = await axios.get('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       const birthday = res.data.birthdays?.[0]?.date;
-      return birthday ? `${birthday.year}-${birthday.month}-${birthday.day}` : '';
-    } catch (error) {
-      console.error('Error fetching birthday:', error);
+      if (birthday) {
+        const formattedBirthday = `${birthday.year}-${birthday.month}-${birthday.day}`;
+        console.log('Birthday:', formattedBirthday);
+        return formattedBirthday;
+      }
+      console.log('No birthday found.');
+      return '';
+    } catch (error: any) {
+      console.error('Error fetching birthday:', error.response ? error.response.data : error.message);
       return '';
     }
   };
 
-  const registerUser = async (username:any, email:any, avatar:any, dob:any, password:any, callback:any) => {
+  const registerUser = async (username: string, email: string, avatar: string, dob: string, password: string, callback: () => void) => {
     try {
-      const res = await axios.post('https://your-backend-url.com/user/register', {
-        username, email, avatar, dob, password
-      }, {
-        withCredentials: true
+      console.log('Registering user:', { username, email, avatar, dob, password });
+      const res = await axios.post('https://wecinema.onrender.com/user/register', {
+        username,
+        email,
+        avatar,
+        dob,
+        password
       });
 
-      const { token, id } = res.data;
+      const token = res.data.token;
+      const userId = res.data.id;
 
       if (token) {
         setPopupMessage('Registration successful and logged in!');
         setIsLoggedIn(true);
-        setUserId(id);
+        setUserId(userId);
         setShowPopup(true);
         if (callback) callback();
       }
-    } catch (error:any) {
-      if (error.response?.data?.error === 'Email already exists') {
+    } catch (error: any) {
+      console.error('Registration failed:', error);
+      if (error.response && error.response.data && error.response.data.error === 'Email already exists') {
         setPopupMessage('Email already exists.');
       } else {
         setPopupMessage('Registration successful. Please sign in.');
@@ -191,53 +200,95 @@ const HypeModeProfile = () => {
     }
   };
 
-  const loginUser = async (email:any, password:any, callback:any) => {
+  const loginUser = async (email: string, password: string, callback: () => void) => {
     try {
-      const res = await axios.post('https://your-backend-url.com/user/login', {
-        email, password
-      }, {
-        withCredentials: true
+      console.log('Logging in user with email:', email);
+      const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password }, {
+        headers: {
+          'Content-Type': 'application/json'
+          
+        }
       });
 
-      const { token, id } = res.data;
+      const token = res.data.token;
+      const userId = res.data.id;
 
       if (token) {
         localStorage.setItem('token', token);
         setIsLoggedIn(true);
-        setUserId(id);
+        setUserId(userId);
         setPopupMessage('Login successful!');
         setShowPopup(true);
         if (callback) callback();
       }
-    } catch (error:any) {
+    } catch (error: any) {
       console.error('Login failed:', error);
-      setPopupMessage(error.response?.data?.message || 'Login failed.');
+      if (error.response) {
+        setPopupMessage(error.response.data.message || 'Login failed.');
+      } else {
+        setPopupMessage('Login failed.');
+      }
       setShowPopup(true);
     }
   };
 
-  const onLoginSuccess = async (response:any) => {
-    const token = response.credential;
-    const profile = decodeToken(token);
-    const email = profile.email;
-    const username = profile.name;
-    const avatar = profile.picture;
+  const onLoginSuccess = async (googleUser: any, token: string) => {
+    const profile = googleUser.getBasicProfile();
+    const email = profile.getEmail();
+    const username = profile.getName();
+    const avatar = profile.getImageUrl();
     const dob = await fetchBirthday(token);
     const callback = () => navigate('/payment', { state: { subscriptionType: selectedSubscription, amount: selectedSubscription === 'user' ? 5 : 10, userId } });
 
     if (isSignup) {
       await registerUser(username, email, avatar, dob, password, callback);
+      console.log('Date of Birth:', dob);
+
     } else {
       await loginUser(email, password, callback);
+      console.log('Date of password:', password);
+
     }
   };
+
+  const onLoginFailure = (error: any) => {
+    console.error('Login Failed:', error);
+    setPopupMessage('Login failed.');
+    setShowPopup(true);
+  };
+
+  const handleGoogleLogin = () => {
+    gapi.auth2.getAuthInstance().signIn()
+      .then(async (googleUser: any) => {
+        const token = googleUser.getAuthResponse().access_token;
+        console.log('Access token acquired:', token);
+        await onLoginSuccess(googleUser, token);
+      })
+      .catch(onLoginFailure);
+  };
+
+  const handleGoogleLogout = () => {
+    gapi.auth2.getAuthInstance().signOut()
+      .then(() => {
+        localStorage.clear();
+        setIsLoggedIn(false);
+        navigate('/hypemode');
+      })
+      .catch((error: any) => {
+        console.error('Logout Failed:', error);
+      });
+  };
+
+  const clientId = "854144808645-t4jd10ehpngjnfvki8mcuq7q0uvr2kjo.apps.googleusercontent.com";
 
   useEffect(() => {
     function start() {
       gapi.client.init({
-        clientId: "YOUR_CLIENT_ID",
+        clientId: clientId,
         scope: 'https://www.googleapis.com/auth/user.birthday.read email profile',
-      }).catch((error:any) => {
+      }).then(() => {
+        console.log('Google API client initialized.');
+      }).catch((error: any) => {
         console.error('Error initializing Google API client:', error);
       });
     }
@@ -249,7 +300,7 @@ const HypeModeProfile = () => {
     setShowPopup(false);
   };
 
-  const handleSubscriptionClick = (subscriptionType:any) => {
+  const handleSubscriptionClick = (subscriptionType: string) => {
     setSelectedSubscription(subscriptionType);
     if (isLoggedIn) {
       const amount = subscriptionType === 'user' ? 5 : subscriptionType === 'studio' ? 10 : 0;
@@ -273,6 +324,7 @@ const HypeModeProfile = () => {
             <SubscriptionContainer>
               <SubscriptionBox>
                 <Title>Logout</Title>
+                <Button onClick={handleGoogleLogout}>Logout</Button>
               </SubscriptionBox>
             </SubscriptionContainer>
           ) : (
@@ -280,20 +332,12 @@ const HypeModeProfile = () => {
               <SubscriptionBox onClick={() => handleSubscriptionClick('user')}>
                 <Title>User Subscription</Title>
                 <Description>$5 a month to buy and sell films and scripts</Description>
-                <Button>
-                  <GoogleLogin
-                    onSuccess={onLoginSuccess}
-                  />
-                </Button>
+                <Button onClick={handleGoogleLogin}>{isSignup ? "Sign up with Google" : "Sign in with Google"}</Button>
               </SubscriptionBox>
               <SubscriptionBox onClick={() => handleSubscriptionClick('studio')}>
                 <Title>Studio Subscription</Title>
                 <Description>$10 a month to buy and sell, get early access to new features</Description>
-                <Button>
-                  <GoogleLogin
-                    onSuccess={onLoginSuccess}
-                  />
-                </Button>
+                <Button onClick={handleGoogleLogin}>{isSignup ? "Sign up with Google" : "Sign in with Google"}</Button>
               </SubscriptionBox>
               <SubscriptionBox>
                 <h3>{isSignup ? 'Register' : 'Login'} with Email</h3>
