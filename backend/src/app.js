@@ -15,18 +15,18 @@ app.use(cors({
 	origin: 'http://www.wecinema.co',
 	credentials: true
   }));
-
+app.use((req, res, next) => {
+	res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+	res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+	next();
+  });
 // Define a route to create a user
 app.use("/video", VideoController);
 app.use("/user", UserController);
 
 // Connect to the database
 connectDB(process.env.DB_URI);
-app.use((req, res, next) => {
-	res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-	res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-	next();
-  });
+
 // Start the Express server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

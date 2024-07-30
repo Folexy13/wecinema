@@ -206,6 +206,7 @@ const HypeModeProfile = () => {
       const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password }, {
         headers: {
           'Content-Type': 'application/json'
+          
         }
       });
 
