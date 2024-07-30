@@ -7,7 +7,11 @@ const connectDB = require("./config");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
-
+app.use((req, res, next) => {
+	res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+	res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+	next();
+  });
 app.use(morgan("dev"));
 app.use(express.json());
 const allowedOrigins = [
@@ -15,6 +19,7 @@ const allowedOrigins = [
 	"https://www.wecinema.co",
 	"http://wecinema.co",
 	"https://wecinema.co",
+	
 	"http://localhost:3000",
 	"https://wecinema.onrender.com",
 	"http://wecinema.onrender.com",
@@ -33,7 +38,10 @@ const corsOptions = {
 	},
 };
 
-app.use(cors(corsOptions));
+app.use(cors({
+	corsOptions, // Replace with your actual frontend domain
+	credentials: true
+  }));
 
 // Define a route to create a user
 app.use("/video", VideoController);
