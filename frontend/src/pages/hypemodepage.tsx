@@ -279,7 +279,7 @@ const HypeModeProfile = () => {
       });
   };
 
-  const clientId = "854144808645-t4jd10ehpngjnfvki8mcuq7q0uvr2kjo.apps.googleusercontent.com";
+  const clientId = "133384787906-sf5iq2gvac35mbj1p577bh09lpodqb19.apps.googleusercontent.com";
 
   useEffect(() => {
     function start() {
