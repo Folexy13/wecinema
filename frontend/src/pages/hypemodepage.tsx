@@ -181,7 +181,7 @@ const HypeModeProfile = () => {
         setShowPopup(true);
         if (callback) callback();
       }
-    } catch (error) {
+    } catch (error:any) {
       if (error.response?.data?.error === 'Email already exists') {
         setPopupMessage('Email already exists.');
       } else {
@@ -209,7 +209,7 @@ const HypeModeProfile = () => {
         setShowPopup(true);
         if (callback) callback();
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error('Login failed:', error);
       setPopupMessage(error.response?.data?.message || 'Login failed.');
       setShowPopup(true);
@@ -237,7 +237,7 @@ const HypeModeProfile = () => {
       gapi.client.init({
         clientId: "YOUR_CLIENT_ID",
         scope: 'https://www.googleapis.com/auth/user.birthday.read email profile',
-      }).catch((error) => {
+      }).catch((error:any) => {
         console.error('Error initializing Google API client:', error);
       });
     }
@@ -273,7 +273,6 @@ const HypeModeProfile = () => {
             <SubscriptionContainer>
               <SubscriptionBox>
                 <Title>Logout</Title>
-                <Button onClick={handleGoogleLogout}>Logout</Button>
               </SubscriptionBox>
             </SubscriptionContainer>
           ) : (
@@ -284,7 +283,7 @@ const HypeModeProfile = () => {
                 <Button>
                   <GoogleLogin
                     onSuccess={onLoginSuccess}
-                    onError={(error) => console.error('Login Failed:', error)}
+                    onError={(error:any) => console.error('Login Failed:', error)}
                   />
                 </Button>
               </SubscriptionBox>
@@ -294,7 +293,7 @@ const HypeModeProfile = () => {
                 <Button>
                   <GoogleLogin
                     onSuccess={onLoginSuccess}
-                    onError={(error) => console.error('Login Failed:', error)}
+                    onError={(error:any) => console.error('Login Failed:', error)}
                   />
                 </Button>
               </SubscriptionBox>
