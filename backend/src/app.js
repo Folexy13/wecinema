@@ -22,7 +22,7 @@ const corsOptions = {
 	credentials: true,
   };
   
-  app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 // Define a route to create a user
 app.use("/video", VideoController);
