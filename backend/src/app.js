@@ -7,39 +7,12 @@ const connectDB = require("./config");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
-app.use((req, res, next) => {
-	res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-	res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-	next();
-  });
+
 app.use(morgan("dev"));
 app.use(express.json());
-const allowedOrigins = [
-	"http://www.wecinema.co",
-	"https://www.wecinema.co",
-	"http://wecinema.co",
-	"https://wecinema.co",
-	
-	"http://localhost:3000",
-	"https://wecinema.onrender.com",
-	"http://wecinema.onrender.com",
-	"http://www.wecinema.onrender.com",
-	"https://www.wecinema.onrender.com",
-	"https://wecinema-admin.onrender.com",
-];
-
-const corsOptions = {
-	origin: function (origin, callback) {
-		if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-			callback(null, true);
-		} else {
-			callback(new Error("Not allowed by CORS"));
-		}
-	},
-};
 
 app.use(cors({
-	corsOptions, // Replace with your actual frontend domain
+	origin: 'http://www.wecinema.co',
 	credentials: true
   }));
 
@@ -49,7 +22,11 @@ app.use("/user", UserController);
 
 // Connect to the database
 connectDB(process.env.DB_URI);
-
+app.use((req, res, next) => {
+	res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+	res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+	next();
+  });
 // Start the Express server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
