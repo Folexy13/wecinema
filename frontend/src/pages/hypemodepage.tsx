@@ -219,7 +219,7 @@ const HypeModeProfile = () => {
   };
 
   const handleGoogleLogin = () => {
-    gapi.auth2.getAuthInstance().signIn().then(async (googleUser) => {
+    gapi.auth2.getAuthInstance().signIn().then(async (googleUser:any) => {
       const token = googleUser.getAuthResponse().access_token;
       await onLoginSuccess(googleUser, token);
     }).catch(onLoginFailure);
@@ -242,7 +242,7 @@ const HypeModeProfile = () => {
         scope: 'https://www.googleapis.com/auth/user.birthday.read email profile',
       }).then(() => {
         console.log('Google API client initialized.');
-      }).catch((error) => {
+      }).catch((error:any) => {
         console.error('Error initializing Google API client:', error);
       });
     }
