@@ -134,7 +134,6 @@ const Overlay = styled.div`
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
 `;
-const clientId = "854144808645-t4jd10ehpngjnfvki8mcuq7q0uvr2kjo.apps.googleusercontent.com";
 
 const HypeModeProfile = () => {
   const navigate = useNavigate();
@@ -147,57 +146,93 @@ const HypeModeProfile = () => {
   const [password, setPassword] = useState('');
   const [userId, setUserId] = useState('');
 
-  const fetchBirthday = async (token:any) => {
+  const fetchBirthday = async (token: string) => {
     try {
+      console.log('Fetching birthday with token:', token);
       const res = await axios.get('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       const birthday = res.data.birthdays?.[0]?.date;
       if (birthday) {
-        return `${birthday.year}-${birthday.month}-${birthday.day}`;
+        const formattedBirthday = `${birthday.year}-${birthday.month}-${birthday.day}`;
+        console.log('Birthday:', formattedBirthday);
+        return formattedBirthday;
       }
+      console.log('No birthday found.');
       return '';
-    } catch (error) {
-      console.error('Error fetching birthday:', error);
+    } catch (error: any) {
+      console.error('Error fetching birthday:', error.response ? error.response.data : error.message);
       return '';
     }
   };
 
-  const registerUser = async (username:any, email:any, avatar:any, dob:any, password:any, callback:any) => {
+  const registerUser = async (username: string, email: string, avatar: string, dob: string, password: string, callback: () => void) => {
     try {
-      const res = await axios.post('https://wecinema.onrender.com/user/register', { username, email, avatar, dob, password });
+      console.log('Registering user:', { username, email, avatar, dob, password });
+      const res = await axios.post('https://wecinema.onrender.com/user/register', {
+        username,
+        email,
+        avatar,
+        dob,
+        password
+      });
+
       const token = res.data.token;
       const userId = res.data.id;
+
       if (token) {
+        setPopupMessage('Registration successful and logged in!');
         setIsLoggedIn(true);
         setUserId(userId);
+        setShowPopup(true);
         if (callback) callback();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration failed:', error);
-      setPopupMessage('Registration failed.');
+      if (error.response && error.response.data && error.response.data.error === 'Email already exists') {
+        setPopupMessage('Email already exists.');
+      } else {
+        setPopupMessage('Registration successful. Please sign in.');
+      }
       setShowPopup(true);
     }
   };
 
-  const loginUser = async (email:any, password:any, callback:any) => {
+  const loginUser = async (email: string, password: string, callback: () => void) => {
     try {
-      const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password });
+      console.log('Logging in user with email:', email);
+      const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password }, {
+        headers: {
+          'Content-Type': 'application/json'
+          
+        }
+      });
+
       const token = res.data.token;
       const userId = res.data.id;
+
       if (token) {
+        localStorage.setItem('token', token);
         setIsLoggedIn(true);
         setUserId(userId);
+        setPopupMessage('Login successful!');
+        setShowPopup(true);
         if (callback) callback();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login failed:', error);
-      setPopupMessage('Login failed.');
+      if (error.response) {
+        setPopupMessage(error.response.data.message || 'Login failed.');
+      } else {
+        setPopupMessage('Login failed.');
+      }
       setShowPopup(true);
     }
   };
 
-  const onLoginSuccess = async (googleUser:any, token:any) => {
+  const onLoginSuccess = async (googleUser: any, token: string) => {
     const profile = googleUser.getBasicProfile();
     const email = profile.getEmail();
     const username = profile.getName();
@@ -207,42 +242,53 @@ const HypeModeProfile = () => {
 
     if (isSignup) {
       await registerUser(username, email, avatar, dob, password, callback);
+      console.log('Date of Birth:', dob);
+
     } else {
       await loginUser(email, password, callback);
+      console.log('Date of password:', password);
+
     }
   };
 
-  const onLoginFailure = (error:any) => {
+  const onLoginFailure = (error: any) => {
     console.error('Login Failed:', error);
     setPopupMessage('Login failed.');
     setShowPopup(true);
   };
 
   const handleGoogleLogin = () => {
-    gapi.auth2.getAuthInstance().signIn().then(async (googleUser:any) => {
-      const token = googleUser.getAuthResponse().access_token;
-      await onLoginSuccess(googleUser, token);
-    }).catch(onLoginFailure);
+    gapi.auth2.getAuthInstance().signIn()
+      .then(async (googleUser: any) => {
+        const token = googleUser.getAuthResponse().access_token;
+        console.log('Access token acquired:', token);
+        await onLoginSuccess(googleUser, token);
+      })
+      .catch(onLoginFailure);
   };
 
   const handleGoogleLogout = () => {
-    gapi.auth2.getAuthInstance().signOut().then(() => {
-      localStorage.clear();
-      setIsLoggedIn(false);
-      navigate('/hypemode');
-    }).catch((error:any) => {
-      console.error('Logout Failed:', error);
-    });
+    gapi.auth2.getAuthInstance().signOut()
+      .then(() => {
+        localStorage.clear();
+        setIsLoggedIn(false);
+        navigate('/hypemode');
+      })
+      .catch((error: any) => {
+        console.error('Logout Failed:', error);
+      });
   };
+
+  const clientId = "854144808645-t4jd10ehpngjnfvki8mcuq7q0uvr2kjo.apps.googleusercontent.com";
 
   useEffect(() => {
     function start() {
       gapi.client.init({
-        clientId,
+        clientId: clientId,
         scope: 'https://www.googleapis.com/auth/user.birthday.read email profile',
       }).then(() => {
         console.log('Google API client initialized.');
-      }).catch((error:any) => {
+      }).catch((error: any) => {
         console.error('Error initializing Google API client:', error);
       });
     }
@@ -254,10 +300,10 @@ const HypeModeProfile = () => {
     setShowPopup(false);
   };
 
-  const handleSubscriptionClick = (subscriptionType:any) => {
+  const handleSubscriptionClick = (subscriptionType: string) => {
     setSelectedSubscription(subscriptionType);
     if (isLoggedIn) {
-      const amount = subscriptionType === 'user' ? 5 : 10;
+      const amount = subscriptionType === 'user' ? 5 : subscriptionType === 'studio' ? 10 : 0;
       navigate('/payment', { state: { subscriptionType, amount, userId } });
     }
   };
@@ -265,7 +311,6 @@ const HypeModeProfile = () => {
   const toggleSignupSignin = () => {
     setIsSignup(!isSignup);
   };
-
 
   return (
     <Layout expand={false} hasHeader={false}>
