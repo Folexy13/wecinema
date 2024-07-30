@@ -15,10 +15,14 @@ app.use((req, res, next) => {
 app.use(morgan("dev"));
 app.use(express.json());
 
-app.use(cors({
-	origin: 'http://www.wecinema.co',
-	credentials: true
-  }));
+const corsOptions = {
+	origin: 'https://wecinema.co',
+	methods: 'GET,POST,PUT,DELETE',
+	allowedHeaders: 'Content-Type,Authorization',
+	credentials: true,
+  };
+  
+  app.use(cors(corsOptions));
 
 // Define a route to create a user
 app.use("/video", VideoController);
