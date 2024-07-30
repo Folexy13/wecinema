@@ -71,8 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     } else if (!hasPaid) {
         navigate("/hypemode");
 
-    } else {
-    }
+    } 
   };
 
   return (

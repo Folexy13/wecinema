@@ -15,15 +15,15 @@ const io = socketIo(server);
 app.use(morgan("dev"));
 app.use(express.json());
 const allowedOrigins = [
-	"http://www.wecinema.co",
-	"https://www.wecinema.co",
-	"http://wecinema.co",
-	"https://wecinema.co",
-	"https://wecinema.onrender.com",
-	"https://wecinema-admin.onrender.com",
-	"https://wecinema.co/hypemode",
-	"https://wecinema.co/videoeditor",
-	"https://wecinema.onrender.com/user/login"
+	// "http://www.wecinema.co",
+	// "https://www.wecinema.co",
+	// "http://wecinema.co",
+	// "https://wecinema.co",
+	// "https://wecinema.onrender.com",
+	// "https://wecinema-admin.onrender.com",
+	// "https://wecinema.co/hypemode",
+	// "https://wecinema.co/videoeditor",
+	// "https://wecinema.onrender.com/user/login"
 
 ];
 app.use(cors()); // Enable CORS for all routes
