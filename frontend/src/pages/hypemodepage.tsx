@@ -170,7 +170,7 @@ const HypeModeProfile = () => {
 
   const registerUser = async (username: string, email: string, avatar: string, dob: string, password: string, callback: () => void) => {
     try {
-      const res = await axios.post('https://wecinema.onrender.com/user/register', {
+      const res = await axios.post('http://localhost:3000/user/register', {
         username,
         email,
         avatar,
@@ -200,7 +200,7 @@ const HypeModeProfile = () => {
 
   const loginUser = async (email:any, password:any, callback:any) => {
     try {
-      const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password }, {
+      const res = await axios.post('http://localhost:3000/user/login', { email, password }, {
         headers: {
           'Content-Type': 'application/json'
         }
