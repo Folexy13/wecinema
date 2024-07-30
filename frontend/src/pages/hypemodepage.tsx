@@ -179,7 +179,7 @@ const HypeModeProfile = () => {
 
   const registerUser = async (username: string, email: string, avatar: string, dob: string, password: string, callback: () => void) => {
     try {
-      const data = await postRequest('/user/register', {
+      const data = await postRequest('http://localhost:3000/user/register', {
         username,
         email,
         avatar,
