@@ -147,7 +147,7 @@ const HypeModeProfile = () => {
   const [password, setPassword] = useState('');
   const [userId, setUserId] = useState('');
 
-  const fetchBirthday = async (token) => {
+  const fetchBirthday = async (token:any) => {
     try {
       const res = await axios.get('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -163,7 +163,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const registerUser = async (username, email, avatar, dob, password, callback) => {
+  const registerUser = async (username:any, email:any, avatar:any, dob:any, password:any, callback:any) => {
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/register', { username, email, avatar, dob, password });
       const token = res.data.token;
@@ -180,7 +180,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const loginUser = async (email, password, callback) => {
+  const loginUser = async (email:any, password:any, callback:any) => {
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password });
       const token = res.data.token;
@@ -197,7 +197,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const onLoginSuccess = async (googleUser, token) => {
+  const onLoginSuccess = async (googleUser:any, token:any) => {
     const profile = googleUser.getBasicProfile();
     const email = profile.getEmail();
     const username = profile.getName();
@@ -212,7 +212,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const onLoginFailure = (error) => {
+  const onLoginFailure = (error:any) => {
     console.error('Login Failed:', error);
     setPopupMessage('Login failed.');
     setShowPopup(true);
@@ -230,7 +230,7 @@ const HypeModeProfile = () => {
       localStorage.clear();
       setIsLoggedIn(false);
       navigate('/hypemode');
-    }).catch((error) => {
+    }).catch((error:any) => {
       console.error('Logout Failed:', error);
     });
   };
@@ -254,7 +254,7 @@ const HypeModeProfile = () => {
     setShowPopup(false);
   };
 
-  const handleSubscriptionClick = (subscriptionType) => {
+  const handleSubscriptionClick = (subscriptionType:any) => {
     setSelectedSubscription(subscriptionType);
     if (isLoggedIn) {
       const amount = subscriptionType === 'user' ? 5 : 10;
