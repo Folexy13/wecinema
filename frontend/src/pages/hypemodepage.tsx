@@ -135,15 +135,6 @@ const Overlay = styled.div`
   z-index: 999;
 `;
 
-const postRequest = async (url: string, data: any, headers: any = {}) => {
-  try {
-    const response = await axios.post(url, data, { headers });
-    return response.data;
-  } catch (error: any) {
-    throw error.response ? error.response.data : error.message;
-  }
-};
-
 const HypeModeProfile = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -179,7 +170,7 @@ const HypeModeProfile = () => {
 
   const registerUser = async (username: string, email: string, avatar: string, dob: string, password: string, callback: () => void) => {
     try {
-      const data = await postRequest('http://localhost:3000/user/register', {
+      const res = await axios.post('https://wecinema.onrender.com/user/register', {
         username,
         email,
         avatar,
@@ -187,8 +178,8 @@ const HypeModeProfile = () => {
         password
       });
 
-      const token = data.token;
-      const userId = data.id;
+      const token = res.data.token;
+      const userId = res.data.id;
 
       if (token) {
         setPopupMessage('Registration successful and logged in!');
@@ -198,7 +189,7 @@ const HypeModeProfile = () => {
         if (callback) callback();
       }
     } catch (error: any) {
-      if (error === 'Email already exists') {
+      if (error.response && error.response.data && error.response.data.error === 'Email already exists') {
         setPopupMessage('Email already exists.');
       } else {
         setPopupMessage('Registration successful. Please sign in.');
@@ -207,14 +198,16 @@ const HypeModeProfile = () => {
     }
   };
 
-  const loginUser = async (email: string, password: string, callback: () => void) => {
+  const loginUser = async (email:any, password:any, callback:any) => {
     try {
-      const data = await postRequest('http://localhost:3000/user/login', { email, password }, {
-        'Content-Type': 'application/json'
+      const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
   
-      const token = data.token;
-      const userId = data.id;
+      const token = res.data.token;
+      const userId = res.data.id;
   
       if (token) {
         localStorage.setItem('token', token);
@@ -224,9 +217,13 @@ const HypeModeProfile = () => {
         setShowPopup(true);
         if (callback) callback();
       }
-    } catch (error: any) {
+    } catch (error:any) {
       console.error('Login failed:', error);
-      setPopupMessage(error.message || 'Login failed.');
+      if (error.response) {
+        setPopupMessage(error.response.data.message || 'Login failed.');
+      } else {
+        setPopupMessage('Login failed.');
+      }
       setShowPopup(true);
     }
   };

@@ -16,6 +16,10 @@ const allowedOrigins = [
 	"http://wecinema.co",
 	"https://wecinema.co",
 	"http://localhost:3000",
+	"https://wecinema.onrender.com",
+	"http://wecinema.onrender.com",
+	"http://www.wecinema.onrender.com",
+	"https://www.wecinema.onrender.com",
 	"https://wecinema-admin.onrender.com",
 ];
 
