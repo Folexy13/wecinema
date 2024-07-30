@@ -283,7 +283,6 @@ const HypeModeProfile = () => {
                 <Button>
                   <GoogleLogin
                     onSuccess={onLoginSuccess}
-                    onError={(error:any) => console.error('Login Failed:', error)}
                   />
                 </Button>
               </SubscriptionBox>
@@ -293,7 +292,6 @@ const HypeModeProfile = () => {
                 <Button>
                   <GoogleLogin
                     onSuccess={onLoginSuccess}
-                    onError={(error:any) => console.error('Login Failed:', error)}
                   />
                 </Button>
               </SubscriptionBox>
