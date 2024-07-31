@@ -198,7 +198,7 @@ const HypeModeProfile = () => {
     }
   };
 
-  const loginUser = async (email:any, password:any, callback:any) => {
+  const loginUser = async (email: string, password: string, callback: () => void) => {
     console.log('Email:', email); // Log the email
     console.log('Password:', password); // Log the password
   
