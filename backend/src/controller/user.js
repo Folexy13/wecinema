@@ -83,39 +83,41 @@ router.post("/register", async (req, res) => {
 	}
 });
 router.post("/login", async (req, res) => {
-	const { email, password } = req.body;
+	try {
+	  const { email, password } = req.body;
+	  console.log('Received email:', email);
+	  console.log('Received password:', password);
   
-	// Log the request body to debug
-	console.log('Login Request Body:', req.body);
+	  // Find the user by email
+	  const user = await User.findOne({ email });
   
-	// Verify user credentials (simplified example)
-	const user = await User.findOne({ email });
-	
-	if (!user) {
-	  console.log('User not found');
-	  return res.status(401).json({ message: "Invalid email or password" });
+	  // Check if the user exists
+	  if (!user) {
+		return res.status(401).json({ error: "Invalid credentials" });
+	  }
+  
+	  // Compare the provided password with the hashed password in the database
+	  const passwordMatch = await argon2.verify(user.password, password);
+  
+	  if (passwordMatch) {
+		// If the passwords match, generate a JWT token for authentication
+		const token = jwt.sign(
+		  { userId: user._id, username: user.username, avatar: user.avatar },
+		  process.env.SECRET_KEY,
+		  { expiresIn: "8h" }
+		);
+  
+		res.status(200).json({ token });
+	  } else {
+		// If passwords do not match, return an error
+		res.status(401).json({ error: "Invalid credentials" });
+	  }
+	} catch (error) {
+	  console.error("Error during login:", error);
+	  res.status(500).json({ error: "Internal Server Error" });
 	}
-  
-	// Compare hashed password
-	const isPasswordValid = await argon2.compare(password, user.password);
-	
-	if (!isPasswordValid) {
-	  console.log('Invalid password');
-	  return res.status(401).json({ message: "Invalid email or password" });
-	}
-  
-	// Generate JWT token
-	const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  
-	// Set the token in a cookie
-	res.cookie('token', token, {
-	  httpOnly: true,
-	  secure: true,
-	  sameSite: 'None', // Required for cross-domain cookies
-	});
-  
-	res.json({ message: "Login successful", token });
   });
+  
   
 
 //Route for following an author
