@@ -168,63 +168,67 @@ const HypeModeProfile = () => {
     }
   };
 
-  const registerUser = async (username:any, email:any, avatar:any, dob:any, password:any, callback:any) => {
+  const registerUser = async (username: string, email: string, avatar: string, dob: string, password: string, callback: () => void) => {
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/register', {
-        username, email, avatar, dob, password
-      }, { withCredentials: true });
+        username,
+        email,
+        avatar,
+        dob,
+        password
+      });
 
-      const { token, id } = res.data;
+      const token = res.data.token;
+      const userId = res.data.id;
 
       if (token) {
         setPopupMessage('Registration successful and logged in!');
         setIsLoggedIn(true);
-        setUserId(id);
+        setUserId(userId);
         setShowPopup(true);
         if (callback) callback();
       }
-    } catch (error:any) {
-      console.error('Registration error:', error);
-      if (error.response?.data?.error === 'Email already exists') {
+    } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.error === 'Email already exists') {
         setPopupMessage('Email already exists.');
       } else {
-        setPopupMessage('Registration failed. Please try again.');
+        setPopupMessage('Registration successful. Please sign in.');
       }
       setShowPopup(true);
     }
   };
 
- const loginUser = async (email:any, password:any, callback:any) => {
-  try {
-    console.log('Logging in with:', { email, password }); // Debugging log
-    const res = await axios.post('https://wecinema.onrender.com/user/login', {
-      email,
-      password // Ensure password is included
-    });
-
-    const { token } = res.data;
-
-    if (token) {
-      localStorage.setItem('token', token);
-      setIsLoggedIn(true);
-      setPopupMessage('Login successful!');
-      setShowPopup(true);
-      if (callback) callback();
-    } else {
-      console.error('No token received:', res.data);
-      setPopupMessage('Login failed. No token received.');
+  const loginUser = async (email:any, password:any, callback:any) => {
+    try {
+      const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      const token = res.data.token;
+      const userId = res.data.id;
+  
+      if (token) {
+        localStorage.setItem('token', token);
+        setIsLoggedIn(true);
+        setUserId(userId);
+        setPopupMessage('Login successful!');
+        setShowPopup(true);
+        if (callback) callback();
+      }
+    } catch (error:any) {
+      console.error('Login failed:', error);
+      if (error.response) {
+        setPopupMessage(error.response.data.message || 'Login failed.');
+      } else {
+        setPopupMessage('Login failed.');
+      }
       setShowPopup(true);
     }
-  } catch (error:any) {
-    console.error('Login failed:', error);
-    setPopupMessage(error.response?.data?.message || 'Login failed access.');
-    setShowPopup(true);
-  }
-};
+  };
 
-
-  const onLoginSuccess = async (googleUser: any, response: any) => {
-    const token = response.credential;
+  const onLoginSuccess = async (googleUser: any, token: string) => {
     const profile = googleUser.getBasicProfile();
     const email = profile.getEmail();
     const username = profile.getName();
