@@ -17,7 +17,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 const corsOptions = {
-	origin: 'https://wecinema.co/hypemode',
+	origin: 'https://wecinema.co',
 	methods: 'GET,POST,PUT,DELETE',
 	allowedHeaders: 'Content-Type,Authorization',
 	credentials: true,
