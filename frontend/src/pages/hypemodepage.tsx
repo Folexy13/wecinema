@@ -194,29 +194,40 @@ const HypeModeProfile = () => {
     }
   };
 
-  const loginUser = async (email:any, password:any, callback:any) => {
-    try {
-      console.log('Logging in with:', { email, password });
-      const res = await axios.post('https://wecinema.onrender.com/user/login', {
-        email, password
-      }, { withCredentials: true });
+ router.post("/login", async (req, res) => {
+	try {
+		const { email, password } = req.body;
 
-      const { token, id } = res.data;
+		// Find the user by email
+		const user = await User.findOne({ email });
 
-      if (token) {
-        localStorage.setItem('token', token);
-        setIsLoggedIn(true);
-        setUserId(id);
-        setPopupMessage('Login successful!');
-        setShowPopup(true);
-        if (callback) callback();
-      }
-    } catch (error:any) {
-      console.error('Login failed:', error);
-      setPopupMessage(error.response?.data?.message || 'Login failed.');
-      setShowPopup(true);
-    }
-  };
+		// Check if the user exists
+		if (!user) {
+			return res.status(401).json({ error: "Invalid credentials" });
+		}
+
+		// Compare the provided password with the hashed password in the database
+		const passwordMatch = await argon2.verify(user.password, password);
+
+		if (passwordMatch) {
+			// If the passwords match, generate a JWT token for authentication
+			const token = jwt.sign(
+				{ userId: user._id, username: user.username, avatar: user.avatar },
+				process.env.SECRET_KEY,
+				{ expiresIn: "8h" }
+			);
+
+			res.status(200).json({ token });
+		} else {
+			// If passwords do not match, return an error
+			res.status(401).json({ error: "Invalid credentials" });
+		}
+	} catch (error) {
+		console.error("Error during login:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
 
   const onLoginSuccess = async (googleUser: any, response: any) => {
     const token = response.credential;

@@ -85,38 +85,40 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
 	try {
-		const { email, password } = req.body;
-
-		// Find the user by email
-		const user = await User.findOne({ email });
-
-		// Check if the user exists
-		if (!user) {
-			return res.status(401).json({ error: "Invalid credentials" });
-		}
-
-		// Compare the provided password with the hashed password in the database
-		const passwordMatch = await argon2.verify(user.password, password);
-
-		if (passwordMatch) {
-			// If the passwords match, generate a JWT token for authentication
-			const token = jwt.sign(
-				{ userId: user._id, username: user.username, avatar: user.avatar },
-				process.env.SECRET_KEY,
-				{ expiresIn: "8h" }
-			);
-
-			res.status(200).json({ token });
-		} else {
-			// If passwords do not match, return an error
-			res.status(401).json({ error: "Invalid credentials" });
-		}
+	  const { email, password } = req.body;
+	  console.log('Received email:', email);
+	  console.log('Received password:', password);
+  
+	  // Find the user by email
+	  const user = await User.findOne({ email });
+  
+	  // Check if the user exists
+	  if (!user) {
+		return res.status(401).json({ error: "Invalid credentials" });
+	  }
+  
+	  // Compare the provided password with the hashed password in the database
+	  const passwordMatch = await argon2.verify(user.password, password);
+  
+	  if (passwordMatch) {
+		// If the passwords match, generate a JWT token for authentication
+		const token = jwt.sign(
+		  { userId: user._id, username: user.username, avatar: user.avatar },
+		  process.env.SECRET_KEY,
+		  { expiresIn: "8h" }
+		);
+  
+		res.status(200).json({ token });
+	  } else {
+		// If passwords do not match, return an error
+		res.status(401).json({ error: "Invalid credentials" });
+	  }
 	} catch (error) {
-		console.error("Error during login:", error);
-		res.status(500).json({ error: "Internal Server Error" });
+	  console.error("Error during login:", error);
+	  res.status(500).json({ error: "Internal Server Error" });
 	}
-});
-
+  });
+  
 
 //Route for following an author
 router.put("/:id/follow", authenticateMiddleware, async (req, res) => {
