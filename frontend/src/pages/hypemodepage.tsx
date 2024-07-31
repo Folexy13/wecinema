@@ -199,6 +199,9 @@ const HypeModeProfile = () => {
   };
 
   const loginUser = async (email:any, password:any, callback:any) => {
+    console.log('Email:', email); // Log the email
+    console.log('Password:', password); // Log the password
+  
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password }, {
         headers: {
@@ -227,7 +230,6 @@ const HypeModeProfile = () => {
       setShowPopup(true);
     }
   };
-
   const onLoginSuccess = async (googleUser: any, token: string) => {
     const profile = googleUser.getBasicProfile();
     const email = profile.getEmail();

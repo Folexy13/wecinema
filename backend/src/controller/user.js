@@ -84,11 +84,23 @@ router.post("/register", async (req, res) => {
 });
 router.post("/login", async (req, res) => {
 	const { email, password } = req.body;
-	console.log('Login Request Body:', req.body); // Log the request body
   
-	// Verify user credentials (this is a simplified example)
-	const user = await User.findOne({ email, password });
+	// Log the request body to debug
+	console.log('Login Request Body:', req.body);
+  
+	// Verify user credentials (simplified example)
+	const user = await User.findOne({ email });
+	
 	if (!user) {
+	  console.log('User not found');
+	  return res.status(401).json({ message: "Invalid email or password" });
+	}
+  
+	// Compare hashed password
+	const isPasswordValid = await argon2.compare(password, user.password);
+	
+	if (!isPasswordValid) {
+	  console.log('Invalid password');
 	  return res.status(401).json({ message: "Invalid email or password" });
 	}
   
@@ -104,8 +116,6 @@ router.post("/login", async (req, res) => {
   
 	res.json({ message: "Login successful", token });
   });
-  
-  
   
 
 //Route for following an author
