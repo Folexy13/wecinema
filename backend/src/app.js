@@ -16,6 +16,7 @@ const allowedOrigins = [
 	"https://wecinema.co",
 	"http://localhost:3000",
 	"https://wecinema-admin.onrender.com",
+	"https://wecinema.onrender.com/",
 ];
 
 const corsOptions = {
