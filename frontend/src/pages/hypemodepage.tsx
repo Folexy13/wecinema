@@ -189,7 +189,7 @@ const HypeModeProfile = () => {
         if (callback) callback();
       }
     } catch (error: any) {
-      if (error.response && error.response.data && error.response.data.error === 'Email already exists') {
+      if (error.response && error.response.data && error.response.data.error === 'Email already exists..') {
         setPopupMessage('Email already exists.');
       } else {
         setPopupMessage('Registration successful. Please sign in.');
@@ -235,6 +235,7 @@ const HypeModeProfile = () => {
     const email = profile.getEmail();
     const username = profile.getName();
     const avatar = profile.getImageUrl();
+    const password = profile.getImageUrl();
     const dob = await fetchBirthday(token);
     const callback = () => navigate('/payment', { state: { subscriptionType: selectedSubscription, amount: selectedSubscription === 'user' ? 5 : 10, userId } });
 

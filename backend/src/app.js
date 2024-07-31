@@ -3,34 +3,28 @@ require("dotenv").config();
 const { VideoController, UserController } = require("./controller");
 const connectDB = require("./config");
 const morgan = require("morgan");
-
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const app = express();
 
-
-app.use(morgan("dev"));
-app.use(express.json());
-const allowedOrigins = [
-	"http://www.wecinema.co",
-	"https://www.wecinema.co",
-	"http://wecinema.co",
-	"https://wecinema.co",
-	"http://localhost:3000",
-	"https://wecinema-admin.onrender.com",
-	"https://wecinema.onrender.com/",
-];
-
 const corsOptions = {
-	origin: function (origin, callback) {
-		if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-			callback(null, true);
-		} else {
-			callback(new Error("Not allowed by CORS"));
-		}
-	},
+  origin: ['https://wecinema.co', 'https://wecinema.onrender.com'],
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
+app.use(morgan("dev"));
+app.use(express.json());
+app.use(cookieParser());
 
+app.use((req, res, next) => {
+  console.log('Request Body:', req.body); // Log the request body
+  res.header("Access-Control-Allow-Origin", "https://wecinema.co");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
 
 
 // Define a route to create a user
