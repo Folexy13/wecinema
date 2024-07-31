@@ -9,7 +9,26 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(express.json());
+const allowedOrigins = [
+	"http://www.wecinema.co",
+	"https://www.wecinema.co",
+	"http://wecinema.co",
+	"https://wecinema.co",
+	"http://localhost:3000",
+	"https://wecinema-admin.onrender.com",
+];
 
+const corsOptions = {
+	origin: function (origin, callback) {
+		if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+			callback(null, true);
+		} else {
+			callback(new Error("Not allowed by CORS"));
+		}
+	},
+};
+
+app.use(cors(corsOptions));
 
 
 
