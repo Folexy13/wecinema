@@ -213,10 +213,9 @@ const HypeModeProfile = () => {
       const userId = res.data.id;
   
       if (token) {
-        localStorage.setItem('token', token);
+        setPopupMessage('Login successful..!');
         setIsLoggedIn(true);
         setUserId(userId);
-        setPopupMessage('Login successful..!');
         setShowPopup(true);
         if (callback) callback();
       }
