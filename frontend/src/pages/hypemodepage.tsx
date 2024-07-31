@@ -190,7 +190,7 @@ const HypeModeProfile = () => {
       }
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.error === 'Email already exists') {
-        setPopupMessage('Email already exists.');
+        setPopupMessage('Email already exists..');
       } else {
         setPopupMessage('Registration successful. Please sign in.');
       }
