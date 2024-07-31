@@ -8,7 +8,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
 app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "https://wecinema.co/hypemode");
+	res.header("Access-Control-Allow-Origin", "https://wecinema.co");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 	next();
   });
