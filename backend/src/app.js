@@ -8,10 +8,11 @@ const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
 app.use((req, res, next) => {
-	res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-	res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+	res.header("Access-Control-Allow-Origin", "https://wecinema.co");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 	next();
   });
+  
 app.use(morgan("dev"));
 app.use(express.json());
 
@@ -23,7 +24,16 @@ const corsOptions = {
   };
   
 app.use(cors(corsOptions));
-
+// Example in Express.js
+app.use((req, res, next) => {
+	res.cookie('token', 'your-token-value', {
+	  httpOnly: true,
+	  secure: true,
+	  sameSite: 'None', // Required for cross-domain cookies
+	});
+	next();
+  });
+  
 // Define a route to create a user
 app.use("/video", VideoController);
 app.use("/user", UserController);
