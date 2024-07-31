@@ -217,7 +217,7 @@ const HypeModeProfile = () => {
     }
   } catch (error:any) {
     console.error('Login failed:', error);
-    setPopupMessage(error.response?.data?.message || 'Login failed.');
+    setPopupMessage(error.response?.data?.message || 'Login failed access.');
     setShowPopup(true);
   }
 };
