@@ -244,7 +244,6 @@ const HypeModeProfile = () => {
 
     } else {
       await loginUser(email, password, callback);
-      console.log('Date of password:', password);
 
     }
   };
