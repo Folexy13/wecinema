@@ -82,7 +82,6 @@ router.post("/register", async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
-
 router.post("/login", async (req, res) => {
 	try {
 	  const { email, password } = req.body;
@@ -118,6 +117,7 @@ router.post("/login", async (req, res) => {
 	  res.status(500).json({ error: "Internal Server Error" });
 	}
   });
+  
   
 
 //Route for following an author

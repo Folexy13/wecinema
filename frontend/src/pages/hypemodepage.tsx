@@ -194,39 +194,33 @@ const HypeModeProfile = () => {
     }
   };
 
- router.post("/login", async (req, res) => {
-	try {
-		const { email, password } = req.body;
+ const loginUser = async (email:any, password:any, callback:any) => {
+  try {
+    console.log('Logging in with:', { email, password }); // Debugging log
+    const res = await axios.post('https://wecinema.onrender.com/user/login', {
+      email,
+      password // Ensure password is included
+    });
 
-		// Find the user by email
-		const user = await User.findOne({ email });
+    const { token } = res.data;
 
-		// Check if the user exists
-		if (!user) {
-			return res.status(401).json({ error: "Invalid credentials" });
-		}
-
-		// Compare the provided password with the hashed password in the database
-		const passwordMatch = await argon2.verify(user.password, password);
-
-		if (passwordMatch) {
-			// If the passwords match, generate a JWT token for authentication
-			const token = jwt.sign(
-				{ userId: user._id, username: user.username, avatar: user.avatar },
-				process.env.SECRET_KEY,
-				{ expiresIn: "8h" }
-			);
-
-			res.status(200).json({ token });
-		} else {
-			// If passwords do not match, return an error
-			res.status(401).json({ error: "Invalid credentials" });
-		}
-	} catch (error) {
-		console.error("Error during login:", error);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
-});
+    if (token) {
+      localStorage.setItem('token', token);
+      setIsLoggedIn(true);
+      setPopupMessage('Login successful!');
+      setShowPopup(true);
+      if (callback) callback();
+    } else {
+      console.error('No token received:', res.data);
+      setPopupMessage('Login failed. No token received.');
+      setShowPopup(true);
+    }
+  } catch (error) {
+    console.error('Login failed:', error);
+    setPopupMessage(error.response?.data?.message || 'Login failed.');
+    setShowPopup(true);
+  }
+};
 
 
   const onLoginSuccess = async (googleUser: any, response: any) => {
