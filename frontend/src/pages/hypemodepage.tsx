@@ -215,7 +215,7 @@ const HypeModeProfile = () => {
       setPopupMessage('Login failed. No token received.');
       setShowPopup(true);
     }
-  } catch (error) {
+  } catch (error:any) {
     console.error('Login failed:', error);
     setPopupMessage(error.response?.data?.message || 'Login failed.');
     setShowPopup(true);
