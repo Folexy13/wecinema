@@ -182,7 +182,7 @@ const HypeModeProfile = () => {
       const userId = res.data.id;
 
       if (token) {
-        setPopupMessage('Registration successful and logged in.!');
+        setPopupMessage('Registration successful and logged in!');
         setIsLoggedIn(true);
         setUserId(userId);
         setShowPopup(true);

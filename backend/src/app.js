@@ -4,6 +4,7 @@ const { VideoController, UserController } = require("./controller");
 const connectDB = require("./config");
 const morgan = require("morgan");
 const cors = require("cors");
+const cookieParser = require("cookie-parser"); // Add this line
 const app = express();
 
 const corsOptions = {
@@ -16,21 +17,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://wecinema.co");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  next();
-});
-
-app.use((req, res, next) => {
-  res.cookie('token', 'your-token-value', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None', // Required for cross-domain cookies
-  });
-  next();
-});
+app.use(cookieParser()); // Add this line
 
 // Define a route to create a user
 app.use("/video", VideoController);
