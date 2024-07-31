@@ -203,19 +203,19 @@ const HypeModeProfile = () => {
     console.log('Password:', password); // Log the password
   
     try {
-      const res = await axios.post('https://wecinema.onrender.com/user/login', { email, password }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      const res = await axios.post('https://wecinema.onrender.com/user/login', {
+        email,
+        password
       });
   
       const token = res.data.token;
       const userId = res.data.id;
   
       if (token) {
-        setPopupMessage('Login successful..!');
+        localStorage.setItem('token', token);
         setIsLoggedIn(true);
         setUserId(userId);
+        setPopupMessage('Login successful..!');
         setShowPopup(true);
         if (callback) callback();
       }
