@@ -5,6 +5,7 @@ import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signInWithPopup, signOut } from "firebase/auth";
 import { googleProvider } from "./firebase";
+import { gapi } from "gapi-script";
 
 const MainContainer = styled.div`
   display: flex;
@@ -374,5 +375,6 @@ const HypeModeProfile = () => {
 };
 
 export default HypeModeProfile;
+
 
 
