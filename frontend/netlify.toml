@@ -1,4 +1,5 @@
 [[redirects]]
+  node_version = "22"
   from = "/*"
   to = "/index.html"
   status = 200
