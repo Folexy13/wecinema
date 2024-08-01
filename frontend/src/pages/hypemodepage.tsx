@@ -188,7 +188,6 @@ const HypeModeProfile = () => {
         email,
         avatar,
         dob,
-        password
       });
 
       const token = res.data.token;
