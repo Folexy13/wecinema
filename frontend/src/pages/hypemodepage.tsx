@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signInWithPopup, signOut } from "firebase/auth";
-import { googleProvider } from "../../../backend/firebaseConfig";
+import { googleProvider } from "./firebase";
 
 
 const MainContainer = styled.div`
