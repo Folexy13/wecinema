@@ -214,7 +214,6 @@ const HypeModeProfile = () => {
     const email = profile.email;
     const username = profile.displayName;
     const avatar = profile.photoURL;
-    const token = await user.getIdToken();
   
     const callback = () => navigate('/payment', { state: { subscriptionType: selectedSubscription, amount: selectedSubscription === 'user' ? 5 : 10, userId } });
   
