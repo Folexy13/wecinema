@@ -3,8 +3,9 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, signInWithPopup, signOut } from "firebase/auth";
+import { googleProvider } from "../../../backend/firebaseConfig";
+
 
 const MainContainer = styled.div`
   display: flex;
@@ -136,58 +137,51 @@ const Overlay = styled.div`
   z-index: 999;
 `;
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDst7s0XVPLrGr7S0S0IMZ4e9T4Z_W8rVs",
-    authDomain: "wecinemaco.firebaseapp.com",
-    databaseURL: "https://wecinemaco-default-rtdb.firebaseio.com",
-    projectId: "wecinemaco",
-    storageBucket: "wecinemaco.appspot.com",
-    messagingSenderId: "133384787906",
-    appId: "1:133384787906:web:93ef08a61ffa389622285b",
-    measurementId: "G-L7XZ0MBR1C"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-googleProvider.addScope('https://www.googleapis.com/auth/user.birthday.read');
-
 const HypeModeProfile = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState('');
   const [isSignup, setIsSignup] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [userId, setUserId] = useState('');
-  const [isSigningIn, setIsSigningIn] = useState(false);
 
-  const fetchBirthday = async (token: string) => {
+  const fetchBirthday = async (token:any) => {
     try {
+      console.log('Fetching birthday with token:', token);
       const res = await axios.get('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      const birthday = res.data.birthdays?.[0]?.date;
-      if (birthday) {
+      console.log('Response data:', res.data);
+      const birthdays = res.data.birthdays;
+      if (birthdays && birthdays.length > 0) {
+        const birthday = birthdays[0].date;
+        console.log('Birthday data:', birthday);
         const formattedBirthday = `${birthday.year}-${birthday.month}-${birthday.day}`;
         return formattedBirthday;
+      } else {
+        console.log('No birthday found.');
+        return '';
       }
-      return '';
-    } catch (error: any) {
+    } catch (error:any) {
       console.error('Error fetching birthday:', error.response ? error.response.data : error.message);
       return '';
     }
   };
+  
 
-  const registerUser = async (username: string, email: string, avatar: string, dob: string, callback: () => void) => {
+  const registerUser = async (username: string, email: string, avatar: string, dob: string, password: string, callback: () => void) => {
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/register', {
         username,
         email,
         avatar,
         dob,
+        password
       });
 
       const token = res.data.token;
@@ -195,6 +189,7 @@ const HypeModeProfile = () => {
 
       if (token) {
         setPopupMessage('Registration successful and logged in.!');
+        setIsLoggedIn(true);
         setUserId(userId);
         setShowPopup(true);
         if (callback) callback();
@@ -209,18 +204,19 @@ const HypeModeProfile = () => {
     }
   };
 
-  const loginUser = async (email: string, callback: () => void) => {
+  const loginUser = async (email: string, password: string, callback: () => void) => {
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/login', {
         email,
-        
+        password,
       });
-  
+
       const token = res.data.token;
       const userId = res.data.id;
-  
+
       if (token) {
         localStorage.setItem('token', token);
+        setIsLoggedIn(true);
         setUserId(userId);
         setPopupMessage('Login successful..!');
         setShowPopup(true);
@@ -237,78 +233,135 @@ const HypeModeProfile = () => {
     }
   };
 
-  const onLoginSuccess = async (googleUser: any) => {
-    const profile = googleUser.providerData[0];
+  const onLoginSuccess = async (user:any) => {
+    const profile = user.providerData[0];
     const email = profile.email;
     const username = profile.displayName;
     const avatar = profile.photoURL;
-    const token = await googleUser.getIdToken();
+    const token = await user.getIdToken();
     const dob = await fetchBirthday(token);
+  
     const callback = () => navigate('/payment', { state: { subscriptionType: selectedSubscription, amount: selectedSubscription === 'user' ? 5 : 10, userId } });
-
+  
     if (isSignup) {
-      await registerUser(username, email, avatar, dob, callback);
+      await registerUser(username, email, avatar, dob, password, callback);
     } else {
-      await loginUser(email, callback);
+      await loginUser(email, password, callback);
     }
   };
+  
 
   const onLoginFailure = (error: any) => {
     console.error('Google login failed:', error);
     setPopupMessage('Google login failed. Please try again.');
     setShowPopup(true);
-    setIsSigningIn(false);
   };
-
   const handleGoogleLogin = async () => {
-    if (isSigningIn) return;
-
-    setIsSigningIn(true);
+    const auth = getAuth();
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       await onLoginSuccess(user);
-    } catch (error: any) {
+    } catch (error) {
       onLoginFailure(error);
-    } finally {
-      setIsSigningIn(false);
     }
   };
 
+  const handleGoogleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      setIsLoggedIn(false);
+      setPopupMessage('Logout successful.');
+      setShowPopup(true);
+    } catch (error: any) {
+      console.error('Logout failed:', error);
+      setPopupMessage('Logout failed. Please try again.');
+      setShowPopup(true);
+    }
+  };
   
 
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+  
+
+  const handleSubscriptionClick = (subscriptionType: string) => {
+    setSelectedSubscription(subscriptionType);
+    if (isLoggedIn) {
+      const amount = subscriptionType === 'user' ? 5 : subscriptionType === 'studio' ? 10 : 0;
+      navigate('/payment', { state: { subscriptionType, amount, userId } });
+    }
+  };
+
+  const toggleSignupSignin = () => {
+    setIsSignup(!isSignup);
+  };
+
   return (
-    <Layout expand={false}>
+    <Layout expand={false} hasHeader={false}>
       <MainContainer>
-        <ToggleButton onClick={() => setIsSignup(!isSignup)}>
-          {isSignup ? 'Already have an account? Sign in' : 'New user? Sign up'}
+        <ToggleButton onClick={toggleSignupSignin}>
+          {isSignup ? "Already have an account? Switch to Sign in" : "Don't have an account? Switch to Sign up"}
         </ToggleButton>
+
         <RightContainer>
-          <SubscriptionContainer>
-            <SubscriptionBox onClick={() => setSelectedSubscription('user')}>
-              <Title>User Subscription</Title>
-              <Description>$5 / month</Description>
-              <Button onClick={handleGoogleLogin}>Subscribe</Button>
-            </SubscriptionBox>
-            <SubscriptionBox onClick={() => setSelectedSubscription('admin')}>
-              <Title>Admin Subscription</Title>
-              <Description>$10 / month</Description>
-              <Button onClick={handleGoogleLogin}>Subscribe</Button>
-            </SubscriptionBox>
-          </SubscriptionContainer>
+          {isLoggedIn ? (
+            <SubscriptionContainer>
+              <SubscriptionBox>
+                <Title>Logout</Title>
+                <Button onClick={handleGoogleLogout}>Logout</Button>
+              </SubscriptionBox>
+            </SubscriptionContainer>
+          ) : (
+            <SubscriptionContainer>
+              <SubscriptionBox onClick={() => handleSubscriptionClick('user')}>
+                <Title>User Subscription</Title>
+                <Description>$5 a month to buy and sell films and scripts</Description>
+                <Button onClick={handleGoogleLogin}>{isSignup ? "Sign up with Google" : "Sign in with Google"}</Button>
+              </SubscriptionBox>
+              <SubscriptionBox onClick={() => handleSubscriptionClick('studio')}>
+                <Title>Studio Subscription</Title>
+                <Description>$10 a month to buy and sell, get early access to new features</Description>
+                <Button onClick={handleGoogleLogin}>{isSignup ? "Sign up with Google" : "Sign in with Google"}</Button>
+              </SubscriptionBox>
+              <SubscriptionBox>
+                <h3>{isSignup ? 'Register' : 'Login'} with Email</h3>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button onClick={() => loginUser(email, password, () => navigate('/payment', { state: { subscriptionType: selectedSubscription, amount: selectedSubscription === 'user' ? 5 : 10, userId } }))}>
+                  {isSignup ? 'Register' : 'Login'}
+                </Button>
+              </SubscriptionBox>
+            </SubscriptionContainer>
+          )}
         </RightContainer>
-        {showPopup && (
-          <>
-            <Overlay onClick={() => setShowPopup(false)} />
-            <Popup>
-              <p>{popupMessage}</p>
-              <Button onClick={() => setShowPopup(false)}>Close</Button>
-            </Popup>
-          </>
-        )}
       </MainContainer>
+      {showPopup && (
+        <>
+          <Overlay onClick={closePopup} />
+          <Popup>
+            <p>{popupMessage}</p>
+            <Button onClick={closePopup}>Close</Button>
+          </Popup>
+        </>
+      )}
     </Layout>
   );
 };
 
 export default HypeModeProfile;
+
+
+
