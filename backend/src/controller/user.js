@@ -93,7 +93,7 @@ router.post("/login", async (req, res) => {
   
 	  // Check if the user exists
 	  if (!user) {
-		return res.status(401).json({ error: "Invalid credentials" });
+		return res.status(401).json({ error: "Invalid credentials." });
 	  }
   
 	  // Compare the provided password with the hashed password in the database
