@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from 'axios';
 import styled from 'styled-components';
 import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signInWithPopup, signOut } from "firebase/auth";
 import { googleProvider } from "./firebase";
+import { gapi } from "gapi-script";
 
 const MainContainer = styled.div`
   display: flex;
@@ -277,10 +278,27 @@ const HypeModeProfile = () => {
       setShowPopup(true);
     }
   };
+  const clientId = "854144808645-t4jd10ehpngjnfvki8mcuq7q0uvr2kjo.apps.googleusercontent.com";
+
+  useEffect(() => {
+    function start() {
+      gapi.client.init({
+        clientId: clientId,
+        scope: 'https://www.googleapis.com/auth/user.birthday.read email profile',
+      }).then(() => {
+        console.log('Google API client initialized.');
+      }).catch((error: any) => {
+        console.error('Error initializing Google API client:', error);
+      });
+    }
+
+    gapi.load('client:auth2', start);
+  }, []);
 
   const closePopup = () => {
     setShowPopup(false);
   };
+  
 
   const handleSubscriptionClick = (subscriptionType: string) => {
     setSelectedSubscription(subscriptionType);
@@ -357,3 +375,5 @@ const HypeModeProfile = () => {
 };
 
 export default HypeModeProfile;
+
+
