@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from 'axios';
 import styled from 'styled-components';
 import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
-import { gapi } from "gapi-script";
+import { getAuth, signInWithPopup, signOut } from "firebase/auth";
+import { googleProvider } from "./firebase";
 
 const MainContainer = styled.div`
   display: flex;
@@ -199,18 +200,15 @@ const HypeModeProfile = () => {
   };
 
   const loginUser = async (email: string, password: string, callback: () => void) => {
-    console.log('Email:', email); // Log the email
-    console.log('Password:', password); // Log the password
-  
     try {
       const res = await axios.post('https://wecinema.onrender.com/user/login', {
         email,
-        password:"hhcricket4464",
+        password,
       });
-  
+
       const token = res.data.token;
       const userId = res.data.id;
-  
+
       if (token) {
         localStorage.setItem('token', token);
         setIsLoggedIn(true);
@@ -229,11 +227,13 @@ const HypeModeProfile = () => {
       setShowPopup(true);
     }
   };
-  const onLoginSuccess = async (googleUser: any, token: string) => {
-    const profile = googleUser.getBasicProfile();
-    const email = profile.getEmail();
-    const username = profile.getName();
-    const avatar = profile.getImageUrl();
+
+  const onLoginSuccess = async (user: any) => {
+    const profile = user.providerData[0];
+    const email = profile.email;
+    const username = profile.displayName;
+    const avatar = profile.photoURL;
+    const token = await user.getIdToken();
     const dob = await fetchBirthday(token);
     const callback = () => navigate('/payment', { state: { subscriptionType: selectedSubscription, amount: selectedSubscription === 'user' ? 5 : 10, userId } });
 
@@ -254,17 +254,18 @@ const HypeModeProfile = () => {
   };
 
   const handleGoogleLogin = () => {
-    gapi.auth2.getAuthInstance().signIn()
-      .then(async (googleUser: any) => {
-        const token = googleUser.getAuthResponse().access_token;
-        console.log('Access token acquired:', token);
-        await onLoginSuccess(googleUser, token);
+    const auth = getAuth();
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const user = result.user;
+        onLoginSuccess(user);
       })
       .catch(onLoginFailure);
   };
 
   const handleGoogleLogout = () => {
-    gapi.auth2.getAuthInstance().signOut()
+    const auth = getAuth();
+    signOut(auth)
       .then(() => {
         localStorage.clear();
         setIsLoggedIn(false);
@@ -274,23 +275,6 @@ const HypeModeProfile = () => {
         console.error('Logout Failed:', error);
       });
   };
-
-  const clientId = "854144808645-t4jd10ehpngjnfvki8mcuq7q0uvr2kjo.apps.googleusercontent.com";
-
-  useEffect(() => {
-    function start() {
-      gapi.client.init({
-        clientId: clientId,
-        scope: 'https://www.googleapis.com/auth/user.birthday.read email profile',
-      }).then(() => {
-        console.log('Google API client initialized.');
-      }).catch((error: any) => {
-        console.error('Error initializing Google API client:', error);
-      });
-    }
-
-    gapi.load('client:auth2', start);
-  }, []);
 
   const closePopup = () => {
     setShowPopup(false);
