@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Layout } from "../components";
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signInWithPopup, signOut } from "firebase/auth";
-import { googleProvider } from "./firebase";
+import { googleProvider } from "../firebaseConfig";
 
 const MainContainer = styled.div`
   display: flex;
@@ -248,32 +248,34 @@ const HypeModeProfile = () => {
   };
 
   const onLoginFailure = (error: any) => {
-    console.error('Login Failed:', error);
-    setPopupMessage('Login failed.');
+    console.error('Google login failed:', error);
+    setPopupMessage('Google login failed. Please try again.');
     setShowPopup(true);
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     const auth = getAuth();
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        const user = result.user;
-        onLoginSuccess(user);
-      })
-      .catch(onLoginFailure);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      await onLoginSuccess(user);
+    } catch (error: any) {
+      onLoginFailure(error);
+    }
   };
 
-  const handleGoogleLogout = () => {
+  const handleGoogleLogout = async () => {
     const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        localStorage.clear();
-        setIsLoggedIn(false);
-        navigate('/hypemode');
-      })
-      .catch((error: any) => {
-        console.error('Logout Failed:', error);
-      });
+    try {
+      await signOut(auth);
+      setIsLoggedIn(false);
+      setPopupMessage('Logout successful.');
+      setShowPopup(true);
+    } catch (error: any) {
+      console.error('Logout failed:', error);
+      setPopupMessage('Logout failed. Please try again.');
+      setShowPopup(true);
+    }
   };
 
   const closePopup = () => {
