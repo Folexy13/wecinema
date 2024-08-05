@@ -9,7 +9,7 @@ const User = require("../models/user");
 const Contact = require("../models/contact");
 const Subscription  = require("../models/subscription");
 const Transaction = require("../models/transaction"); 
-const admin = require('firebase-admin');
+const admin = require('../firebaseAdmin');
 
 
 
