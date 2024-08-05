@@ -3,16 +3,14 @@ import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 const firebaseConfig = {
-    apiKey: "AIzaSyDst7s0XVPLrGr7S0S0IMZ4e9T4Z_W8rVs",
-    authDomain: "wecinemaco.firebaseapp.com",
-    databaseURL: "https://wecinemaco-default-rtdb.firebaseio.com",
-    projectId: "wecinemaco",
-    storageBucket: "wecinemaco.appspot.com",
-    messagingSenderId: "133384787906",
-    appId: "1:133384787906:web:93ef08a61ffa389622285b",
-    measurementId: "G-L7XZ0MBR1C"
-};
-
+    apiKey: "AIzaSyBFFVP4F_tq9yfgra1szbT1yWFh_SCCGMg",
+    authDomain: "wecinema-5b6a4.firebaseapp.com",
+    projectId: "wecinema-5b6a4",
+    storageBucket: "wecinema-5b6a4.appspot.com",
+    messagingSenderId: "962978250768",
+    appId: "1:962978250768:web:21d326bc46b6e1874bca95",
+    measurementId: "G-Y1ZC282HZK"
+  };
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const auth = getAuth(app);
