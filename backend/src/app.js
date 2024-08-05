@@ -20,6 +20,7 @@ const allowedOrigins = [
     "https://www.wecinema.co",
     "http://wecinema.co",
     "https://wecinema.co",
+    "https://wecinema.co/hypemode",
     "http://localhost:3000",
     "https://wecinema-admin.onrender.com",
     "https://wecinema.onrender.com",
