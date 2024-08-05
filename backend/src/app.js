@@ -25,6 +25,8 @@ const allowedOrigins = [
     "https://wecinema-admin.onrender.com",
     "https://wecinema.onrender.com",
     "https://wecinema.onrender.com/user/register",
+    "https://wecinemaco.firebaseapp.com",
+
 ];
 
 const corsOptions = {
