@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
 
+// Set security headers
 app.use((req, res, next) => {
     res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
     res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
@@ -15,6 +16,7 @@ app.use((req, res, next) => {
 app.use(morgan("dev"));
 app.use(express.json());
 
+// CORS configuration
 const allowedOrigins = [
     "http://www.wecinema.co",
     "https://www.wecinema.co",
@@ -26,7 +28,6 @@ const allowedOrigins = [
     "https://wecinema.onrender.com",
     "https://wecinema.onrender.com/user/register",
     "https://wecinemaco.firebaseapp.com",
-
 ];
 
 const corsOptions = {
@@ -41,7 +42,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Example in Express.js
+// Set cookies
 app.use((req, res, next) => {
     res.cookie('token', 'your-token-value', {
         httpOnly: true,
@@ -51,19 +52,25 @@ app.use((req, res, next) => {
     next();
 });
 
-// Add logging middleware to debug incoming requests
+// Log incoming requests for debugging
 app.use((req, res, next) => {
     console.log("Received request: ", req.method, req.url);
     console.log("Request body: ", req.body);
     next();
 });
 
-// Define a route to create a user
+// Define routes
 app.use("/video", VideoController);
 app.use("/user", UserController);
 
 // Connect to the database
 connectDB(process.env.DB_URI);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 
 // Start the Express server
 const PORT = process.env.PORT || 3000;
