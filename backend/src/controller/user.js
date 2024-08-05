@@ -11,19 +11,6 @@ const Subscription  = require("../models/subscription");
 const Transaction = require("../models/transaction"); 
 const admin = require('firebase-admin');
 
-const serviceAccount = require('../../serviceAccountKey.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://wecinema-821f9-default-rtdb.firebaseio.com"
-});
-const db = admin.database();
-
-
-// PayPal credentials
-const PAYPAL_CLIENT_ID = 'ATCFEkRI4lCXYSceFX1O3WVIym-HN0raTtEpXUUH8hTDI5kmPbbaWqI6I0K6nLRap16jZJoO33HtcFy7';
-const PAYPAL_SECRET = 'EIom_qzr0MhKHqPqFfhl6hqaTZFBg6n4AENu_8i8Bgsx86cQ9q0bWIIb235hLwdaDKPdG-i7qYUHpf5L';
-
 
 
 const { authenticateMiddleware, isAdmin } = require("../utils");
@@ -47,74 +34,44 @@ router.post("/contact", async (req, res) => {
     }
 });
 
-// Route for creating a user account
-router.post("/register", async (req, res) => {
+// User registration route
+router.post('/register', async (req, res) => {
+	const { username, email, avatar } = req.body;
+	
 	try {
-		const { username, email, password, avatar, dob } = req.body;
-		// Check if the user already exists
-		const existingUser = await User.findOne({ email });
-		if (existingUser) {
-			return res
-				.status(400)
-				.json({ error: "User already exists with this email" });
-		}
-
-		// Hash the password using bcrypt
-		const hashedPassword = !password
-			? await argon2.hash("wecinema")
-			: await argon2.hash(password);
-
-		// Create a new user
-		const newUser = await User.create({
-			username,
-			email,
-			password: hashedPassword,
-			avatar: avatar
-				? avatar
-				: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
-			dob,
-		});
-		res
-			.status(201)
-			.json({ message: "User registered successfully", user: newUser.email });
+	  const userRecord = await admin.auth().createUser({
+		email,
+		displayName: username,
+		photoURL: avatar,
+	  });
+  
+	  const token = await admin.auth().createCustomToken(userRecord.uid);
+  
+	  res.status(201).json({
+		message: 'User registered successfully',
+		id: userRecord.uid,
+		token
+	  });
 	} catch (error) {
-		console.error("Error creating user:", error);
-		res.status(500).json({ error: "Internal Server Error" });
+	  console.error('Error creating new user:', error);
+	  res.status(400).json({ error: error.message });
 	}
-});
-router.post("/login", async (req, res) => {
+  });
+  
+  // User login route
+  router.post('/login', async (req, res) => {
+	const { token } = req.body;
+  
 	try {
-	  const { email, password } = req.body;
-	  console.log('Received email:', email);
-	  console.log('Received password:', password);
-  
-	  // Find the user by email
-	  const user = await User.findOne({ email });
-  
-	  // Check if the user exists
-	  if (!user) {
-		return res.status(401).json({ error: "Invalid credentials." });
-	  }
-  
-	  // Compare the provided password with the hashed password in the database
-	  const passwordMatch = await argon2.verify(user.password, password);
-  
-	  if (passwordMatch) {
-		// If the passwords match, generate a JWT token for authentication
-		const token = jwt.sign(
-		  { userId: user._id, username: user.username, avatar: user.avatar },
-		  process.env.SECRET_KEY,
-		  { expiresIn: "8h" }
-		);
-  
-		res.status(200).json({ token });
-	  } else {
-		// If passwords do not match, return an error
-		res.status(401).json({ error: "Invalid credentials" });
-	  }
+	  const decodedToken = await admin.auth().verifyIdToken(token);
+	  res.status(200).json({
+		message: 'User logged in successfully',
+		id: decodedToken.uid,
+		token
+	  });
 	} catch (error) {
-	  console.error("Error during login:", error);
-	  res.status(500).json({ error: "Internal Server Error" });
+	  console.error('Error logging in user:', error);
+	  res.status(400).json({ error: 'Invalid token' });
 	}
   });
   
