@@ -420,39 +420,39 @@ router.get("/category/:genre", async (req, res) => {
 	}
 });
 
-async function migrateViews() {
-	try {
-		// Find all videos where views is an array
-		const videos = await Videos.find({ views: { $type: "array" } });
+// async function migrateViews() {
+// 	try {
+// 		// Find all videos where views is an array
+// 		const videos = await Videos.find({ views: { $type: "array" } });
 
-		console.log(`Found ${videos.length} videos with array type views`);
+// 		console.log(`Found ${videos.length} videos with array type views`);
 
-		// Loop through each video and update views field
-		for (let video of videos) {
-			// Convert the views array to a number (e.g., by taking the length or summing the views)
-			const viewsCount = Array.isArray(video.views) ? video.views.length : 0;
+// 		// Loop through each video and update views field
+// 		for (let video of videos) {
+// 			// Convert the views array to a number (e.g., by taking the length or summing the views)
+// 			const viewsCount = Array.isArray(video.views) ? video.views.length : 0;
 
-			// Update the video with the new views count
-			video.views = viewsCount;
-			video.rating = video.rating ?? "x";
-			video.theme = video.theme ?? [];
-			await video.save();
-		}
+// 			// Update the video with the new views count
+// 			video.views = viewsCount;
+// 			video.rating = video.rating ?? "x";
+// 			video.theme = video.theme ?? [];
+// 			await video.save();
+// 		}
 
-		console.log("Migration completed successfully");
-	} catch (error) {
-		console.error("Error migrating views:", error);
-	} finally {
-		mongoose.disconnect();
-	}
-}
+// 		console.log("Migration completed successfully");
+// 	} catch (error) {
+// 		console.error("Error migrating views:", error);
+// 	} finally {
+// 		mongoose.disconnect();
+// 	}
+// }
 
 // Run the migration
 
 //Edit video
 // Route for editing a video
 router.put("/edit/:id", async (req, res) => {
-	migrateViews();
+	// migrateViews();
 	try {
 		const { id } = req.params;
 		const {
@@ -491,7 +491,7 @@ router.put("/edit/:id", async (req, res) => {
 		// Save the updated video
 		await video.save();
 
-		res.status(200).json({ message: "Video updated successfully" });
+		res.status(200).json({ message: "Video updated successfully", video });
 	} catch (error) {
 		console.error("Error editing video:", error);
 		res.status(500).json({ error: "Internal Server Error" });
