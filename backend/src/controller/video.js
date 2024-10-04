@@ -551,6 +551,17 @@ router.get("/authors/:authorId/scripts", async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+// Route to get all scripts of a specific author
+router.get("/scripts/:id", async (req, res) => {
+	try {
+		const { id } = req.params;
+		const scripts = await Script.findById(id);
+		res.status(200).json(scripts);
+	} catch (error) {
+		console.error("Error getting scripts by author:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
 // edit script
 router.put("/scripts/:id", authenticateMiddleware, async (req, res) => {
 	try {
