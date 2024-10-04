@@ -2,80 +2,78 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 
 const argon2 = require("argon2");
-const axios = require('axios');
+const axios = require("axios");
 const router = express.Router();
 // Import your User model (assuming you have a MongoDB User model)
 const User = require("../models/user");
 const Contact = require("../models/contact");
-const Subscription  = require("../models/subscription");
-const Transaction = require("../models/transaction"); 
-const admin = require('../firebaseAdmin');
-
-
+const Subscription = require("../models/subscription");
+const Transaction = require("../models/transaction");
+let admin;
 
 const { authenticateMiddleware, isAdmin } = require("../utils");
 router.post("/contact", async (req, res) => {
-    try {
-        const { name, email, message } = req.body;
+	try {
+		const { name, email, message } = req.body;
 
-        // Validate input
-        if (!name || !email || !message) {
-            return res.status(400).json({ error: "All fields are required" });
-        }
+		// Validate input
+		if (!name || !email || !message) {
+			return res.status(400).json({ error: "All fields are required" });
+		}
 
-        // Create a new contact message
-        const newContact = new Contact({ name, email, message });
-        await newContact.save();
+		// Create a new contact message
+		const newContact = new Contact({ name, email, message });
+		await newContact.save();
 
-        res.status(201).json({ message: "Contact message sent successfully" });
-    } catch (error) {
-        console.error("Error handling contact form submission:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+		res.status(201).json({ message: "Contact message sent successfully" });
+	} catch (error) {
+		console.error("Error handling contact form submission:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
 // User registration route
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
 	const { username, email, avatar } = req.body;
-	
+
 	try {
-	  const userRecord = await admin.auth().createUser({
-		email,
-		displayName: username,
-		photoURL: avatar,
-	  });
-  
-	  const token = await admin.auth().createCustomToken(userRecord.uid);
-  
-	  res.status(201).json({
-		message: 'User registered successfully',
-		id: userRecord.uid,
-		token
-	  });
+		//   const userRecord = await admin.auth().createUser({
+		// 	email,
+		// 	displayName: username,
+		// 	photoURL: avatar,
+		//   });
+		const newUser = new User(req.body);
+		await newUser.save();
+		//   const token = await admin.auth().createCustomToken(userRecord.uid);
+
+		res.status(201).json({
+			message: "User registered successfully",
+			newUser,
+			// id: userRecord.uid,
+			// token
+		});
 	} catch (error) {
-	  console.error('Error creating new user:', error);
-	  res.status(400).json({ error: error.message });
+		console.error("Error creating new user:", error);
+		res.status(400).json({ error: error.message });
 	}
-  });
-  
-  // User login route
-  router.post('/login', async (req, res) => {
+});
+
+// User login route
+router.post("/login", async (req, res) => {
 	const { token } = req.body;
-  
+
 	try {
-	  const decodedToken = await admin.auth().verifyIdToken(token);
-	  res.status(200).json({
-		message: 'User logged in successfully',
-		id: decodedToken.uid,
-		token
-	  });
+		const decodedToken = await admin.auth().verifyIdToken(token);
+		res.status(200).json({
+			message: "User logged in successfully",
+			id: decodedToken.uid,
+			token,
+		});
 	} catch (error) {
-	  console.error('Error logging in user:', error);
-	  res.status(400).json({ error: 'Invalid token' });
+		console.error("Error logging in user:", error);
+		res.status(400).json({ error: "Invalid token" });
 	}
-  });
-  
-  
+});
 
 //Route for following an author
 router.put("/:id/follow", authenticateMiddleware, async (req, res) => {
@@ -112,68 +110,67 @@ router.put("/:id/follow", authenticateMiddleware, async (req, res) => {
 	}
 });
 // New route to get paid users (should be before /user/:id)
-router.get('/paid-users', async (req, res) => {
-    try {
-        const paidUsers = await User.find({ hasPaid: true }).lean();
-        res.status(200).json(paidUsers);
-    } catch (error) {
-        console.error('Error fetching paid users:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+router.get("/paid-users", async (req, res) => {
+	try {
+		const paidUsers = await User.find({ hasPaid: true }).lean();
+		res.status(200).json(paidUsers);
+	} catch (error) {
+		console.error("Error fetching paid users:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
 // Route for getting a particular user
 router.get("/:id", async (req, res) => {
-    try {
-        const userId = req.params.id;
-        const user = await User.findById(userId).lean();
+	try {
+		const userId = req.params.id;
+		const user = await User.findById(userId).lean();
 
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
 
-        const age = new User(user).calculateAge();
-        let allowedGenres = ["G", "PG"];
+		const age = new User(user).calculateAge();
+		let allowedGenres = ["G", "PG"];
 
-        if (age >= 13) {
-            allowedGenres.push("PG-13", "R");
-        }
-        if (age >= 22) {
-            allowedGenres.push("X");
-        }
+		if (age >= 13) {
+			allowedGenres.push("PG-13", "R");
+		}
+		if (age >= 22) {
+			allowedGenres.push("X");
+		}
 
-        res.json({ ...user, allowedGenres });
-    } catch (error) {
-        console.error("Error fetching user by ID:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+		res.json({ ...user, allowedGenres });
+	} catch (error) {
+		console.error("Error fetching user by ID:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
-
 router.get("/payment/user/:id", async (req, res) => {
-    try {
-        const userId = req.params.id;
-        const user = await User.findById(userId).lean();
+	try {
+		const userId = req.params.id;
+		const user = await User.findById(userId).lean();
 
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
 
-        const age = new User(user).calculateAge();
-        let allowedGenres = ["G", "PG"];
+		const age = new User(user).calculateAge();
+		let allowedGenres = ["G", "PG"];
 
-        if (age >= 13) {
-            allowedGenres.push("PG-13", "R");
-        }
-        if (age >= 22) {
-            allowedGenres.push("X");
-        }
+		if (age >= 13) {
+			allowedGenres.push("PG-13", "R");
+		}
+		if (age >= 22) {
+			allowedGenres.push("X");
+		}
 
-        res.json({ ...user, allowedGenres });
-    } catch (error) {
-        console.error("Error fetching user by ID:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+		res.json({ ...user, allowedGenres });
+	} catch (error) {
+		console.error("Error fetching user by ID:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
 //Route for Changing password
@@ -241,7 +238,7 @@ router.put("/edit/:id", authenticateMiddleware, async (req, res) => {
 });
 
 //delete a particular user - only admin function
-router.delete("/delete/:id",  async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
 	try {
 		const { id } = req.params;
 
@@ -303,112 +300,124 @@ router.post("/change-user-status", async (req, res) => {
 	}
 });
 // GET /api/subscription/status/:userId
-router.get('/status/:userId', async (req, res) => {
-  const userId = req.params.userId;  // Get userId from URL parameters
+router.get("/status/:userId", async (req, res) => {
+	const userId = req.params.userId; // Get userId from URL parameters
 
-  try {
-    const subscription = await Subscription.findOne({ userId });
-    res.json({ isSubscribed: !!subscription, subscription });
-  } catch (err) {
-    console.error('Error fetching subscription status for user:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
+	try {
+		const subscription = await Subscription.findOne({ userId });
+		res.json({ isSubscribed: !!subscription, subscription });
+	} catch (err) {
+		console.error("Error fetching subscription status for user:", err);
+		res.status(500).json({ error: "Server error" });
+	}
 });
-
 
 // Route to check user payment status
-router.get('/payment-status/:userId', async (req, res) => {
+router.get("/payment-status/:userId", async (req, res) => {
 	const { userId } = req.params;
-  
+
 	try {
-	  const user = await User.findOne({ _id: userId });
-  
-	  if (!user) {
-		return res.status(404).json({ hasPaid: false, message: 'User not found' });
-	  }
-  
-	  res.json({ hasPaid: user.hasPaid });
+		const user = await User.findOne({ _id: userId });
+
+		if (!user) {
+			return res
+				.status(404)
+				.json({ hasPaid: false, message: "User not found" });
+		}
+
+		res.json({ hasPaid: user.hasPaid });
 	} catch (err) {
-	  console.error('Error fetching user payment status:', err);
-	  res.status(500).json({ message: 'Server error' });
+		console.error("Error fetching user payment status:", err);
+		res.status(500).json({ message: "Server error" });
 	}
-  });
-router.post('/save-transaction', async (req, res) => {
-	const { userId, username, email, orderId, payerId, amount, currency } = req.body;
-  
+});
+router.post("/save-transaction", async (req, res) => {
+	const { userId, username, email, orderId, payerId, amount, currency } =
+		req.body;
+
 	try {
-	  const newTransaction = new Transaction({
-		userId,
-		username,
-		email,
-		orderId,
-		payerId,
-		amount,
-		currency
-	  });
-  
-	  await newTransaction.save();
-  
-	  await User.updateOne({ _id: userId }, { hasPaid: true },{ lastPaymentDate: new Date()});
-  
-	  res.status(201).send({ message: 'Transaction saved and user payment status updated successfully!' });
+		const newTransaction = new Transaction({
+			userId,
+			username,
+			email,
+			orderId,
+			payerId,
+			amount,
+			currency,
+		});
+
+		await newTransaction.save();
+
+		await User.updateOne(
+			{ _id: userId },
+			{ hasPaid: true },
+			{ lastPaymentDate: new Date() }
+		);
+
+		res.status(201).send({
+			message:
+				"Transaction saved and user payment status updated successfully!",
+		});
 	} catch (error) {
-	  console.error('Error saving transaction:', error);
-	  res.status(500).send({ message: 'Failed to save transaction and update user payment status.' });
+		console.error("Error saving transaction:", error);
+		res.status(500).send({
+			message: "Failed to save transaction and update user payment status.",
+		});
 	}
-  });
-  
-  
+});
+
 router.get("/transactions", async (req, res) => {
-    try {
-        const transactions = await Transaction.find(); // Retrieve all transactions
-        res.status(200).json(transactions);
-    } catch (error) {
-        console.error("Error fetching transactions:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+	try {
+		const transactions = await Transaction.find(); // Retrieve all transactions
+		res.status(200).json(transactions);
+	} catch (error) {
+		console.error("Error fetching transactions:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 // Route to get transactions by userId
-router.get("/transactions/:userId",  async (req, res) => {
-    const userId = req.params.userId; // Extract userId from URL parameters
+router.get("/transactions/:userId", async (req, res) => {
+	const userId = req.params.userId; // Extract userId from URL parameters
 
-    try {
-        const transactions = await Transaction.find({ userId }); // Retrieve transactions by userId
-        res.status(200).json(transactions);
-    } catch (error) {
-        console.error("Error fetching transactions by userId:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+	try {
+		const transactions = await Transaction.find({ userId }); // Retrieve transactions by userId
+		res.status(200).json(transactions);
+	} catch (error) {
+		console.error("Error fetching transactions by userId:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 // In your backend server (Node.js/Express)
-router.post('/update-payment-status', async (req, res) => {
+router.post("/update-payment-status", async (req, res) => {
 	const { userId, hasPaid } = req.body;
 	try {
-	  const user = await User.findById(userId);
-	  user.hasPaid = hasPaid;
-	  await user.save();
-	  res.status(200).send({ message: 'Payment status updated successfully.' });
+		const user = await User.findById(userId);
+		user.hasPaid = hasPaid;
+		await user.save();
+		res.status(200).send({ message: "Payment status updated successfully." });
 	} catch (error) {
-	  res.status(500).send({ message: 'Failed to update payment status.', error });
+		res
+			.status(500)
+			.send({ message: "Failed to update payment status.", error });
 	}
-  });
-  
- 
-  router.post('/orders', async (req, res) => {
+});
+
+router.post("/orders", async (req, res) => {
 	const { chatId, description, price, createdBy } = req.body;
 	try {
-	  const orderRef = db.ref(`chats/${chatId}/orders`).push();
-	  await orderRef.set({
-		description,
-		price,
-		createdBy,
-		timestamp: admin.database.ServerValue.TIMESTAMP
-	  });
-	  res.status(200).send({ message: 'Order created successfully', orderId: orderRef.key });
+		const orderRef = db.ref(`chats/${chatId}/orders`).push();
+		await orderRef.set({
+			description,
+			price,
+			createdBy,
+			timestamp: admin.database.ServerValue.TIMESTAMP,
+		});
+		res
+			.status(200)
+			.send({ message: "Order created successfully", orderId: orderRef.key });
 	} catch (error) {
-	  res.status(500).send({ error: 'Error creating order' });
+		res.status(500).send({ error: "Error creating order" });
 	}
-  });
+});
 
 module.exports = router;
-
