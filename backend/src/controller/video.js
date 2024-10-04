@@ -434,8 +434,8 @@ async function migrateViews() {
 
 			// Update the video with the new views count
 			video.views = viewsCount;
-			video.rating ?? "x";
-			video.theme ?? [];
+			video.rating = video.rating ?? "x";
+			video.theme = video.theme ?? [];
 			await video.save();
 		}
 
