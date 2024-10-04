@@ -38,7 +38,7 @@ router.post("/create", async (req, res) => {
 			title,
 			description,
 			genre,
-			theme,
+			theme: theme ?? [],
 			rating,
 			file,
 			slug,
